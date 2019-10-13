@@ -7,10 +7,10 @@
   resolved "https://registry.yarnpkg.com/@ctsy/hook/-/hook-0.0.5.tgz#68c2e58f36a0d49c5b643dc0cd6c4c573fd92f89"
   integrity sha512-sBib0ahrQIQbttKgAuye/HmGLGOp2IV9boXBwbvMeEmKw6zhpkFPNUiq7UD+045+bcNyTIeYvJoKFwQAK7zQ/Q==
 
-"@ctsy/request@^1.0.16":
-  version "1.0.16"
-  resolved "https://registry.yarnpkg.com/@ctsy/request/-/request-1.0.16.tgz#ac077a3a7018a02803775d3b57dcb8f6cf5a697b"
-  integrity sha512-JDR7fmiH/IUW633Ass9zKI4+6gcg4CoXa6sMGAvN31UPzJZCJ4gfDjY6vGxJSN2m95cQCqM9Y91cHWqV9jcs+Q==
+"@ctsy/request@^1.0.17":
+  version "1.0.17"
+  resolved "https://registry.yarnpkg.com/@ctsy/request/-/request-1.0.17.tgz#0ba1e4d403921843d911283ae4276884543a57de"
+  integrity sha512-RgBs9TEUQBKOSX7wo5aQnhiOTIntwHhbNzSrZn8zm6dcCsL8YV/mmc7nBxxKc90ujNkosAT2JZ9kiYLTpQI6uw==
   dependencies:
     "@ctsy/hook" "^0.0"
     axios "^0.19"

@@ -6,7 +6,7 @@
   "author": "castleiMac <castle@tansuyun.cn>",
   "license": "MIT",
   "dependencies": {
-    "@ctsy/request": "^1.0.16",
+    "@ctsy/request": "^1.0.17",
     "md5": "^2.2.1"
   },
   "devDependencies": {
