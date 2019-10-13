@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    // 与 Vue 的浏览器支持保持一致
+    "target": "esnext",
+    // 这可以对 `this` 上的数据属性进行更严格的推断
+    "strict": true,
+    "sourceMap": true,
+    "declaration": true,
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "outDir": "dist",
+    "experimentalDecorators": true,
+
+    "strictFunctionTypes": false
+  }
+}
