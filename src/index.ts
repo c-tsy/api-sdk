@@ -20,18 +20,53 @@ interface MsgReadSearchResult {
     T: number;
     R: any;
 }
-
+/**
+ * 单聊消息体内容
+ */
 interface MsgItem {
+    /**
+     * 消息编号
+     */
     MID: string;
+    /**
+     * 发送方
+     */
     From: string;
+    /**
+     * 接收方
+     */
     To: string;
+    /**
+     * 消息时间版本
+     */
     timestamp: number;
+    /**
+     * 发送方地址，开发者定义，如：四川·绵阳
+     */
     Addr: string;
+    /**
+     * 发送时间
+     */
     CTime: number;
+    /**
+     * 消息类型，默认：text，自定义，如：md,json,xml等等
+     */
     CType: string;
+    /**
+     * 消息来源设备，如：WechatWeb，开发者自定义
+     */
     Device: string;
+    /**
+     * 附件列表,
+     */
     Files: string;
+    /**
+     * 消息状态
+     */
     Status: number;
+    /**
+     * 消息内容
+     */
     Text: string;
 }
 
