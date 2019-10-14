@@ -73,7 +73,9 @@ interface MsgItem {
     Text: string;
 }
 export var ApiWSClient: Client | undefined;
-
+export enum ApiHooks {
+    Created = 'ApiCreated'
+}
 /**
  * 创建Api客户端
  * @param appid 
@@ -83,17 +85,20 @@ export var ApiWSClient: Client | undefined;
 export default function create(appid: string, secret: string, usertoken: string) {
     ApiConfig.AppID = appid;
     ApiConfig.Secret = secret;
+    ApiConfig.UserToken = usertoken;
+    ApiWSClient = new Client('wss://https://v1.api.tansuyun.cn/ws', base_covert(10, 62, Math.floor(Math.random() * 1000000)).toString())
+    ApiWSClient.create();
+    hook.emit(ApiHooks.Created, HookWhen.After, ApiWSClient, ApiConfig);
     if (usertoken) {
-        ApiConfig.UserToken = usertoken;
-        ApiWSClient = new Client('wss://https://v1.api.tansuyun.cn/ws', base_covert(10, 62, Math.floor(Math.random() * 1000000)).toString())
-        ApiWSClient.subscribe('im/recv/' + usertoken, (data, rpc) => {
+        ApiWSClient.subscribe(appid + '/im/recv/' + usertoken, (data, rpc) => {
             hook.emit('im/recv/' + usertoken, HookWhen.After, rpc, data);
         })
     }
     return {
         IM: {
             One: new IM.One(),
-            Group: new IM.Group()
+            Group: new IM.Group(),
+            Kefu: new IM.Kefu()
         }
     }
 }
@@ -122,6 +127,75 @@ export class ApiController extends Controller {
     }
 }
 namespace IM {
+    export class Kefu extends ApiController {
+        isKefu: boolean = false;
+        KFID: string = ""
+        constructor() {
+            super('Kefu')
+        }
+        /**
+         * 客服登陆
+         * @param Account 
+         * @param PWD 
+         */
+        async login(Account: string, PWD: string) {
+            let rs = await this._post('login', { Account, PWD })
+            this.isKefu = true;
+            this.KFID = rs.KFID;
+            if (ApiWSClient) {
+                ApiWSClient.subscribe(ApiConfig.AppID + '/im/kf/recv/' + rs.KFID, (data, rpc) => {
+                    hook.emit('im/recv/' + rs.KFID, HookWhen.After, rpc, data);
+                })
+            }
+            return rs;
+        }
+        /**
+         * 退出客服登陆
+         */
+        async logout() {
+            let rs = await this._post('logout', {})
+            if (ApiWSClient) {
+                ApiWSClient.unsubscribe(ApiConfig.AppID + '/im/kf/recv/' + this.KFID, () => { })
+            }
+            return true;
+        }
+        /**
+         * 注册客服账号
+         * @param Account 
+         * @param PWD 
+         * @param Group 
+         */
+        regist(Account: string, PWD: string, Group: string) {
+            return this._post('regist', { Account, PWD, Group })
+        }
+        /**
+         * 客户发起请求
+         * @param Group 
+         * @param Text 
+         * @param CType 
+         * @param Device 
+         * @param Addr 
+         * @param Files 
+         */
+        request(Group: string, Text: string, CType: string = "text", Device: string = "unknow", Addr: string = "", Files: string[] = []) {
+            if (this.isKefu) { throw new Error('CustomerOnly') }
+            return this._post('request', { Group, Text, CType, Device, Addr, Files })
+        }
+        /**
+         * 客服回复内容
+         * @param To 
+         * @param Text 
+         * @param CType 
+         * @param Device 
+         * @param Files 
+         */
+        response(To: string, Text: string, CType: string = 'text', Device: string = 'unknow', Files: string[] = []) {
+            if (!this.isKefu) {
+                throw new Error('KefuOnly')
+            }
+            return this._post('response', { Group, Text, CType, Device, To, Files })
+        }
+    }
     export class Group extends ApiController {
         prefix = '_im';
         constructor() {
