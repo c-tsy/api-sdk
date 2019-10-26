@@ -1,8 +1,7 @@
-import { Controller } from '@ctsy/request';
+import { BaseController } from '@ctsy/request';
 import Client from '@ctsy/ws-rpc-client'
 import { base_covert } from '@ctsy/covert';
 import hook, { HookWhen } from '@ctsy/hook';
-import Account from '../../../../TSY/control/dist/user/class/Account';
 const md5: any = require('md5')
 class ApiConfig {
     static AppID: string = "";
@@ -74,8 +73,9 @@ interface MsgItem {
     Text: string;
 }
 export var ApiWSClient: Client | undefined;
-export enum ApiHooks {
-    Created = 'ApiCreated'
+export class ApiHooks {
+    static Created = 'ApiCreated';
+    static IMEvent = 'IMEvent'
 }
 /**
  * 创建Api客户端
@@ -83,32 +83,38 @@ export enum ApiHooks {
  * @param secret 
  * @param usertoken 
  */
-export default function create(appid: string, secret: string, usertoken: string) {
+export default function create(appid: string, secret: string) {
     ApiConfig.AppID = appid;
     ApiConfig.Secret = secret;
-    ApiConfig.UserToken = usertoken;
-    ApiWSClient = new Client('wss://v1.api.tansuyun.cn/ws/?appid=' + appid, base_covert(10, 62, Math.floor(Math.random() * 1000000)).toString())
-    ApiWSClient.create();
-    hook.emit(ApiHooks.Created, HookWhen.After, ApiWSClient, ApiConfig);
-    if (usertoken) {
-        ApiWSClient.subscribe(appid + '/im/recv/' + usertoken, (data) => {
-            hook.emit('im/recv/' + usertoken, HookWhen.After, data, data.data);
+    // return {
+    //     IM: {
+    //         // One: new IM.One(),
+    //         // Group: new IM.Group(),
+    //         // Kefu: new IM.Kefu()
+    //         Member: new IM.Member(),
+    //         Msg: new IM.Msg()
+    //     }
+    // }
+}
+/**
+ * 注册IM能力
+ * @param ut 
+ */
+export function registIM(ut: string) {
+    if (ut) {
+        ApiConfig.UserToken = ut;
+        ApiWSClient = new Client('wss://v1.api.tansuyun.cn/ws/?appid=' + ApiConfig.AppID, base_covert(10, 62, Math.floor(Math.random() * 1000000)).toString())
+        ApiWSClient.create();
+        hook.emit(ApiHooks.Created, HookWhen.After, ApiWSClient, ApiConfig);
+        ApiWSClient.subscribe(ApiConfig.AppID + '/im/recv/' + ut, (data) => {
+            hook.emit('im/recv', HookWhen.After, data, data.data);
         })
-    }
-    return {
-        IM: {
-            // One: new IM.One(),
-            // Group: new IM.Group(),
-            // Kefu: new IM.Kefu()
-            Member: new IM.Member(),
-            Msg: new IM.Msg()
-        }
     }
 }
 /**
  * 
  */
-export class ApiController extends Controller {
+export class ApiController extends BaseController {
     host = "https://v1.api.tansuyun.cn/"
     /**
      * 发起请求
@@ -130,7 +136,67 @@ export class ApiController extends Controller {
     }
 }
 export namespace User {
+    export class Group extends ApiController {
+        prefix = 'user_';
+        constructor() {
+            super('Group');
+        }
+        /**
+         * 获取分组数据
+         * @param Type 
+         */
+        all(Type: string = 'all') {
+            return this._post('all', { Type })
+        }
+        /**
+         * 更新分组信息
+         * @param UGID 
+         * @param Data 
+         */
+        save(UGID: number, Data: any) {
+            return this._post('save', { UGID, Data });
+        }
+        /**
+         * 获取分组用户
+         * @param UGID 
+         * @param P 
+         * @param N 
+         */
+        members(UGID: number, P: number = 1, N: number = 10) {
+            return this._post('members', { UGID, P, N });
+        }
+        /**
+         * 添加分组
+         * @param Title 
+         * @param Memo 
+         * @param Sort 
+         * @param PUGID 
+         */
+        add(Title: string, Memo: string, Sort: number = 0, PUGID: number = 0) {
+            return this._post('add', { Title, Memo, Sort, PUGID })
+        }
+        /**
+         * 用户分组
+         * @param UGID 
+         * @param UIDs 
+         */
+        link(UGID: number, UIDs: number) {
+            return this._post('link', { UGID, UIDs });
+        }
+        /**
+         * 移除用户分组关系
+         * @param UGID 
+         * @param UIDs 
+         */
+        unlink(UGID: number, UIDs: number) {
+            return this._post('unlink', { UGID, UIDs });
+        }
+    }
     export class Auth extends ApiController {
+        prefix = 'user_';
+        constructor() {
+            super('Auth');
+        }
         /**
          * 账号密码登陆
          * @param Account 
