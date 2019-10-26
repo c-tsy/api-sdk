@@ -2,6 +2,7 @@ import { Controller } from '@ctsy/request';
 import Client from '@ctsy/ws-rpc-client'
 import { base_covert } from '@ctsy/covert';
 import hook, { HookWhen } from '@ctsy/hook';
+import Account from '../../../../TSY/control/dist/user/class/Account';
 const md5: any = require('md5')
 class ApiConfig {
     static AppID: string = "";
@@ -86,19 +87,21 @@ export default function create(appid: string, secret: string, usertoken: string)
     ApiConfig.AppID = appid;
     ApiConfig.Secret = secret;
     ApiConfig.UserToken = usertoken;
-    ApiWSClient = new Client('wss://https://v1.api.tansuyun.cn/ws', base_covert(10, 62, Math.floor(Math.random() * 1000000)).toString())
+    ApiWSClient = new Client('wss://v1.api.tansuyun.cn/ws/?appid=' + appid, base_covert(10, 62, Math.floor(Math.random() * 1000000)).toString())
     ApiWSClient.create();
     hook.emit(ApiHooks.Created, HookWhen.After, ApiWSClient, ApiConfig);
     if (usertoken) {
-        ApiWSClient.subscribe(appid + '/im/recv/' + usertoken, (data, rpc) => {
-            hook.emit('im/recv/' + usertoken, HookWhen.After, rpc, data);
+        ApiWSClient.subscribe(appid + '/im/recv/' + usertoken, (data) => {
+            hook.emit('im/recv/' + usertoken, HookWhen.After, data, data.data);
         })
     }
     return {
         IM: {
-            One: new IM.One(),
-            Group: new IM.Group(),
-            Kefu: new IM.Kefu()
+            // One: new IM.One(),
+            // Group: new IM.Group(),
+            // Kefu: new IM.Kefu()
+            Member: new IM.Member(),
+            Msg: new IM.Msg()
         }
     }
 }
@@ -126,128 +129,132 @@ export class ApiController extends Controller {
         });
     }
 }
-namespace IM {
-    export class Kefu extends ApiController {
-        isKefu: boolean = false;
-        KFID: string = ""
-        constructor() {
-            super('Kefu')
-        }
+export namespace User {
+    export class Auth extends ApiController {
         /**
-         * 客服登陆
+         * 账号密码登陆
          * @param Account 
          * @param PWD 
          */
         async login(Account: string, PWD: string) {
-            let rs = await this._post('login', { Account, PWD })
-            this.isKefu = true;
-            this.KFID = rs.KFID;
-            if (ApiWSClient) {
-                ApiWSClient.subscribe(ApiConfig.AppID + '/im/kf/recv/' + rs.KFID, (data, rpc) => {
-                    hook.emit('im/recv/' + rs.KFID, HookWhen.After, rpc, data);
-                })
+            let rs = await this._post('login', { Account, PWD: md5(PWD) })
+            if (rs.UID) {
+                hook.emit('logined', HookWhen.After, '', rs);
             }
             return rs;
         }
         /**
-         * 退出客服登陆
+         * 三方登陆
+         * @param Type 
+         * @param Account 
+         */
+        async thirdLogin(Type: string, Account: string) {
+            return await this._post('alogin', { Type, Account });
+        }
+        /**
+         * 
+         * @param Type 三方登陆绑定
+         * @param Account 
+         */
+        async thirdBind(Type: string, Account: string) {
+            return await this._post('abind', { Type, Account });
+        }/**
+         * 
+         * @param Type 三方登陆解绑
+         * @param Account 
+         */
+        async thirdUnBind(Type: string, Account: string) {
+            return await this._post('abind', { Type, Account });
+        }
+        /**
+         * 获取我的权限
+         */
+        async getPermissions() {
+            return await this._post('getPermissions', '');
+        }
+        /**
+         * 获取当前登录用户信息
+         */
+        async info() {
+            return await this._post('info', {});
+        }
+        /**
+         * 退出登录
          */
         async logout() {
-            let rs = await this._post('logout', {})
-            if (ApiWSClient) {
-                ApiWSClient.unsubscribe(ApiConfig.AppID + '/im/kf/recv/' + this.KFID, () => { })
-            }
-            return true;
+            let rs = await this._post('logout', {});
+            hook.emit('logout', HookWhen.After, '', rs);
+            return rs;
         }
         /**
-         * 注册客服账号
+         * 检查并获取当前登录状态，返回内容同登录操作
+         */
+        async rlogin() {
+            let rs = await this._post('rlogin', '')
+            if (rs.UID) {
+                hook.emit('login', HookWhen.After, '', rs);
+            }
+            return rs;
+        }
+        /**
+         * 账号注册
          * @param Account 
          * @param PWD 
-         * @param Group 
+         * @param PUID 
          */
-        regist(Account: string, PWD: string, Group: string) {
-            return this._post('regist', { Account, PWD, Group })
+        async regist(Account: string, PWD: string, PUID: string) {
+            return await this._post('regist', { Account, PWD: md5(PWD), PUID })
         }
         /**
-         * 客户发起请求
-         * @param Group 
-         * @param Text 
-         * @param CType 
-         * @param Device 
-         * @param Addr 
-         * @param Files 
+         * 忘记密码重设
+         * @param Account 
+         * @param PWD 
+         * @param VCode 
          */
-        request(Group: string, Text: string, CType: string = "text", Device: string = "unknow", Addr: string = "", Files: string[] = []) {
-            if (this.isKefu) { throw new Error('CustomerOnly') }
-            return this._post('request', { Group, Text, CType, Device, Addr, Files })
+        async forget(Account: string, PWD: string, VCode: string) {
+            return await this._post('forget', { Account, PWD, VCode });
+        }
+    }
+}
+export namespace IM {
+    export class Member extends ApiController {
+        prefix = "_im"
+        constructor() {
+            super('Member')
+        }
+        mine() {
+            return this._post('mine', '')
+        }
+    }
+    export class Msg extends ApiController {
+        prefix = "_im"
+        constructor() {
+            super('Msg')
         }
         /**
-         * 客服回复内容
+         * 发送消息
          * @param To 
          * @param Text 
-         * @param CType 
-         * @param Device 
-         * @param Files 
+         * @param Opt 
          */
-        response(To: string, Text: string, CType: string = 'text', Device: string = 'unknow', Files: string[] = []) {
-            if (!this.isKefu) {
-                throw new Error('KefuOnly')
-            }
-            return this._post('response', { Group, Text, CType, Device, To, Files })
-        }
-    }
-    export class Group extends ApiController {
-        prefix = '_im';
-        constructor() {
-            super('Group')
+        send(To: string, Text: string, Opt: {
+            CType?: string,
+            Device?: string,
+            Addr?: string,
+            Ats?: string[],
+            Files?: string[]
+        } = {}) {
+            // if(Opt.Files)
+            return this._post('send', Object.assign(Opt, { To, Text }))
         }
         /**
-         * 发送消息
-         * @param To 接收者 
-         * @param Text 内容
-         * @param CType 内容类型
-         * @param Device 设备类型
-         * @param Addr 地址
-         * @param Files 附件列表
+         * 读取消息
+         * @param P 
+         * @param N 
+         * @param UID 
          */
-        async send(To: string, Text: string, CType: string = "text", Device: string = "unknow", Addr: string = '', Files: string[] = []) {
-            return await this._post('send', { To, Text, CType, Device, Addr, Files })
-        }
-        /**
-         * 读取消息记录
-         * @param P 页码
-         * @param N 每页数量
-         * @param To 接收者
-         */
-        async read(P: number = 1, N: number = 10, To?: string): Promise<MsgReadSearchResult> {
-            return await this._post('read', { P, N, To })
-        }
-    }
-    export class One extends ApiController {
-        prefix = '_im';
-        constructor() {
-            super('One')
-        }
-        /**
-         * 发送消息
-         * @param To 接收者 
-         * @param Text 内容
-         * @param CType 内容类型
-         * @param Device 设备类型
-         * @param Addr 地址
-         * @param Files 附件列表
-         */
-        async send(To: string, Text: string, CType: string = "text", Device: string = "unknow", Addr: string = '', Files: string[] = []) {
-            return await this._post('send', { To, Text, CType, Device, Addr, Files })
-        }
-        /**
-         * 读取消息记录
-         * @param P 页码
-         * @param N 每页数量
-         * @param To 接收者
-         */
-        async read(P: number = 1, N: number = 10, To?: string): Promise<MsgReadSearchResult> {
-            return await this._post('read', { P, N, To })
+        read(P: number = 1, N: number = 10, UIDs: string[] = []) {
+            return this._post('read', { P, N, UIDs })
         }
     }
 }
