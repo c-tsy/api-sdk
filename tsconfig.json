@@ -1,9 +1,9 @@
 {
   "compilerOptions": {
     // 与 Vue 的浏览器支持保持一致
-    "target": "esnext",
+    "target": "es6",
     // 这可以对 `this` 上的数据属性进行更严格的推断
-    "strict": true,
+    "strict": false,
     "sourceMap": true,
     "declaration": true,
     "module": "commonjs",

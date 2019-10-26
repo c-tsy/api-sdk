@@ -86,15 +86,6 @@ export class ApiHooks {
 export default function create(appid: string, secret: string) {
     ApiConfig.AppID = appid;
     ApiConfig.Secret = secret;
-    // return {
-    //     IM: {
-    //         // One: new IM.One(),
-    //         // Group: new IM.Group(),
-    //         // Kefu: new IM.Kefu()
-    //         Member: new IM.Member(),
-    //         Msg: new IM.Msg()
-    //     }
-    // }
 }
 /**
  * 注册IM能力
@@ -255,7 +246,7 @@ export namespace User {
         /**
          * 检查并获取当前登录状态，返回内容同登录操作
          */
-        async rlogin() {
+        async relogin() {
             let rs = await this._post('rlogin', '')
             if (rs.UID) {
                 hook.emit('login', HookWhen.After, '', rs);
