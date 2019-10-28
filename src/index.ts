@@ -128,7 +128,7 @@ export class ApiController extends BaseController {
 }
 export namespace User {
     export class Group extends ApiController {
-        prefix = 'user_';
+        prefix = '_user';
         constructor() {
             super('Group');
         }
@@ -184,7 +184,7 @@ export namespace User {
         }
     }
     export class Auth extends ApiController {
-        prefix = 'user_';
+        prefix = '_user';
         constructor() {
             super('Auth');
         }
@@ -247,7 +247,7 @@ export namespace User {
          * 检查并获取当前登录状态，返回内容同登录操作
          */
         async relogin() {
-            let rs = await this._post('rlogin', '')
+            let rs = await this._post('relogin', '')
             if (rs.UID) {
                 hook.emit('login', HookWhen.After, '', rs);
             }
@@ -259,8 +259,8 @@ export namespace User {
          * @param PWD 
          * @param PUID 
          */
-        async regist(Account: string, PWD: string, PUID: string) {
-            return await this._post('regist', { Account, PWD: md5(PWD), PUID })
+        async regist(Name: string, Nick: string, Account: string, PWD: string, Sex: number = 1, PUID: number = 0) {
+            return await this._post('regist', { Name, Nick, Sex, Account, PWD: md5(PWD), PUID })
         }
         /**
          * 忘记密码重设
