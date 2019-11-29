@@ -1,6 +1,6 @@
 {
   "name": "@ctsy/api-sdk",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
@@ -16,10 +16,7 @@
   "author": "castleiMac <castle@tansuyun.cn>",
   "license": "MIT",
   "dependencies": {
-    "@ctsy/covert": "^1.0.1",
     "@ctsy/hook": "^0.0.5",
-    "@ctsy/request": "^1.0.18",
-    "@ctsy/ws-rpc-client": "^1.0.12",
     "md5": "^2.2.1"
   },
   "devDependencies": {
