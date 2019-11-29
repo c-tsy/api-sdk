@@ -3,7 +3,7 @@ import hook, { HookWhen } from '@ctsy/hook';
 const md5: any = require('md5')
 export namespace User {
     const prefix = "_user"
-    export class Group extends ApiController {
+    class group extends ApiController {
         constructor() {
             super('Group', prefix);
         }
@@ -58,6 +58,7 @@ export namespace User {
             return this.post('unlink', { UGID, UIDs });
         }
     }
+    export const Group = new group();
     /**
      * 菜单管理
      */
@@ -75,7 +76,7 @@ export namespace User {
             super('MenuGroup', prefix);
         }
     }
-    export class Auth extends ApiController {
+    class auth extends ApiController {
         constructor() {
             super('Auth', prefix);
         }
@@ -162,8 +163,9 @@ export namespace User {
          * @param PWD 
          * @param VCode 
          */
-        async forget(Account: string, PWD: string, VCode: string) {
-            return await this.post('forget', { Account, PWD, VCode });
+        forget(Account: string, PWD: string, VCode: string) {
+            return this.post('forget', { Account, PWD, VCode });
         }
     }
+    export const Auth = new auth();
 }

@@ -2,7 +2,7 @@ import { ApiController } from '../utils';
 
 export namespace IM {
     const prefix = "_im";
-    export class Member extends ApiController {
+    class member extends ApiController {
         prefix = "_im"
         constructor() {
             super('Member', prefix)
@@ -11,6 +11,7 @@ export namespace IM {
             return this.post('mine', '')
         }
     }
+    export const Member = new member();
     export class Msg extends ApiController {
         // prefix = "_im"
         constructor() {
