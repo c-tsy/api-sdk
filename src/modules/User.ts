@@ -1,4 +1,4 @@
-import { ApiController, ApiConfig } from '../utils';
+import { ApiController, ApiConfig } from '../';
 import hook, { HookWhen } from '@ctsy/hook';
 const md5: any = require('md5')
 export namespace User {
@@ -12,7 +12,7 @@ export namespace User {
          * @param Type 
          */
         all(Type: string = 'all') {
-            return this.post('all', { Type })
+            return this.get('all', { Type })
         }
         /**
          * 更新分组信息
@@ -46,7 +46,7 @@ export namespace User {
          * @param UGID 
          * @param UIDs 
          */
-        link(UGID: number, UIDs: number) {
+        link(UGID: number, UIDs: number[]) {
             return this.post('link', { UGID, UIDs });
         }
         /**
@@ -54,7 +54,7 @@ export namespace User {
          * @param UGID 
          * @param UIDs 
          */
-        unlink(UGID: number, UIDs: number) {
+        unlink(UGID: number, UIDs: number[]) {
             return this.post('unlink', { UGID, UIDs });
         }
     }
@@ -141,12 +141,16 @@ export namespace User {
          * 检查并获取当前登录状态，返回内容同登录操作
          */
         async relogin() {
-            let rs = await this.post('relogin', '')
+            let rs = await this.get('relogin')
             if (rs.UID) {
                 hook.emit('login', HookWhen.After, '', rs);
                 ApiConfig.UID = rs.UID
             }
             return rs;
+        }
+
+        reset(OldPWD: string, PWD: string) {
+            return this.post('reset', { OldPWD: md5(OldPWD), PWD: md5(PWD) })
         }
         /**
          * 账号注册
@@ -168,4 +172,36 @@ export namespace User {
         }
     }
     export const Auth = new auth();
+
+
+    /**
+     * 用户管理
+     */
+    class users extends ApiController {
+        // prefix = '_user';
+        constructor() {
+            super('Users', prefix);
+        }
+        /**
+         * 用户搜索
+         * @param W 
+         * @param conf 
+         */
+        search(W: any, conf: { Keyword?: string, N?: number, P?: number, Sort?: string }) {
+            if (W === void 0) { W = {}; }
+            if (undefined === conf) { conf = { N: 10, P: 1, Keyword: '' }; }
+            if (W.P != void 0 && W.N != void 0 && W.Keyword != void 0) {
+                conf = W;
+                W = W.W;
+            }
+            return this.post('search', {
+                W: W,
+                Keyword: conf.Keyword || "",
+                N: conf.N || 10,
+                P: conf.P || 1,
+                Sort: conf.Sort || ''
+            });
+        }
+    }
+    export const Users = new users();
 }

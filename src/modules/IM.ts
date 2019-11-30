@@ -1,4 +1,4 @@
-import { ApiController } from '../utils';
+import { ApiController } from '../';
 
 export namespace IM {
     const prefix = "_im";
