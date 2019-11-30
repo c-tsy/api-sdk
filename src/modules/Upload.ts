@@ -45,6 +45,7 @@ Hook.regist('fileupload', HookWhen.Before, 'upload', (ctx: { what: string, oname
             tag.expire = "1"
         }
         form.append('x‑oss‑tagging', qs.stringify(tag));
+        form.append('x-oss-meta-name', data.name);
         form.append('x-oss-object-acl', ctx.acl == 'read' ? 'public-read' : 'private');
         form.append('file', data);
         axios.post(d.host, form, config).then((rs: any) => {
