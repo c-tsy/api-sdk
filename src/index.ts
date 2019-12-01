@@ -149,3 +149,32 @@ export default function create(appid: string, key: string, secret: string, rand:
     ApiConfig.Key = key;
     ApiConfig.Rand = rand;
 }
+
+
+export namespace ApiCommon {
+    /**
+     * 列表数据结构
+     */
+    export class List<T> {
+        /**
+         * 数据类容
+         */
+        L: T[] = [];
+        /**
+         * 累计总数
+         */
+        T: number = 0;
+        /**
+         * 分页页码
+         */
+        P: number = 1;
+        /**
+         * 分页页内数
+         */
+        N: number = 10;
+        /**
+         * 统计数据，可选
+         */
+        R?: Object = {};
+    }
+}
