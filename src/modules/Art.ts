@@ -191,12 +191,12 @@ namespace ArtApi {
          * @param data ClassArtOpParams
          */
         save(data: ClassArtOpParams): Promise<ClassArt> {
-            if (data.Title.length == 0) {
-                throw new Error('Title.length>0')
-            }
-            if (data.Content.length == 0) {
-                throw new Error('Content.length>0')
-            }
+            // if (data.Title.length == 0) {
+            //     throw new Error('Title.length>0')
+            // }
+            // if (data.Content.length == 0) {
+            //     throw new Error('Content.length>0')
+            // }
             return this.post('save', data);
         }
         /**
