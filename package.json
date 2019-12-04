@@ -18,6 +18,7 @@
   "dependencies": {
     "@ctsy/hook": "^0.0.5",
     "md5": "^2.2.1",
+    "protobufjs": "^6.8.8",
     "querystring": "^0.2.0",
     "store": "^2.0.12"
   },

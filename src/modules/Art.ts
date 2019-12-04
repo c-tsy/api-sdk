@@ -175,7 +175,7 @@ namespace ArtApi {
          * @param P 分页页码，从1开始
          * @param N 分页页内条数，默认为10
          */
-        list(CID: number, Status: number = 1, P: number = 1, N: number = 10): Promise<ApiCommon.List<ClassArt>> {
+        list(CID: number | number[], Status: number = 1, P: number = 1, N: number = 10): Promise<ApiCommon.List<ClassArt>> {
             return this.post('list', { CID, Status, P, N });
         }
         /**
