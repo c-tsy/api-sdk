@@ -184,7 +184,11 @@ namespace ArtApi {
          * @param V 版本号
          */
         read(ArtID: number, V?: number): Promise<ClassArt> {
-            return this.get('read', { ArtID, V })
+            let p = ['read', ArtID]
+            if (V) {
+                p.push(V);
+            }
+            return this.get(p.join('/') + '.json', { ArtID, V })
         }
         /**
          * 保存文章
