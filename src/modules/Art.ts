@@ -178,6 +178,24 @@ namespace ArtApi {
         list(CID: number | number[], Status: number = 1, P: number = 1, N: number = 10): Promise<ApiCommon.List<ClassArt>> {
             return this.post('list', { CID, Status, P, N });
         }
+
+        /**
+         * 批量文章类型修改
+         * @param {number[]} ArtIDs 文章编号列表
+         * @param {'Status'|'Top'} Op 操作标识
+         * @param {boolean} Val 操作值
+         */
+        batch(ArtIDs: number[], Op: 'Status' | 'Top', Val: boolean) {
+            for (let x of ArtIDs) {
+                if (!(Number(x) > 0)) {
+                    throw new Error('ArtIDs: ' + x)
+                }
+            }
+            if (!['status', 'top'].includes(Op.toLowerCase())) {
+                throw new Error('Op Error')
+            }
+            return this.post('batch', { ArtIDs, Op, Val: !!Val ? 1 : 0 })
+        }
         /**
          * 读取文章内容
          * @param ArtID 文章编号
