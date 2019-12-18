@@ -72,7 +72,7 @@ export namespace IM {
             if(typeof Type == 'number' && Type != 1 && Type != 0) {
                 throw new Error(ErrorType.IM.NOT_ACCEPTED_FOR_THE_MOMENT)
             }
-            this.post('req', {OID, Type, Text, CID, Memo})
+            return this.post('req', {OID, Type, Text, CID, Memo})
         }
         /**
          * 通过申请
@@ -82,7 +82,7 @@ export namespace IM {
          * 加群申请通过时不需要这个参数
          */
         pass(RID: number, Data: any) {
-            this.post('pass',{RID, Data})
+            return this.post('pass',{RID, Data})
         }
         /**
          * 拒绝申请
@@ -90,7 +90,7 @@ export namespace IM {
          * @param Text 拒绝备注
          */
         deny(RID: number, Text: string) {
-            this.post('deny',{RID, Text})
+            return this.post('deny',{RID, Text})
         }
         /**
          * 申请查询
@@ -102,14 +102,14 @@ export namespace IM {
             if(N > 1000) {
                 throw new Error(ErrorType.IM.PAGINATION_IS_EXCEED_1000)
             }
-            this.post('reqs',{P, N, Status})
+           return this.post('reqs',{P, N, Status})
         }
         /**
          * 删除好友
          * @param UID 
          */
         del(UID: string) {
-            this.post('del',{ UID })
+           return this.post('del',{ UID })
         }
         /**
          * 添加好友分组
@@ -117,14 +117,14 @@ export namespace IM {
          * @param Sort 
          */
         addGroup(Name: string, Sort: number) {
-            this.post('addGroup', {Name, Sort})
+           return this.post('addGroup', {Name, Sort})
         }
         /**
          * 删除好友分组
          * @param GID 
          */
         delGroup(GID: number) {
-            this.post('delGroup', {GID})
+           return this.post('delGroup', {GID})
         }
         /**
          * 用户分组
@@ -137,7 +137,7 @@ export namespace IM {
             if(data.UIDs.length == 0) {
                 throw new Error(ErrorType.IM.UIDS_LENGTH_IS_ZERO)
             }
-            this.post('group', { data })
+           return this.post('group', { data })
         }
     }
     export const Member = new member();
@@ -199,7 +199,7 @@ export namespace IM {
                     throw new Error(ErrorType.IM.HEAD_LENGTH_IS_EXCEED_50)
                 }
             }
-            this.post('adds', {data})
+           return this.post('adds', {data})
         }
         /**
          * 修改用户信息
@@ -212,7 +212,7 @@ export namespace IM {
             if(data.Nick.length == 0 || data.Nick.length > 30) {
                 throw new Error(ErrorType.IM.NICK_LENGTH_IS_ERROR)
             }
-            this.post('save',data)
+           return this.post('save',data)
         }
         /**
          * 用户账户查询
@@ -221,7 +221,7 @@ export namespace IM {
          * @param N 
          */
         search(Keyword: string, P: number, N: number) {
-            this.post('search',{Keyword, P, N})
+          return this.post('search',{Keyword, P, N})
         }
     }
     export const User = new user()

@@ -19,6 +19,14 @@ export namespace ErrorType {
         HEAD_LENGTH_IS_EXCEED_50 = 'HEAD_LENGTH_IS_EXCEED_50',
         PARAMS_IS_ERROR = 'PARAMS_IS_ERROR' // 参数出错
     }
+    export enum Org {
+        ORGAN_SHOULD_BE_ARRAY = 'ORGAN_SHOULD_BE_ARRAY',
+        UNITIDS_SHOULD_BE_ARRAY = 'UNITIDS_SHOULD_BE_ARRAY',
+        AIDS_SHOULD_BE_ARRAY = 'UNITIDS_SHOULD_BE_ARRAY',
+        AID_PARAMS_IS_ERROR = 'AID_PARAMS_IS_ERROR',
+        UNITID_PARAMS_IS_ERROR = 'UNITID_PARAMS_IS_ERROR',
+
+    }
     export enum User {
 
     }

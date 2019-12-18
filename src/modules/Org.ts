@@ -1,4 +1,5 @@
 import { ApiController } from '../index';
+import { ErrorType } from '../lib';
 namespace Organ {
     export class OrgOrgan {
 
@@ -106,13 +107,13 @@ namespace Organ {
             if (data.length > 0) {
                 return this.post('adds', data);
             }
-            throw new Error('Organ Should be array')
+            throw new Error(ErrorType.Org.ORGAN_SHOULD_BE_ARRAY)
         }
         save(UnitIDs: number[], data: any) {
             if (UnitIDs.length > 0) {
                 return this.post('save', { UnitIDs, Data: data })
             }
-            throw new Error('UnitIDs Should be array')
+            throw new Error(ErrorType.Org.UNITIDS_SHOULD_BE_ARRAY)
         }
     }
     export const OrganApi = new organ('Organ', '_org');
@@ -135,7 +136,7 @@ namespace Organ {
             if (data.length > 0) {
                 return this.post('adds', data);
             }
-            throw new Error('Organ Should be array')
+            throw new Error(ErrorType.Org.ORGAN_SHOULD_BE_ARRAY)
         }
         /**
          * 保存区域信息
@@ -146,7 +147,7 @@ namespace Organ {
             if (UnitIDs.length > 0) {
                 return this.post('save', { UnitIDs, Data: data })
             }
-            throw new Error('UnitIDs Should be array')
+            throw new Error(ErrorType.Org.UNITIDS_SHOULD_BE_ARRAY)
         }
         /**
          * 链接区域和组织单位
@@ -154,6 +155,31 @@ namespace Organ {
          * @param type 
          */
         link(data: TypeUnitEdit | TypeAreaEdit, type: LinkType) {
+            if(data.AID && data.UnitIDs) {
+                if(!data.AID || 'number' != typeof data.AID || data.AID <= 0) {
+                    throw new Error(ErrorType.Org.AID_PARAMS_IS_ERROR)
+                }
+                if(!(data.UnitIDs instanceof Array)) {
+                    throw new Error(ErrorType.Org.UNITIDS_SHOULD_BE_ARRAY)
+                }
+                for(let x of data.UnitIDs) {
+                    if('number' != typeof x || x<= 0) {
+                        throw new Error(ErrorType.Org.UNITID_PARAMS_IS_ERROR)
+                    }
+                }
+            } else if(data.UnitID && data.AIDs) {
+                if(!data.UnitID || 'number' != typeof data.UnitID || data.UnitID <= 0){
+                    throw new Error(ErrorType.Org.UNITID_PARAMS_IS_ERROR)
+                }
+                if(!(data.AIDs instanceof Array)) {
+                    throw new Error(ErrorType.Org.AIDS_SHOULD_BE_ARRAY)
+                }
+                for(let x of data.AIDs) {
+                    if('number' != typeof x || x <= 0) {
+                        throw new Error(ErrorType.Org.AID_PARAMS_IS_ERROR)
+                    }
+                }
+            }
             return this.post('link', Object.assign(data, { Type: type }))
         }
     }
@@ -163,11 +189,15 @@ namespace Organ {
     }
     export interface TypeUnitEdit {
         UnitID: number;
-        AIDs: number[]
+        AIDs: number[];
+        AID?: number;
+        UnitIDs?: number[]
     }
     export interface TypeAreaEdit {
         UnitIDs: number[];
         AID: number;
+        UnitID?: number;
+        AIDs?: number[]
     }
     /**
      * 区域操作Api
