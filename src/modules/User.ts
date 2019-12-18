@@ -156,22 +156,6 @@ export namespace User {
         reset(OldPWD: string, PWD: string) {
             return this.post('reset', { OldPWD: md5(OldPWD), PWD: md5(PWD) })
         }
-        save(UID: number, Nick: string, Sex: number) {
-            if(!UID) {
-                throw new Error('UID')
-            }
-            let d: { [index: string]: string | number} = {}
-            if('string' == typeof Nick && Nick.length > 0) {
-                d.Nick = Nick
-            }
-            if([0,1,2].includes(Sex)) {
-                d.Sex = Sex
-            }
-            if(Object.keys(d).length == 0) {
-                throw new Error('Nick/Sex')
-            }
-            return this.post('save',{UID, Nick, Sex})
-        }
         /**
          * 账号注册
          * @param Account 
@@ -224,4 +208,33 @@ export namespace User {
         }
     }
     export const Users = new users();
+
+    class user extends ApiController {
+        constructor() {
+            super('User', prefix)
+        }
+        /**
+         * 修改用户昵称和性别
+         * @param UID 
+         * @param Nick 
+         * @param Sex 
+         */
+        save(UID: number, Nick: string, Sex: number) {
+            if(!UID) {
+                throw new Error('UID')
+            }
+            let d: { [index: string]: string | number} = {}
+            if('string' == typeof Nick && Nick.length > 0) {
+                d.Nick = Nick
+            }
+            if([0,1,2].includes(Sex)) {
+                d.Sex = Sex
+            }
+            if(Object.keys(d).length == 0) {
+                throw new Error('Nick/Sex')
+            }
+            return this.post('save',{UID, Nick, Sex})
+        }
+    }
+    export const User = new user();
 }
