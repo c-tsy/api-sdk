@@ -1,4 +1,5 @@
 import { ApiController, ApiCommon } from '../index';
+import { ErrorType } from '../lib';
 namespace ArtApi {
 
     /**
@@ -234,7 +235,7 @@ namespace ArtApi {
          */
         classify(ArtID: number, CIDs: number[]): Promise<boolean> {
             if (ArtID <= 0 || CIDs.length == 0) {
-                throw new Error('Params');
+                throw new Error(ErrorType.Art.PARAMS_IS_ERROR);
             }
             for (let x in CIDs) {
                 if (isNaN(CIDs[x] = Number(CIDs[x]))) {
@@ -356,7 +357,7 @@ namespace ArtApi {
          */
         adds(data: ClassifyAddParams[]): Promise<ClassClassify[]> {
             if (data.length == 0) {
-                throw new Error('Data.length = 0');
+                throw new Error(ErrorType.Art.DATA_LENGTH_IS_ZERO);
             }
             return this.post('adds', data);
         }
@@ -366,7 +367,19 @@ namespace ArtApi {
          */
         saves(data: ClassifySaveParams[]): Promise<ClassClassify[]> {
             if (data.length == 0) {
-                throw new Error('Data.length = 0');
+                throw new Error(ErrorType.Art.DATA_LENGTH_IS_ZERO);
+            }
+            if (data.length > 50) {
+                throw new Error(ErrorType.Art.DATA_LENGTH_TOO_LONG)
+            }
+            if(data instanceof Array && data.length > 0) {
+                for(let x of data) {
+                    if(x.CID == 0) {
+                        throw new Error('Classifies.CID')
+                    }
+                }
+            } else {
+                throw new Error(ErrorType.Art.DATA_LENGTH_IS_ERROR)
             }
             return this.post('saves', data);
         }
@@ -398,6 +411,6 @@ namespace ArtApi {
      * 文章分类管理
      */
     export const Classify = new classify('Classify', '_art');
-
+    
 }
 export default ArtApi;
