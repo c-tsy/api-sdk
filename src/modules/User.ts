@@ -66,6 +66,17 @@ export namespace User {
         constructor() {
             super('Menu', prefix);
         }
+        /**
+         * 获取指定人或某人的菜单
+         * @param UID 
+         * @param Force 
+         */
+        my(UID: number = 0, Force: boolean = false) {
+            return this.post('my', { UID, Force })
+        }
+        getGMenus() {
+
+        }
     }
     /**
      * 菜单组
