@@ -15,6 +15,34 @@ export namespace IM {
         Group,
         Kefu
     }
+    export class IMClassUsers {
+        /**
+         * UID
+         */
+        public UID: string = ''
+        /**
+         * Nick
+         */
+        public Nick: string = ''
+        /**
+         * Memo
+         */
+        public Memo: string = ''
+        /**
+         * Head
+         */
+        public Head: string = ''
+        /**
+         * Status
+         * 按位从低到高：在线
+         */
+        public Status: number = 0
+        /**
+         * 类型
+         * 0 用户 1 客服
+         */
+        public Type: number = 0
+    }
     class member extends ApiController {
         prefix = "_im"
         constructor() {
@@ -72,7 +100,7 @@ export namespace IM {
          */
         reqs(P: number, N: number, Status: number) {
             if(N > 1000) {
-                throw new Error(ErrorType.IM.PAGINATION_CANNOT_EXCEED_1000)
+                throw new Error(ErrorType.IM.PAGINATION_IS_EXCEED_1000)
             }
             this.post('reqs',{P, N, Status})
         }
@@ -113,7 +141,7 @@ export namespace IM {
         }
     }
     export const Member = new member();
-    export class Msg extends ApiController {
+    export class msg extends ApiController {
         // prefix = "_im"
         constructor() {
             super('Msg', prefix)
@@ -149,4 +177,52 @@ export namespace IM {
             return this.post('read', { P, N, UIDs })
         }
     }
+    export const Msg = new msg()
+    export class user extends ApiController {
+        constructor() {
+            super('User', prefix)
+        }
+        /**
+         * 添加用户信息
+         * @param data 
+         */
+        adds(data: IMClassUsers[]) {
+            if(!(data instanceof Array)) throw new Error(ErrorType.IM.PARAMS_IS_ERROR)
+            if(data.length == 0 || data.length > 2000) {
+                throw new Error(ErrorType.IM.DATA_LENGTH_IS_ERROR)
+            }
+            for(let x of data) {
+                if(x.Nick.length == 0 || x.Nick.length > 30) {
+                    throw new Error(ErrorType.IM.NICK_LENGTH_IS_ERROR)
+                }
+                if(x.Head.length > 50) {
+                    throw new Error(ErrorType.IM.HEAD_LENGTH_IS_EXCEED_50)
+                }
+            }
+            this.post('adds', {data})
+        }
+        /**
+         * 修改用户信息
+         * @param data 
+         */
+        save(data: IMClassUsers) {
+            if(!data.UID) {
+                throw new Error(ErrorType.IM.UID_PARAMS_IS_ERROR)
+            }
+            if(data.Nick.length == 0 || data.Nick.length > 30) {
+                throw new Error(ErrorType.IM.NICK_LENGTH_IS_ERROR)
+            }
+            this.post('save',data)
+        }
+        /**
+         * 用户账户查询
+         * @param Keyword 
+         * @param P 
+         * @param N 
+         */
+        search(Keyword: string, P: number, N: number) {
+            this.post('search',{Keyword, P, N})
+        }
+    }
+    export const User = new user()
 }
