@@ -116,5 +116,62 @@ namespace Organ {
         }
     }
     export const OrganApi = new organ('Organ', '_org');
+    /**
+     * 区域操作Api
+     */
+    class area extends ApiController {
+        /**
+         * 读取区域列表
+         * @param data 
+         */
+        list(data: { P?: number, N?: number, Sort?: string, Keyword?: string, W?: { [index: string]: any } }) {
+            return this.post('list', data);
+        }
+        /**
+         * 批量添加区域信息
+         * @param data 
+         */
+        adds(data: OrgOrgan[]) {
+            if (data.length > 0) {
+                return this.post('adds', data);
+            }
+            throw new Error('Organ Should be array')
+        }
+        /**
+         * 保存区域信息
+         * @param UnitIDs 
+         * @param data 
+         */
+        save(UnitIDs: number[], data: any) {
+            if (UnitIDs.length > 0) {
+                return this.post('save', { UnitIDs, Data: data })
+            }
+            throw new Error('UnitIDs Should be array')
+        }
+        /**
+         * 链接区域和组织单位
+         * @param data 
+         * @param type 
+         */
+        link(data: TypeUnitEdit | TypeAreaEdit, type: LinkType) {
+            return this.post('link', Object.assign(data, { Type: type }))
+        }
+    }
+    export enum LinkType {
+        Replace,
+        Add,
+    }
+    export interface TypeUnitEdit {
+        UnitID: number;
+        AIDs: number[]
+    }
+    export interface TypeAreaEdit {
+        UnitIDs: number[];
+        AID: number;
+    }
+    /**
+     * 区域操作Api
+     */
+    export const AreaApi = new area('Area', '_org');
 }
 export default Organ;
