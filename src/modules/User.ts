@@ -220,7 +220,7 @@ export namespace User {
          * @param Sex 
          */
         save(UID: number, Nick: string, Sex: number) {
-            if(!UID) {
+            if(!UID && typeof UID == 'number') {
                 throw new Error('UID')
             }
             let d: { [index: string]: string | number} = {}
