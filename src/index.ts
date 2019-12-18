@@ -1,14 +1,29 @@
 import axios from 'axios';
 import * as store from 'store'
 import * as qs from 'querystring'
+import * as p from 'protobufjs';
 const md5: any = require('md5')
 var Token = store.get('token') || ''
-const req = axios.create();
+const req = axios.create({
+    // responseType: "arraybuffer",
+    withCredentials: true,
+});
 
-req.interceptors.response.use((data) => {
+req.interceptors.response.use(async (data) => {
     if (data.headers['token']) {
         Token = data.headers['token'];
         store.set('token', Token)
+    }
+    if (data.headers['content-type'].includes('protobuf')) {
+        //准备进行protobuf的解码，并将解码内容放到data中
+        let pjson = await axios.get([ApiConfig.Host, '/_proto/P/g' + data.request.path].join(''))
+        let proto = await p.Root.fromJSON(pjson.data)
+        let [, m, c, f] = data.request.path.split('/');
+        let msg = proto.lookupType([c, f].join('_'));
+        data.data = msg.decode(data.data);
+        console.log('protobuf', data.headers['content-length'])
+    } else if (data.data instanceof ArrayBuffer) {
+
     }
     return data;
 })
@@ -45,6 +60,7 @@ req.interceptors.request.use((conf) => {
         conf.headers['rkey'] = ApiConfig.Rand;
     }
     conf.url = ApiConfig.Host + conf.url
+    conf.headers['accept'] = 'application/x-protobuf,*/*'
     return conf;
 })
 
@@ -103,8 +119,13 @@ class ApiConfigClass {
         this._host = v.indexOf('http') == 0 ? v : ('https://' + v);
     }
     get Host() { return this._host; }
+    /**
+     * 
+     */
+    protos: string[] = [];
 }
 export const ApiConfig = new ApiConfigClass
+// axios.get([ApiConfig.Host, '_proto', 'P', 'l.json'].join('/')).then((d) => { ApiConfig.protos = d.data; })
 /**
  * 
  */
