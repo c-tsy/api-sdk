@@ -159,7 +159,11 @@ export namespace User {
             }
             return rs;
         }
-
+        /**
+         * 重设密码
+         * @param OldPWD 
+         * @param PWD 
+         */
         reset(OldPWD: string, PWD: string) {
             return this.post('reset', { OldPWD: md5(OldPWD), PWD: md5(PWD) })
         }
@@ -215,4 +219,41 @@ export namespace User {
         }
     }
     export const Users = new users();
+
+    class user extends ApiController {
+        constructor() {
+            super('User', prefix)
+        }
+        /**
+         * 修改用户昵称和性别
+         * @param UID 
+         * @param Nick 
+         * @param Sex 
+         * @param Status
+         */
+        save(UID: number, data: {Nick?: string, Sex?: number, Status?: number}) {
+            if(!UID && typeof UID == 'number') {
+                throw new Error('UID')
+            }
+            let d: { [index: string]: string | number} = {}
+            if('string' == typeof data.Nick && data.Nick.length > 0) {
+                d.Nick = data.Nick
+            }
+            if(data.Sex && [0,1,2].includes(data.Sex)) {
+                d.Sex = data.Sex
+            }
+            if(data.Status && [-1,0,1].includes(data.Status)) {
+                d.Status = data.Status
+            }
+            if(Object.keys(d).length == 0) {
+                throw new Error('Nick/Sex/Status')
+            }
+            return this.post('save',Object.assign({UID},data))
+        }
+
+        myteam(UID: number, P: number, N: number) {
+            return this.post('myteam',{UID, P, N})
+        }
+    }
+    export const User = new user();
 }
