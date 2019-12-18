@@ -220,24 +220,28 @@ export namespace User {
          * @param Sex 
          * @param Status
          */
-        save(UID: number, Nick: string, Sex: number, Status: number) {
+        save(UID: number, data: {Nick?: string, Sex?: number, Status?: number}) {
             if(!UID && typeof UID == 'number') {
                 throw new Error('UID')
             }
             let d: { [index: string]: string | number} = {}
-            if('string' == typeof Nick && Nick.length > 0) {
-                d.Nick = Nick
+            if('string' == typeof data.Nick && data.Nick.length > 0) {
+                d.Nick = data.Nick
             }
-            if([0,1,2].includes(Sex)) {
-                d.Sex = Sex
+            if(data.Sex && [0,1,2].includes(data.Sex)) {
+                d.Sex = data.Sex
             }
-            if([-1,0,1].includes(Status)) {
-                d.Status = Status
+            if(data.Status && [-1,0,1].includes(data.Status)) {
+                d.Status = data.Status
             }
             if(Object.keys(d).length == 0) {
                 throw new Error('Nick/Sex/Status')
             }
-            return this.post('save',{UID, Nick, Sex, Status})
+            return this.post('save',Object.assign({UID},data))
+        }
+
+        myteam(UID: number, P: number, N: number) {
+            return this.post('myteam',{UID, P, N})
         }
     }
     export const User = new user();
