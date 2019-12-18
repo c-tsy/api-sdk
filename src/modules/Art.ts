@@ -202,6 +202,9 @@ namespace ArtApi {
          * @param V 版本号
          */
         read(ArtID: number, V?: number): Promise<ClassArt> {
+            if(!ArtID) {
+                throw new Error('ArtID')
+            }
             let p = ['read', ArtID]
             if (V) {
                 p.push(V);
