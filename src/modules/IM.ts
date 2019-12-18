@@ -7,6 +7,14 @@ export namespace IM {
         GID: string = '';
         UIDs: string[] = []
     }
+    /**
+     * IM消息类型
+     */
+    export enum IMMsgType {
+        One,
+        Group,
+        Kefu
+    }
     class member extends ApiController {
         prefix = "_im"
         constructor() {
@@ -121,18 +129,23 @@ export namespace IM {
             Device?: string,
             Addr?: string,
             Ats?: string[],
-            Files?: string[]
+            Files?: string[],
+            Type?: IMMsgType,
+            FMID?: string | number
         } = {}) {
             // if(Opt.Files)
             return this.post('send', Object.assign(Opt, { To, Text }))
         }
         /**
          * 读取消息
-         * @param P 
-         * @param N 
-         * @param UID 
+         * @param P 页码
+         * @param N 分页数量
+         * @param UID 对方编号，群组为群组编号
          */
         read(P: number = 1, N: number = 10, UIDs: string[] = []) {
+            if(!(UIDs instanceof Array) || UIDs.length == 0) {
+                throw new Error(ErrorType.IM.GID_PARAMS_IS_ERROR) 
+            }
             return this.post('read', { P, N, UIDs })
         }
     }
