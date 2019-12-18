@@ -170,10 +170,10 @@ namespace ArtApi {
     class art extends ApiController {
         /**
          * 读取文章列表
-         * @param CID 文章分类号
-         * @param Status 文章状态
-         * @param P 分页页码，从1开始
-         * @param N 分页页内条数，默认为10
+         * @param {number} CID 文章分类号
+         * @param {number} Status 文章状态
+         * @param {number} P 分页页码，从1开始
+         * @param {number} N 分页页内条数，默认为10
          */
         list(CID: number | number[], Status: number = 1, P: number = 1, N: number = 10): Promise<ApiCommon.List<ClassArt>> {
             return this.post('list', { CID, Status, P, N });
@@ -196,6 +196,7 @@ namespace ArtApi {
             }
             return this.post('batch', { ArtIDs, Op, Val: !!Val ? 1 : 0 })
         }
+
         /**
          * 读取文章内容
          * @param ArtID 文章编号
@@ -208,6 +209,7 @@ namespace ArtApi {
             }
             return this.get(p.join('/') + '.json', { ArtID, V })
         }
+
         /**
          * 保存文章
          * @param data ClassArtOpParams
@@ -221,6 +223,7 @@ namespace ArtApi {
             // }
             return this.post('save', data);
         }
+
         /**
          * 文章分类管理：注意该操作会清除该文章的分类后再添加，请确保传入了所有该文章的分类设定
          * @param ArtID 
@@ -241,6 +244,7 @@ namespace ArtApi {
             return this.post('classify', { ArtID, CIDs });
         }
     }
+
     /**
      * 添加文章分类对象
      */
@@ -253,6 +257,7 @@ namespace ArtApi {
         Type: number = 1;
         Sort: number = 0;
     }
+
     /**
      * 修改文章分类对象
      */
@@ -330,6 +335,7 @@ namespace ArtApi {
          */
         public Sort: number = 0;
     }
+
     /**
      * 文章分类管理类
      */
@@ -362,6 +368,7 @@ namespace ArtApi {
             return this.post('saves', data);
         }
     }
+
     /**
      * 文章类型管理类
      */
@@ -373,17 +380,21 @@ namespace ArtApi {
             return this.post('all');
         }
     }
+
     /**
      * 文章管理
      */
     export const Art = new art('Art', '_art');
+
     /**
      * 文章类型
      */
     export const Type = new type('Type', '_art');
+
     /**
      * 文章分类管理
      */
     export const Classify = new classify('Classify', '_art');
+
 }
 export default ArtApi;
