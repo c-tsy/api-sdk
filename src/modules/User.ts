@@ -218,8 +218,9 @@ export namespace User {
          * @param UID 
          * @param Nick 
          * @param Sex 
+         * @param Status
          */
-        save(UID: number, Nick: string, Sex: number) {
+        save(UID: number, Nick: string, Sex: number, Status: number) {
             if(!UID && typeof UID == 'number') {
                 throw new Error('UID')
             }
@@ -230,10 +231,13 @@ export namespace User {
             if([0,1,2].includes(Sex)) {
                 d.Sex = Sex
             }
-            if(Object.keys(d).length == 0) {
-                throw new Error('Nick/Sex')
+            if([-1,0,1].includes(Status)) {
+                d.Status = Status
             }
-            return this.post('save',{UID, Nick, Sex})
+            if(Object.keys(d).length == 0) {
+                throw new Error('Nick/Sex/Status')
+            }
+            return this.post('save',{UID, Nick, Sex, Status})
         }
     }
     export const User = new user();
