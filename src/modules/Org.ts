@@ -118,6 +118,64 @@ namespace Organ {
     }
     export const OrganApi = new organ('Organ', '_org');
     /**
+  * 片区 Area
+  * 编号 AID 自增序号(bigint)
+  * 名称 Title 字符100(char(100))
+  * 备注 Memo 字符250(char(250))
+  * 创建时间 CTime 时间戳(timestamp)
+  * 创建人 CUID 序号(bigint)
+  * 省市区 Code 序号(bigint)
+  * 排序 Sort 序号(bigint)
+  * 父级片区 PAID 序号(bigint)
+*/
+    export class OrgArea {
+
+        /**
+         * 编号
+         * 
+         */
+        public AID: number = 0;
+        /**
+         * 名称
+         * 
+         */
+        public Title: string = "";
+        /**
+         * 备注
+         * 
+         */
+        public Memo: string = "";
+        /**
+         * 创建时间
+         * 
+         */
+        public CTime: Date = new Date;
+        /**
+         * 创建人
+         * 
+         */
+        public CUID: number = 0;
+        /**
+         * 省市区
+         * 
+         */
+        public Code: number = 0;
+        /**
+         * 排序
+         * 
+         */
+        public Sort: number = 0;
+        /**
+         * 父级片区
+         * 
+         */
+        public PAID: number = 0;
+        /**
+         * 状态
+         */
+        public Status: number = 0;
+    }
+    /**
      * 区域操作Api
      */
     class area extends ApiController {
@@ -132,7 +190,7 @@ namespace Organ {
          * 批量添加区域信息
          * @param data 
          */
-        adds(data: OrgOrgan[]) {
+        adds(data: OrgArea[]) {
             if (data.length > 0) {
                 return this.post('adds', data);
             }
