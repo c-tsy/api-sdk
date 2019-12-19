@@ -143,9 +143,9 @@ namespace Organ {
          * @param UnitIDs 
          * @param data 
          */
-        save(UnitIDs: number[], data: any) {
-            if (UnitIDs.length > 0) {
-                return this.post('save', { UnitIDs, Data: data })
+        save(AIDs: number[], data: any) {
+            if (AIDs.length > 0) {
+                return this.post('save', { AIDs, Data: data })
             }
             throw new Error(ErrorType.Org.UNITIDS_SHOULD_BE_ARRAY)
         }
@@ -155,27 +155,27 @@ namespace Organ {
          * @param type 
          */
         link(data: TypeUnitEdit | TypeAreaEdit, type: LinkType) {
-            if(data.AID && data.UnitIDs) {
-                if(!data.AID || 'number' != typeof data.AID || data.AID <= 0) {
+            if (data.AID && data.UnitIDs) {
+                if (!data.AID || 'number' != typeof data.AID || data.AID <= 0) {
                     throw new Error(ErrorType.Org.AID_PARAMS_IS_ERROR)
                 }
-                if(!(data.UnitIDs instanceof Array)) {
+                if (!(data.UnitIDs instanceof Array)) {
                     throw new Error(ErrorType.Org.UNITIDS_SHOULD_BE_ARRAY)
                 }
-                for(let x of data.UnitIDs) {
-                    if('number' != typeof x || x<= 0) {
+                for (let x of data.UnitIDs) {
+                    if ('number' != typeof x || x <= 0) {
                         throw new Error(ErrorType.Org.UNITID_PARAMS_IS_ERROR)
                     }
                 }
-            } else if(data.UnitID && data.AIDs) {
-                if(!data.UnitID || 'number' != typeof data.UnitID || data.UnitID <= 0){
+            } else if (data.UnitID && data.AIDs) {
+                if (!data.UnitID || 'number' != typeof data.UnitID || data.UnitID <= 0) {
                     throw new Error(ErrorType.Org.UNITID_PARAMS_IS_ERROR)
                 }
-                if(!(data.AIDs instanceof Array)) {
+                if (!(data.AIDs instanceof Array)) {
                     throw new Error(ErrorType.Org.AIDS_SHOULD_BE_ARRAY)
                 }
-                for(let x of data.AIDs) {
-                    if('number' != typeof x || x <= 0) {
+                for (let x of data.AIDs) {
+                    if ('number' != typeof x || x <= 0) {
                         throw new Error(ErrorType.Org.AID_PARAMS_IS_ERROR)
                     }
                 }
