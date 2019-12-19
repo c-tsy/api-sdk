@@ -8,7 +8,8 @@ const req = axios.create({
     // responseType: "arraybuffer",
     withCredentials: true,
 });
-
+const protoed: { [index: string]: p.Root } = {};
+const base = p.Root.fromJSON({ "nested": { "base": { "fields": { "c": { "type": "uint32", "id": 1 }, "e": { "type": "string", "id": 2 }, "d": { "type": "bytes", "id": 3 } } }, "SearchResult": { "fields": { "P": { "type": "uint32", "id": 1 }, "N": { "type": "uint32", "id": 2 }, "T": { "type": "uint32", "id": 3 }, "R": { "type": "bytes", "id": 4 }, "L": { "type": "bytes", "id": 5 } } }, "SearchWhere": { "fields": { "P": { "type": "uint32", "id": 1 }, "N": { "type": "uint32", "id": 2 }, "Keyword": { "type": "string", "id": 3 }, "Sort": { "type": "string", "id": 4 }, "W": { "type": "bytes", "id": 5 } } } } }).lookupType('base')
 req.interceptors.response.use(async (data) => {
     if (data.headers['token']) {
         Token = data.headers['token'];
@@ -16,18 +17,23 @@ req.interceptors.response.use(async (data) => {
     }
     if (data.headers['content-type'].includes('protobuf')) {
         //准备进行protobuf的解码，并将解码内容放到data中
-        let pjson = await axios.get([ApiConfig.Host, '/_proto/P/g' + data.request.path].join(''))
-        let proto = await p.Root.fromJSON(pjson.data)
-        let [, m, c, f] = data.request.path.split('/');
-        let msg = proto.lookupType([c, f].join('_'));
-        data.data = msg.decode(data.data);
-        console.log('protobuf', data.headers['content-length'])
-    } else if (data.data instanceof ArrayBuffer) {
-
+        let pd: any = base.decode(data.data)
+        let [m, c, f] = data.request.path.replace('/_', '').split('/');
+        if (!protoed[m]) {
+            let pjson = await axios.get([ApiConfig.Host, '/_proto/P/g' + data.request.path].join(''))
+            protoed[m] = p.Root.fromJSON(pjson.data)
+        }
+        let msg = protoed[m].lookupType([c, f].join('_'));
+        pd.d = msg.decode(pd.d);
+        if (pd.d._ && pd.d._ instanceof Array) {
+            pd.d = pd.d._;
+        }
+        data.data = pd;
+    } else if (data.headers['content-type'].includes('json') && data.data instanceof Buffer) {
+        data.data = JSON.parse(data.data.toString());
     }
     return data;
 })
-
 req.interceptors.request.use((conf) => {
     if (!ApiConfig.AppID || !ApiConfig.Secret) {
         // throw new Error('AppID or Secret')
@@ -63,13 +69,27 @@ req.interceptors.request.use((conf) => {
     conf.headers['accept'] = 'application/x-protobuf,*/*'
     return conf;
 })
-
-function request(method: 'post' | 'get', path: string, data: any) {
-    let q: any = req[method];
-    return q(path, method == 'get' ? { data } : data).then((e: any) => {
+// function check_proto(path: string) {
+//     let [m, c, f] = path.replace('_', '').split('/')
+//     if (ApiConfig.protos[m] && ApiConfig.protos[m][c])
+// }
+async function request(method: 'post' | 'get', path: string, data: any) {
+    let q: any = req[method], conf: any = {};
+    if (method == 'post') {
+        if (false === ApiConfig.inited) {
+            await axios.get([ApiConfig.Host, '_proto', 'P', 'l.json'].join('/')).then((d) => {
+                ApiConfig.protos = d.data;
+                // debugger
+            })
+            ApiConfig.inited = true;
+        }
+        conf.responseType = "arraybuffer";
+        conf.headers = { accept: 'application/x-protobuf' }
+    }
+    return await q(path, method == 'get' ? { data } : data, conf).then((e: any) => {
         log(path, method, e.config.headers['rand'], Date.now() - e.config.headers['rand'], e.data.c || e.status, e.config.data.length, e.headers['content-length'], e.data.e ? e.data.e.m : '')
         if (e.data.c != 200) {
-            throw new Error(e.data.e.m || e.data.c);
+            throw new Error(e.data.e && e.data.e.m || e.data.c);
         }
         return e.data.d;
     }).catch((e: any) => {
@@ -122,10 +142,13 @@ class ApiConfigClass {
     /**
      * 
      */
-    protos: string[] = [];
+    protos: { [index: string]: { [index: string]: { [index: string]: string[] } } } = {};
+    /**
+     * 初始化
+     */
+    inited: boolean = false;
 }
 export const ApiConfig = new ApiConfigClass
-// axios.get([ApiConfig.Host, '_proto', 'P', 'l.json'].join('/')).then((d) => { ApiConfig.protos = d.data; })
 /**
  * 
  */
