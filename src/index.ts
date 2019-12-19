@@ -10,17 +10,17 @@ const req = axios.create({
 });
 const protoed: { [index: string]: p.Root } = {};
 const base = p.Root.fromJSON({ "nested": { "base": { "fields": { "c": { "type": "uint32", "id": 1 }, "e": { "type": "string", "id": 2 }, "d": { "type": "bytes", "id": 3 } } }, "SearchResult": { "fields": { "P": { "type": "uint32", "id": 1 }, "N": { "type": "uint32", "id": 2 }, "T": { "type": "uint32", "id": 3 }, "R": { "type": "bytes", "id": 4 }, "L": { "type": "bytes", "id": 5 } } }, "SearchWhere": { "fields": { "P": { "type": "uint32", "id": 1 }, "N": { "type": "uint32", "id": 2 }, "Keyword": { "type": "string", "id": 3 }, "Sort": { "type": "string", "id": 4 }, "W": { "type": "bytes", "id": 5 } } } } }).lookupType('base')
-req.interceptors.response.use(async (data) => {
+req.interceptors.response.use(async (data: any) => {
     if (data.headers['token']) {
         Token = data.headers['token'];
         store.set('token', Token)
     }
     if (data.headers['content-type'].includes('protobuf')) {
         //准备进行protobuf的解码，并将解码内容放到data中
-        let pd: any = base.decode(data.data)
-        let [m, c, f] = data.request.path.replace('/_', '').split('/');
+        let pd: any = base.decode(p.util.newBuffer(data.data))
+        let [m, c, f] = data.config.path.split('/');
         if (!protoed[m]) {
-            let pjson = await axios.get([ApiConfig.Host, '/_proto/P/g' + data.request.path].join(''))
+            let pjson = await axios.get([ApiConfig.Host, '/_proto/P/g/_' + data.config.path].join(''))
             protoed[m] = p.Root.fromJSON(pjson.data)
         }
         let msg = protoed[m].lookupType([c, f].join('_'));
@@ -34,7 +34,7 @@ req.interceptors.response.use(async (data) => {
     }
     return data;
 })
-req.interceptors.request.use((conf) => {
+req.interceptors.request.use((conf: any) => {
     if (!ApiConfig.AppID || !ApiConfig.Secret) {
         // throw new Error('AppID or Secret')
     }
@@ -65,8 +65,9 @@ req.interceptors.request.use((conf) => {
     if (ApiConfig.Rand) {
         conf.headers['rkey'] = ApiConfig.Rand;
     }
+    conf.path = conf.url.replace('/_', '');
     conf.url = ApiConfig.Host + conf.url
-    conf.headers['accept'] = 'application/x-protobuf,*/*'
+    // conf.headers['accept'] = 'application/x-protobuf,*/*'
     return conf;
 })
 // function check_proto(path: string) {
@@ -83,8 +84,15 @@ async function request(method: 'post' | 'get', path: string, data: any) {
             })
             ApiConfig.inited = true;
         }
-        conf.responseType = "arraybuffer";
-        conf.headers = { accept: 'application/x-protobuf' }
+        let [m, c, f] = path.replace('/_', '').split('/');
+        if (
+            ApiConfig.protos[m]
+            && ApiConfig.protos[m][c]
+            && ApiConfig.protos[m][c][f]
+        ) {
+            conf.responseType = "arraybuffer";
+            conf.headers = { accept: 'application/x-protobuf' }
+        }
     }
     return await q(path, method == 'get' ? { data } : data, conf).then((e: any) => {
         log(path, method, e.config.headers['rand'], Date.now() - e.config.headers['rand'], e.data.c || e.status, e.config.data.length, e.headers['content-length'], e.data.e ? e.data.e.m : '')
