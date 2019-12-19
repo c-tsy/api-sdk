@@ -204,7 +204,7 @@ namespace ArtApi {
          * @param V 版本号
          */
         read(ArtID: number, V?: number): Promise<ClassArt> {
-            if(!ArtID) {
+            if (!ArtID) {
                 throw new Error('ArtID')
             }
             let p = ['read', ArtID]
@@ -372,9 +372,9 @@ namespace ArtApi {
             if (data.length > 50) {
                 throw new Error(ErrorType.Art.DATA_LENGTH_TOO_LONG)
             }
-            if(data instanceof Array && data.length > 0) {
-                for(let x of data) {
-                    if(x.CID == 0) {
+            if (data instanceof Array && data.length > 0) {
+                for (let x of data) {
+                    if (x.CID == 0) {
                         throw new Error('Classifies.CID')
                     }
                 }
@@ -411,6 +411,5 @@ namespace ArtApi {
      * 文章分类管理
      */
     export const Classify = new classify('Classify', '_art');
-    
 }
 export default ArtApi;
