@@ -20,7 +20,7 @@ req.interceptors.response.use(async (data: any) => {
         let pd: any = base.decode(p.util.newBuffer(data.data))
         let [m, c, f] = data.config.path.split('/');
         if (!protoed[m]) {
-            let pjson = await axios.get([ApiConfig.Host, '/_proto/P/g/_' + data.config.path].join(''))
+            let pjson = await axios.get(ApiConfig.Host + '/_proto/P/g/' + m + '.json')
             protoed[m] = p.Root.fromJSON(pjson.data)
         }
         let msg = protoed[m].lookupType([c, f].join('_'));
@@ -29,8 +29,8 @@ req.interceptors.response.use(async (data: any) => {
             pd.d = pd.d._;
         }
         data.data = pd;
-    } else if (data.headers['content-type'].includes('json') && data.data instanceof Buffer) {
-        data.data = JSON.parse(data.data.toString());
+    } else if (data.headers['content-type'].includes('json') && (data.data instanceof ArrayBuffer || data.data instanceof Buffer)) {
+        data.data = JSON.parse(Buffer.from(data.data).toString());
     }
     return data;
 })
@@ -78,7 +78,7 @@ async function request(method: 'post' | 'get', path: string, data: any) {
     let q: any = req[method], conf: any = {};
     if (method == 'post') {
         if (false === ApiConfig.inited) {
-            await axios.get([ApiConfig.Host, '_proto', 'P', 'l.json'].join('/')).then((d) => {
+            await axios.get(ApiConfig.Host + '/_proto/P/list.json').then((d) => {
                 ApiConfig.protos = d.data;
                 // debugger
             })
