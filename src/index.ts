@@ -40,6 +40,8 @@ req.interceptors.response.use(async (data: any) => {
         pd.d = msg.toObject(msg.decode(pd.d));
         if (pd.d._ && pd.d._ instanceof Array) {
             pd.d = pd.d._;
+        } else if (pd.d._m) {
+            pd.d = pd.d._m;
         }
         data.data = pd;
     } else if (data.headers['content-type'].includes('json') && (data.data instanceof ArrayBuffer || data.data instanceof Buffer)) {
