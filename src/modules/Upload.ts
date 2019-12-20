@@ -17,6 +17,9 @@ namespace Upload {
                 acl
             });
         }
+        list(data: { Keyword?: string, W: any, P?: number, N?: number, Sort?: string }) {
+            return this.post('list', { data })
+        }
     }
     export const Upload = new upload('Upload', '_upload')
 }
