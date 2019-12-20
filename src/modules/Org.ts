@@ -134,7 +134,7 @@ namespace Organ {
          * 编号
          * 
          */
-        public AID: number = 0;
+        public AID?: number = 0;
         /**
          * 名称
          * 
@@ -149,12 +149,12 @@ namespace Organ {
          * 创建时间
          * 
          */
-        public CTime: Date = new Date;
+        public CTime?: Date = new Date;
         /**
          * 创建人
          * 
          */
-        public CUID: number = 0;
+        public CUID?: number = 0;
         /**
          * 省市区
          * 
@@ -164,16 +164,16 @@ namespace Organ {
          * 排序
          * 
          */
-        public Sort: number = 0;
+        public Sort?: number = 0;
         /**
          * 父级片区
          * 
          */
-        public PAID: number = 0;
+        public PAID?: number = 0;
         /**
          * 状态
          */
-        public Status: number = 0;
+        public Status?: number = 0;
     }
     /**
      * 区域操作Api

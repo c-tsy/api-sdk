@@ -2,6 +2,19 @@ import axios from 'axios';
 import * as store from 'store'
 import * as qs from 'querystring'
 import * as p from 'protobufjs';
+p.wrappers[".google.protobuf.Timestamp"] = {
+    fromObject: function (object: any) {
+        //Convert ISO-8601 to epoch millis
+        var dt = Date.parse(object);
+        return this.create({
+            seconds: Math.floor(dt / 1000),
+            nanos: dt % 1000
+        })
+    },
+    toObject: function (message: any, options) {
+        return new Date(message.seconds * 1000 + message.nanos);
+    }
+};
 const md5: any = require('md5')
 var Token = store.get('token') || ''
 const req = axios.create({
@@ -24,7 +37,7 @@ req.interceptors.response.use(async (data: any) => {
             protoed[m] = p.Root.fromJSON(pjson.data)
         }
         let msg = protoed[m].lookupType([c, f].join('_'));
-        pd.d = msg.decode(pd.d);
+        pd.d = msg.toObject(msg.decode(pd.d));
         if (pd.d._ && pd.d._ instanceof Array) {
             pd.d = pd.d._;
         }
