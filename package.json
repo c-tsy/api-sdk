@@ -10,7 +10,7 @@
     "dist/index.d.ts",
     "dist/lib.js",
     "dist/lib.d.ts",
-    "READMD.md",
+    "README.md",
     "yarn.lock"
   ],
   "scripts": {
