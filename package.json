@@ -1,6 +1,6 @@
 {
   "name": "@ctsy/api-sdk",
-  "version": "2.0.26",
+  "version": "2.0.30",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
@@ -10,7 +10,7 @@
     "dist/index.d.ts",
     "dist/lib.js",
     "dist/lib.d.ts",
-    "READMD.md",
+    "README.md",
     "yarn.lock"
   ],
   "scripts": {
