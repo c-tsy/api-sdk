@@ -9,7 +9,7 @@ export namespace User {
          * 密码Hash盐
          */
         Salt: string = ""
-    
+
         /**
          * 字段定义
          */
@@ -51,18 +51,18 @@ export namespace User {
              */
             Verify: 'Verify'
         }
-    
+
         Limit = {
             /**
              * 注册时必须有推介人？
              */
             RegistMustPUID: false,
-    
+
             RegistMustVCode: false,
-    
+
             VerifyVAccount: false,
         }
-    
+
         /**
          * 错误提示信息
          */
@@ -91,7 +91,7 @@ export namespace User {
             Account: /^[\w\b_-]{5,}$/,
             PWD: /.{6,}/
         }
-    
+
         Hook: { [index: string]: any } = {
         }
     }
@@ -104,7 +104,7 @@ export namespace User {
          * @param Type 
          */
         all(Type: string = 'all') {
-            if(!['list','tree','all'].includes(Type)) {
+            if (!['list', 'tree', 'all'].includes(Type)) {
                 throw new Error(ErrorType.User.TYPE_PARAMS_IS_ERROR)
             }
             return this.get('all', { Type })
@@ -192,13 +192,13 @@ export namespace User {
          * @param remove 
          */
         vcheck(data: any, remove: boolean = true) {
-            return this.post('vcheck',{data, remove})
+            return this.post('vcheck', { data, remove })
         }
         vcode(data: any, expire: number | any = 0) {
-            if(expire.appid) {
+            if (expire.appid) {
                 return ''
             }
-            return this.post('vcode', {data, expire})
+            return this.post('vcode', { data, expire })
         }
         /**
          * 账号密码登陆
@@ -206,10 +206,10 @@ export namespace User {
          * @param PWD 
          */
         async login(Account: string, PWD: string) {
-            if('string' != typeof Account) {
+            if ('string' != typeof Account) {
                 throw new Error(ErrorType.User.ACCOUNT_SHOULD_BE_STRING)
             }
-            if('string' != typeof PWD) {
+            if ('string' != typeof PWD) {
                 throw new Error(ErrorType.User.PWD_SHOULD_BE_STRING)
             }
             let rs = await this.post('login', { Account, PWD: md5(PWD) })
@@ -280,16 +280,16 @@ export namespace User {
          * @param PWD 
          */
         reset(OldPWD: string, PWD: string) {
-            if('string' != typeof PWD) {
+            if ('string' != typeof PWD) {
                 throw new Error(ErrorType.User.PWD_SHOULD_BE_STRING)
             }
-            if(/.{6,}/.test(PWD)) {
+            if (!/.{6,}/.test(PWD)) {
                 throw new Error(ErrorType.User.PWD_PARAMS_IS_ERROR)
             }
-            if('string' != typeof OldPWD) {
+            if ('string' != typeof OldPWD) {
                 throw new Error(ErrorType.User.OLDPWD_SHOULD_BE_STRING)
             }
-            if(/.{6,}/.test(OldPWD)) {
+            if (!/.{6,}/.test(OldPWD)) {
                 throw new Error(ErrorType.User.OLDPWD_PARAMS_IS_ERROR)
             }
             return this.post('reset', { OldPWD: md5(OldPWD), PWD: md5(PWD) })
@@ -301,16 +301,16 @@ export namespace User {
          * @param PUID 
          */
         async regist(Name: string, Nick: string, Account: string, PWD: string, Sex: number = 1, PUID: number = 0) {
-            if(Name == '' || Nick == '') {
+            if (Name == '' || Nick == '') {
                 throw new Error(ErrorType.User.NAME_OR_NICK_CANNOT_BE_EMPTY)
             }
-            if('string' != typeof Account) {
+            if ('string' != typeof Account) {
                 throw new Error(ErrorType.User.ACCOUNT_SHOULD_BE_STRING)
             }
-            if('string' != typeof PWD) {
+            if ('string' != typeof PWD) {
                 throw new Error(ErrorType.User.PWD_SHOULD_BE_STRING)
             }
-            if(/.{6,}/.test(PWD)) {
+            if (!/.{6,}/.test(PWD)) {
                 throw new Error(ErrorType.User.PWD_PARAMS_IS_ERROR)
             }
             return await this.post('regist', { Name, Nick, Sex, Account, PWD: md5(PWD), PUID })
@@ -322,16 +322,16 @@ export namespace User {
          * @param VCode 
          */
         forget(Account: string, PWD: string, VCode: string) {
-            if('string' != typeof PWD) {
+            if ('string' != typeof PWD) {
                 throw new Error(ErrorType.User.PWD_SHOULD_BE_STRING)
             }
-            if(/.{6,}/.test(PWD)) {
+            if (!/.{6,}/.test(PWD)) {
                 throw new Error(ErrorType.User.PWD_PARAMS_IS_ERROR)
             }
-            if('string' != typeof Account) {
+            if ('string' != typeof Account) {
                 throw new Error(ErrorType.User.ACCOUNT_SHOULD_BE_STRING)
             }
-            if(/^[\w\b_-]{5,}$/.test(Account)) {
+            if (!/^[\w\b_-]{5,}$/.test(Account)) {
                 throw new Error(ErrorType.User.ACCOUNT_PARAMS_IS_ERROR)
             }
             return this.post('forget', { Account, PWD, VCode });
@@ -341,7 +341,7 @@ export namespace User {
          * @param UID 
          */
         rsession(UID: any) {
-            return this.post('rsession',{ UID })
+            return this.post('rsession', { UID })
         }
     }
     export const Auth = new auth();
@@ -389,28 +389,28 @@ export namespace User {
          * @param Sex 
          * @param Status
          */
-        save(UID: number, data: {Nick?: string, Sex?: number, Status?: number}) {
-            if(!UID && typeof UID == 'number') {
+        save(UID: number, data: { Nick?: string, Sex?: number, Status?: number }) {
+            if (!UID && typeof UID == 'number') {
                 throw new Error('UID')
             }
-            let d: { [index: string]: string | number} = {}
-            if('string' == typeof data.Nick && data.Nick.length > 0) {
+            let d: { [index: string]: string | number } = {}
+            if ('string' == typeof data.Nick && data.Nick.length > 0) {
                 d.Nick = data.Nick
             }
-            if(data.Sex && [0,1,2].includes(data.Sex)) {
+            if (data.Sex && [0, 1, 2].includes(data.Sex)) {
                 d.Sex = data.Sex
             }
-            if(data.Status && [-1,0,1].includes(data.Status)) {
+            if (data.Status && [-1, 0, 1].includes(data.Status)) {
                 d.Status = data.Status
             }
-            if(Object.keys(d).length == 0) {
+            if (Object.keys(d).length == 0) {
                 throw new Error('Nick/Sex/Status')
             }
-            return this.post('save',Object.assign({UID},data))
+            return this.post('save', Object.assign({ UID }, data))
         }
 
         myteam(UID: number, P: number, N: number) {
-            return this.post('myteam',{UID, P, N})
+            return this.post('myteam', { UID, P, N })
         }
     }
     export const User = new user();
