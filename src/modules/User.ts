@@ -414,4 +414,39 @@ export namespace User {
         }
     }
     export const User = new user();
+    /**
+  * 权限 Rule
+  * RID RID 自增序号(bigint)
+  * RGID RGID 序号(bigint)
+  * 权限名称 Title 字符50(char(50))
+  * 类型 Type 字符20(char(20))
+  * 规则 Rule 字符250(char(250))
+  * 备注 Memo 字符250(char(250))
+  * 排序 Sort 序号(bigint)
+*/
+    export class RuleClass {
+
+        public RID: number = 0;
+        public RGID: number = 0;
+        public Title: string = "";
+        public Type: string = "";
+        public Rule: string = "";
+        public Memo: string = "";
+        public Sort: number = 0;
+    }
+    class rule extends ApiController {
+        /**
+         * 获取我的权限列表
+         */
+        mine(): Promise<number[]> {
+            return this.post('mine');
+        }
+        /**
+         * 获取所有的权限信息
+         */
+        all(): Promise<RuleClass[]> {
+            return this.post('all');
+        }
+    }
+    export const RuleApi = new rule('Rule', prefix);
 }
