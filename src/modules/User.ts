@@ -152,6 +152,29 @@ export namespace User {
         unlink(UGID: number, UIDs: number[]) {
             return this.post('unlink', { UGID, UIDs });
         }
+        /**
+         * 查询指定用户组的权限信息
+         * @param UGIDs 
+         */
+        rules(UGIDs: number[]) {
+            return this.post('rules', { UGIDs })
+        }
+        /**
+         * 权限分配
+         * @param UGID 用户组 
+         * @param RIDs 权限ID值
+         */
+        rlink(UGID: number, RIDs: number[]) {
+            return this.post('rlink', { UGID, RIDs })
+        }
+        /**
+         * 移除权限分配
+         * @param UGID 用户组 
+         * @param RIDs 权限ID值
+         */
+        runlink(UGID: number, RIDs: number[]) {
+            return this.post('runlink', { UGID, RIDs })
+        }
     }
     export const Group = new group();
     /**
@@ -448,5 +471,5 @@ export namespace User {
             return this.post('all');
         }
     }
-    export const RuleApi = new rule('Rule', prefix);
+    export const Rule = new rule('Rule', prefix);
 }
