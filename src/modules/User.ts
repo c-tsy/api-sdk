@@ -456,6 +456,21 @@ export namespace User {
         public Rule: string = "";
         public Memo: string = "";
         public Sort: number = 0;
+    }/**
+  * 权限组 RuleGroup
+  * RGID RGID 自增序号(bigint)
+  * 组名 Title 字符50(char(50))
+  * 描述 Memo 字符250(char(250))
+  * PRGID PRGID 序号(bigint)
+  * 组序 Sort 序号(bigint)
+*/
+    export class RuleGroupClass {
+
+        public RGID: number = 0;
+        public Title: string = "";
+        public Memo: string = "";
+        public PRGID: number = 0;
+        public Sort: number = 0;
     }
     class rule extends ApiController {
         /**
@@ -469,6 +484,15 @@ export namespace User {
          */
         all(): Promise<RuleClass[]> {
             return this.post('all');
+        }
+        /**
+         * 获取所有的权限信息
+         */
+        group(): Promise<{
+            Rules: RuleClass[],
+            Groups: RuleGroupClass[],
+        }> {
+            return this.post('group');
         }
     }
     export const Rule = new rule('Rule', prefix);
