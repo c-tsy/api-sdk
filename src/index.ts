@@ -91,24 +91,24 @@ req.interceptors.request.use((conf: any) => {
 // }
 async function request(method: 'post' | 'get', path: string, data: any) {
     let q: any = req[method], conf: any = {};
-    if (method == 'post') {
-        if (false === ApiConfig.inited) {
-            await axios.get(ApiConfig.Host + '/proto/list.json').then((d) => {
-                ApiConfig.protos = d.data;
-                // debugger
-            })
-            ApiConfig.inited = true;
-        }
-        let [m, c, f] = path.replace('/_', '').split('/');
-        if (
-            ApiConfig.protos[m]
-            && ApiConfig.protos[m][c]
-            && ApiConfig.protos[m][c][f]
-        ) {
-            conf.responseType = "arraybuffer";
-            conf.headers = { accept: 'application/x-protobuf' }
-        }
+    // if (method == 'post') {
+    if (false === ApiConfig.inited) {
+        await axios.get(ApiConfig.Host + '/proto/list.json').then((d) => {
+            ApiConfig.protos = d.data;
+            // debugger
+        })
+        ApiConfig.inited = true;
     }
+    let [m, c, f] = path.replace('/_', '').split('/');
+    if (
+        ApiConfig.protos[m]
+        && ApiConfig.protos[m][c]
+        && ApiConfig.protos[m][c][f]
+    ) {
+        conf.responseType = "arraybuffer";
+        conf.headers = { accept: 'application/x-protobuf' }
+    }
+    // }
     return await q(path, method == 'get' ? { data } : data, conf).then((e: any) => {
         log(path, method, e.config.headers['rand'], Date.now() - e.config.headers['rand'], e.data.c || e.status, e.config.data.length, e.headers['content-length'], e.data.e ? e.data.e.m : '')
         if (e.data.c != 200) {

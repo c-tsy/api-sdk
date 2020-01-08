@@ -1,6 +1,9 @@
 import { ApiController, ApiConfig } from '../';
 import hook, { HookWhen } from '@ctsy/hook';
 import { ErrorType } from '../lib';
+
+const get: Function = require("get-value");
+const set: Function = require("set-value");
 const md5: any = require('md5')
 export namespace User {
     const prefix = "_user"
@@ -471,6 +474,8 @@ export namespace User {
         public Memo: string = "";
         public PRGID: number = 0;
         public Sort: number = 0;
+        public Rules: RuleClass[] = [];
+        public Subs: RuleGroupClass[] = [];
     }
     class rule extends ApiController {
         /**
@@ -483,16 +488,49 @@ export namespace User {
          * 获取所有的权限信息
          */
         all(): Promise<RuleClass[]> {
-            return this.post('all');
+            return this.get('all');
         }
         /**
-         * 获取所有的权限信息
+         * 获取所有的权限及权限组信息
          */
-        group(): Promise<{
-            Rules: RuleClass[],
-            Groups: RuleGroupClass[],
-        }> {
-            return this.post('group');
+        async group(): Promise<{ [index: string]: RuleGroupClass }> {
+            let rs: { [index: string]: RuleGroupClass } = {}, map: { [index: string]: number[] } = {};
+            let { Rules, Groups } = await this.get('group');
+            let tGroups: { [index: string]: RuleGroupClass } = {};
+            for (let x of Groups) {
+                x.Subs = [];
+                x.Rules = [];
+                tGroups[x.RGID] = x;
+            }
+            for (let x of Rules) {
+                tGroups[x.RGID].Rules.push(x);
+            }
+            for (let i in tGroups) {
+                let x = tGroups[i];
+                if (x.PRGID == 0) {
+                    rs[x.RGID] = x;
+                    delete tGroups[i];
+                }
+            }
+            while (true) {
+                for (let i in tGroups) {
+                    if (tGroups[i].PRGID == 0) {
+                        continue;
+                    }
+                    let key = ""
+                    if (rs[tGroups[i].PRGID]) {
+                        key = tGroups[i].PRGID + '.Subs'
+                    } else if (map[tGroups[i].PRGID]) {
+                        key = [...map[tGroups[i].PRGID], tGroups[i].PRGID + '.Subs'].join('.')
+                    }
+                    get(rs, key).push(tGroups[i]);
+                    delete tGroups[i];
+                }
+                if (Object.keys(tGroups).length == 0) {
+                    break;
+                }
+            }
+            return rs;
         }
     }
     export const Rule = new rule('Rule', prefix);
