@@ -2,6 +2,7 @@ import axios from 'axios';
 import * as store from 'store'
 import * as qs from 'querystring'
 import * as p from 'protobufjs';
+import * as query from 'querystring';
 p.wrappers[".google.protobuf.Timestamp"] = {
     fromObject: function (object: any) {
         //Convert ISO-8601 to epoch millis
@@ -91,7 +92,6 @@ req.interceptors.request.use((conf: any) => {
 // }
 async function request(method: 'post' | 'get', path: string, data: any) {
     let q: any = req[method], conf: any = {};
-    // if (method == 'post') {
     if (false === ApiConfig.inited) {
         await axios.get(ApiConfig.Host + '/proto/list.json').then((d) => {
             ApiConfig.protos = d.data;
@@ -108,8 +108,10 @@ async function request(method: 'post' | 'get', path: string, data: any) {
         conf.responseType = "arraybuffer";
         conf.headers = { accept: 'application/x-protobuf' }
     }
-    // }
-    return await q(path, method == 'get' ? { data } : data, conf).then((e: any) => {
+    if (method == 'get') {
+        // path += ('?' + query.stringify(data));
+    }
+    return await q(path, method == 'get' ? conf : data, conf).then((e: any) => {
         log(path, method, e.config.headers['rand'], Date.now() - e.config.headers['rand'], e.data.c || e.status, e.config.data.length, e.headers['content-length'], e.data.e ? e.data.e.m : '')
         if (e.data.c != 200) {
             throw new Error(e.data.e && e.data.e.m || e.data.c);
