@@ -534,4 +534,25 @@ export namespace User {
         }
     }
     export const Rule = new rule('Rule', prefix);
+    class contact extends ApiController {
+        /**
+         * 保存联系信息
+         * @param UID 
+         * @param Contact 
+         */
+        save(UID: number, Contact: { T: string, V: string, C: string }[]) {
+            return this.post('save', { UID, Contact })
+        }
+        /**
+         * 批量读取联系信息
+         * @param UIDs 
+         */
+        read(UIDs: number) {
+            return this.post('read', { UIDs });
+        }
+    }
+    /**
+     * 联系信息的处理
+     */
+    export const Contact = new contact('Contact', prefix);
 }
