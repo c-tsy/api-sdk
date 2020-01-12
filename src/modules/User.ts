@@ -547,7 +547,7 @@ export namespace User {
          * 批量读取联系信息
          * @param UIDs 
          */
-        read(UIDs: number) {
+        read(UIDs: number[]) {
             return this.post('read', { UIDs });
         }
     }
