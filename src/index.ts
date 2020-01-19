@@ -38,7 +38,7 @@ req.interceptors.response.use(async (data: any) => {
             protoed[m] = p.Root.fromJSON(pjson.data)
         }
         let msg = protoed[m].lookupType([c, f].join('_'));
-        pd.d = msg.decode(pd.d);
+        pd.d = msg.toObject(msg.decode(pd.d));
         if (pd.d._ && pd.d._ instanceof Array) {
             pd.d = pd.d._;
         } else if (pd.d._m) {
