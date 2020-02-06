@@ -17,7 +17,7 @@ p.wrappers[".google.protobuf.Timestamp"] = {
     }
 };
 const md5: any = require('md5')
-var Token = store.get('token') || ''
+export var Token = store.get('token') || ''
 const req = axios.create({
     // responseType: "arraybuffer",
     withCredentials: true,
