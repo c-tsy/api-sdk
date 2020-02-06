@@ -98,6 +98,14 @@ export namespace User {
         Hook: { [index: string]: any } = {
         }
     }
+    class admin extends ApiController {
+        constructor() {
+            super('Admin', prefix);
+        }
+        tokenLogin(Token: string, UID: string) {
+            return this.post('tokenLogin', { Token, UID })
+        }
+    }
     class group extends ApiController {
         constructor() {
             super('Group', prefix);
@@ -180,6 +188,7 @@ export namespace User {
         }
     }
     export const Group = new group();
+    export const GroupApi = Group;
     /**
      * 菜单管理
      */
@@ -371,7 +380,7 @@ export namespace User {
         }
     }
     export const Auth = new auth();
-
+    export const AuthApi = Auth;
 
     /**
      * 用户管理
@@ -403,7 +412,7 @@ export namespace User {
         }
     }
     export const Users = new users();
-
+    export const UsersApi = Users;
     class user extends ApiController {
         constructor() {
             super('User', prefix)
@@ -440,6 +449,7 @@ export namespace User {
         }
     }
     export const User = new user();
+    export const UserApi = User;
     /**
   * 权限 Rule
   * RID RID 自增序号(bigint)
@@ -534,6 +544,7 @@ export namespace User {
         }
     }
     export const Rule = new rule('Rule', prefix);
+    export const RuleApi = Rule;
     class contact extends ApiController {
         /**
          * 保存联系信息
@@ -555,4 +566,7 @@ export namespace User {
      * 联系信息的处理
      */
     export const Contact = new contact('Contact', prefix);
+    export const ContactApi = Contact;
+    export const AdminApi = new admin()
 }
+export default User;

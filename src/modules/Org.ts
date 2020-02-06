@@ -100,7 +100,7 @@ namespace Organ {
         public PUnitID: number = 0;
     }
     class organ extends ApiController {
-        list(data: { P?: number, N?: number, Sort?: string, Keyword?: string, W?: { [index: string]: any } }) {
+        list(data: { P?: number, N?: number, Sort?: string, Keyword?: string, W?: { [index: string]: any } }): Promise<any> {
             return this.post('list', data);
         }
         adds(data: OrgOrgan[]) {

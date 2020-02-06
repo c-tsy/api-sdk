@@ -41,3 +41,23 @@ export namespace ErrorType {
 }
 
 export function tree() { }
+/**
+ * 查询结果
+ */
+export class SearchResult {
+    L: any[] = [];
+    T: number = 0
+    P: number = 1
+    N: number = 10;
+    R: { [index: string]: any } = {}
+}
+/**
+ * 查询条件
+ */
+export class SearchWhere {
+    W: { [index: string]: any } = {}
+    Keyword: string = "";
+    P: number = 1;
+    N: number = 10;
+    Sort: string = "";
+}
