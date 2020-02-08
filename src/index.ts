@@ -29,7 +29,8 @@ req.interceptors.response.use(async (data: any) => {
         Token = data.headers['token'];
         store.set('token', Token)
     }
-    if (data.headers['content-type'].includes('protobuf')) {
+    let ctype = data.headers['content-type'] || ''
+    if (ctype.includes('protobuf')) {
         //准备进行protobuf的解码，并将解码内容放到data中
         let pd: any = base.decode(p.util.newBuffer(data.data))
         let [m, c, f] = data.config.path.split('/');
@@ -45,7 +46,7 @@ req.interceptors.response.use(async (data: any) => {
             pd.d = pd.d._m;
         }
         data.data = pd;
-    } else if (data.headers['content-type'].includes('json') && (data.data instanceof ArrayBuffer || data.data instanceof Buffer)) {
+    } else if (ctype.includes('json') && (data.data instanceof ArrayBuffer || data.data instanceof Buffer)) {
         data.data = JSON.parse(Buffer.from(data.data).toString());
     }
     return data;
