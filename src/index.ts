@@ -105,6 +105,7 @@ async function request(method: 'post' | 'get', path: string, data: any) {
         ApiConfig.protos[m]
         && ApiConfig.protos[m][c]
         && ApiConfig.protos[m][c][f]
+        && ApiConfig.Debug === false
     ) {
         conf.responseType = "arraybuffer";
         conf.headers = { accept: 'application/x-protobuf' }
@@ -153,6 +154,10 @@ class ApiConfigClass {
      * 当前登录用户
      */
     UID: string | number = "";
+    /**
+     * 开启调试模式
+     */
+    Debug: boolean = false;
     /**
      * 密钥混淆值，字典序正序
      */
