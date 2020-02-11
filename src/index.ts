@@ -2,7 +2,6 @@ import axios from 'axios';
 import * as store from 'store'
 import * as qs from 'querystring'
 import * as p from 'protobufjs';
-import * as query from 'querystring';
 p.wrappers[".google.protobuf.Timestamp"] = {
     fromObject: function (object: any) {
         //Convert ISO-8601 to epoch millis
