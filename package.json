@@ -1,6 +1,6 @@
 {
   "name": "@ctsy/api-sdk",
-  "version": "2.0.48",
+  "version": "2.0.49",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
@@ -20,18 +20,17 @@
   "author": "castleiMac <castle@tansuyun.cn>",
   "license": "MIT",
   "dependencies": {
-    "@ctsy/hook": "^0.0.5",
-    "castle-function": "^1.0.3",
-    "get-value": "^3.0.1",
-    "md5": "^2.2.1",
-    "protobufjs": "^6.8.8",
-    "querystring": "^0.2.0",
-    "set-value": "^3.0.1",
-    "store": "^2.0.12"
+    "@ctsy/hook": "*",
+    "castle-function": "*",
+    "get-value": "*",
+    "md5": "*",
+    "protobufjs": "*",
+    "set-value": "*",
+    "store": "*"
   },
   "devDependencies": {
-    "@types/axios": "^0.14.0",
+    "@types/axios": "*",
     "@types/node": "*",
-    "@types/store": "^2.0.2"
+    "@types/store": "*"
   }
 }
