@@ -92,6 +92,59 @@ namespace AreaApi {
          */
         public CUID: number = 0;
     }
+    export class Family {
+
+        /**
+         * 户编号
+         * 
+         */
+        public FID: number = 0;
+        /**
+         * 行政编号
+         * 
+         */
+        public AID: number = 0;
+        /**
+         * 小区编号
+         * 
+         */
+        public CID: number = 0;
+        /**
+         * 楼栋编号
+         * 
+         */
+        public BID: number = 0;
+        /**
+         * 层号
+         * 
+         */
+        public Floor: number = 0;
+        /**
+         * 户号
+         * 
+         */
+        public No: number = 0;
+        /**
+         * 创建人
+         * 
+         */
+        public CUID: number = 0;
+        /**
+         * 创建时间
+         * 
+         */
+        public CTime: Date = new Date;
+        /**
+         * 性质
+         * 0未登记1自有2租住
+         */
+        public Type: number = 0;
+        /**
+         * 户主
+         * 
+         */
+        public MPID: number = 0;
+    }
     class area extends ApiController {
         read(PCode: number): Promise<{ Level: number, Rows: Area[] }> {
             return this.post('read', { PCode });
@@ -112,5 +165,9 @@ namespace AreaApi {
 
     }
     export const CommunityApi = new community('Building', prefix)
+    class family extends ControllerApi {
+
+    }
+    export const FamilyApi = new family('Family', prefix)
 }
 export default AreaApi;
