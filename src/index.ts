@@ -2,6 +2,7 @@ import axios from 'axios';
 import * as store from 'store'
 import * as qs from 'querystring'
 import * as p from 'protobufjs';
+import { SearchWhere, SearchResult } from './lib';
 p.wrappers[".google.protobuf.Timestamp"] = {
     fromObject: function (object: any) {
         //Convert ISO-8601 to epoch millis
@@ -250,5 +251,26 @@ export namespace ApiCommon {
          * 统计数据，可选
          */
         R?: Object = {};
+    }
+}
+/**
+ * 不完整的完整控制器
+ */
+export class ControllerApi extends ApiController {
+    PK: string = "ID"
+    search<T>(d: SearchWhere): PromiseLike<SearchResult<T>> {
+        return this.post('search', d);
+    }
+    add<T>(d: any): Promise<T> {
+        return this.post('add', d);
+    }
+    adds<T>(d: any[]): Promise<T[]> {
+        return this.post('adds', d);
+    }
+    save(PKID: number, Params: Object) {
+        return this.post('save', { [this.PK]: PKID, Params })
+    }
+    del(PKID: number) {
+        return this.post('del', { [this.PK]: PKID });
     }
 }

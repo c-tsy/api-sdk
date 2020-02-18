@@ -44,13 +44,14 @@ export function tree() { }
 /**
  * 查询结果
  */
-export class SearchResult {
-    L: any[] = [];
+export class SearchResult<T> {
+    L: T[] = [];
     T: number = 0
     P: number = 1
     N: number = 10;
     R: { [index: string]: any } = {}
 }
+
 /**
  * 查询条件
  */
