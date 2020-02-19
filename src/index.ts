@@ -233,6 +233,7 @@ export function jsonp(url: string, cbname: string = '', timeout: number = 1000):
         setTimeout(() => {
             j('Timeout')
             document.body.removeChild(script);
+            delete window[cbname]
         }, timeout)
     })
 
