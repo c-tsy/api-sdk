@@ -218,10 +218,10 @@ export class ApiController {
  * 
  * @param url 
  */
-export function jsonp(url: string, cbname?: string, timeout: number = 1000): Promise<any> {
+export function jsonp(url: string, cbname: string = '', timeout: number = 1000): Promise<any> {
     return new Promise((s, j) => {
         if ('string' != typeof cbname) {
-            cbname = base_covert(10, 32, Math.random() * 100);
+            cbname = base_covert(10, 32, Math.random() * 100).toString();
         }
         url = url.includes('?') ? url + '&cb=' + cbname : url + '?cb=' + cbname
         if (!window[cbname]) {
