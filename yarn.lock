@@ -2,6 +2,11 @@
 # yarn lockfile v1
 
 
+"@ctsy/covert@^1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@ctsy/covert/-/covert-1.0.1.tgz#869910f099fda3cc548094c1857730646044f3b8"
+  integrity sha512-E0q/GHjAJDq26isoG+nzNt9t5QtbNGYRT5Jco6Pq8tuD8lI4zIJ0TtoQldPjhYOAmh/Kx1sUmSI6S8oeb5ZNdQ==
+
 "@ctsy/hook@*":
   version "0.0.6"
   resolved "https://registry.yarnpkg.com/@ctsy/hook/-/hook-0.0.6.tgz#f63aece4fef145fc8b49868f2983c0a38f564f25"

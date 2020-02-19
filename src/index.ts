@@ -3,6 +3,8 @@ import * as store from 'store'
 import * as qs from 'querystring'
 import * as p from 'protobufjs';
 import { SearchWhere, SearchResult } from './lib';
+import { base_covert } from '@ctsy/covert';
+declare let window: any;
 p.wrappers[".google.protobuf.Timestamp"] = {
     fromObject: function (object: any) {
         //Convert ISO-8601 to epoch millis
@@ -212,7 +214,29 @@ export class ApiController {
         return request('get', this.get_url(method), data);
     }
 }
+/**
+ * 
+ * @param url 
+ */
+export function jsonp(url: string, cbname?: string, timeout: number = 1000): Promise<any> {
+    return new Promise((s, j) => {
+        if ('string' != typeof cbname) {
+            cbname = base_covert(10, 32, Math.random() * 100);
+        }
+        url = url.includes('?') ? url + '&cb=' + cbname : url + '?cb=' + cbname
+        if (!window[cbname]) {
+            window[cbname] = s;
+        }
+        let script = document.createElement('script')
+        script.src = url;
+        document.body.appendChild(script);
+        setTimeout(() => {
+            j('Timeout')
+            document.body.removeChild(script);
+        }, timeout)
+    })
 
+}
 /**
  * 创建Api客户端
  * @param appid 
