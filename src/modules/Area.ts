@@ -164,7 +164,7 @@ namespace AreaApi {
     class community extends ControllerApi {
 
     }
-    export const CommunityApi = new community('Building', prefix)
+    export const CommunityApi = new community('Community', prefix)
     class family extends ControllerApi {
         check(CID: number, Type: number, Name: string, Phone: string, BuildingNo: string, UnitNo: string, Floor: string, No: string) {
             return this.post('check', {
