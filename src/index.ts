@@ -116,7 +116,8 @@ async function request(method: 'post' | 'get', path: string, data: any) {
     return await q(path, method == 'get' ? conf : data, conf).then((e: any) => {
         log(path, method, e.config.headers['rand'], Date.now() - e.config.headers['rand'], e.data.c || e.status, e.config.data.length, e.headers['content-length'], e.data.e ? e.data.e.m : '')
         if (e.data.c != 200) {
-            throw new Error(e.data.e && e.data.e.m || e.data.c);
+            let err = e.data.e || {};
+            throw new Error('object' == typeof err ? err.m : ('string' == typeof err ? err : e.data.c));
         }
         return e.data.d;
     }).catch((e: any) => {
