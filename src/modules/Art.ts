@@ -260,6 +260,8 @@ namespace ArtApi {
         Icon: string = "";
         Type: number = 1;
         Sort: number = 0;
+        Key?: string = '';
+        GID?: number = 0;
     }
 
     /**
@@ -273,6 +275,8 @@ namespace ArtApi {
         Memo: string = "";
         Icon: string = "";
         Sort: number = 0;
+        Key?: string = '';
+        GID?: number = 0;
     }
 
     /**
@@ -299,6 +303,16 @@ namespace ArtApi {
          * 
          */
         public Name: string = "";
+        /**
+         * 对象编号，用于分组或其他用途
+         * 
+         */
+        public GID: number = 0;
+        /**
+         * 区分建
+         * 
+         */
+        public Key: string = "";
         /**
          * 创建时间
          * 
@@ -348,8 +362,8 @@ namespace ArtApi {
          * 获取我的所有分类
          * 按Sort和CID排序后返回
          */
-        all(): Promise<ClassClassify[]> {
-            return this.post('all');
+        all(w: { [index: string]: string | number | Object }): Promise<ClassClassify[]> {
+            return this.post('all', w);
         }
         /**
          * 批量添加文章分类
