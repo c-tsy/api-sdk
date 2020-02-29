@@ -1,5 +1,5 @@
 import { ApiController, ApiCommon } from '../index';
-import { ErrorType } from '../lib';
+import { ErrorType, SearchWhere } from '../lib';
 namespace ArtApi {
 
     /**
@@ -176,8 +176,8 @@ namespace ArtApi {
          * @param {number} P 分页页码，从1开始
          * @param {number} N 分页页内条数，默认为10
          */
-        list(CID: number | number[], Status: number = 1, P: number = 1, N: number = 10): Promise<ApiCommon.List<ClassArt>> {
-            return this.post('list', { CID, Status, P, N });
+        list(sw: SearchWhere): Promise<ApiCommon.List<ClassArt>> {
+            return this.post('list', sw);
         }
 
         /**
@@ -211,7 +211,7 @@ namespace ArtApi {
             if (V) {
                 p.push(V);
             }
-            return this.get(p.join('/') + '.json', { ArtID, V })
+            return this.post(p.join('/') + '.json', { ArtID, V })
         }
 
         /**
