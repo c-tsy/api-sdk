@@ -18,10 +18,10 @@ namespace Wechat {
         color: string = ''
     }
     class msg extends WechatController {
-        send(TemplateID: string, Data: { OpenID: string, Data: { first: MsgType | string, remark: MsgType | string, [index: string]: MsgType | string } }[]) {
+        send(TemplateID: string, Data: { OpenID?: string, UID?: number | string, Data: { first: MsgType | string, remark: MsgType | string, [index: string]: MsgType | string } }[]) {
             if (Data instanceof Array && Data.length > 0) {
                 for (let x of Data) {
-                    if (x.OpenID && x.OpenID.length > 10) {
+                    if (x.OpenID && x.OpenID.length > 10 || x.UID) {
 
                     } else {
                         throw new Error('接收对象参数错误')
