@@ -62,3 +62,13 @@ export class SearchWhere {
     N: number = 10;
     Sort: string = "";
 }
+
+/**
+ * 连接处理方式
+ */
+export enum LinkType {
+    //追加
+    append,
+    //替换
+    replace
+}
