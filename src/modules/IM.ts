@@ -52,7 +52,7 @@ export namespace IM {
          * 查询我的IM对象
          */
         mine() {
-            return this.post('mine', '')
+            return this._post('mine', '')
         }
         /**
          * 请求添加好友
@@ -63,16 +63,16 @@ export namespace IM {
          * @param Memo 
          */
         req(OID: string, Type: number, Text: string, CID: string, Memo: string) {
-            if(Text.toString().length < 1) {
+            if (Text.toString().length < 1) {
                 throw new Error(ErrorType.IM.TEXT_LENGTH_TOO_SHORT)
             }
-            if(OID.toString().length == 0) {
+            if (OID.toString().length == 0) {
                 throw new Error(ErrorType.IM.OID_LENGTH_IS_ZERO)
             }
-            if(typeof Type == 'number' && Type != 1 && Type != 0) {
+            if (typeof Type == 'number' && Type != 1 && Type != 0) {
                 throw new Error(ErrorType.IM.NOT_ACCEPTED_FOR_THE_MOMENT)
             }
-            return this.post('req', {OID, Type, Text, CID, Memo})
+            return this._post('req', { OID, Type, Text, CID, Memo })
         }
         /**
          * 通过申请
@@ -82,7 +82,7 @@ export namespace IM {
          * 加群申请通过时不需要这个参数
          */
         pass(RID: number, Data: any) {
-            return this.post('pass',{RID, Data})
+            return this._post('pass', { RID, Data })
         }
         /**
          * 拒绝申请
@@ -90,7 +90,7 @@ export namespace IM {
          * @param Text 拒绝备注
          */
         deny(RID: number, Text: string) {
-            return this.post('deny',{RID, Text})
+            return this._post('deny', { RID, Text })
         }
         /**
          * 申请查询
@@ -99,17 +99,17 @@ export namespace IM {
          * @param Status 审核状体
          */
         reqs(P: number, N: number, Status: number) {
-            if(N > 1000) {
+            if (N > 1000) {
                 throw new Error(ErrorType.IM.PAGINATION_IS_EXCEED_1000)
             }
-           return this.post('reqs',{P, N, Status})
+            return this._post('reqs', { P, N, Status })
         }
         /**
          * 删除好友
          * @param UID 
          */
         del(UID: string) {
-           return this.post('del',{ UID })
+            return this._post('del', { UID })
         }
         /**
          * 添加好友分组
@@ -117,27 +117,27 @@ export namespace IM {
          * @param Sort 
          */
         addGroup(Name: string, Sort: number) {
-           return this.post('addGroup', {Name, Sort})
+            return this._post('addGroup', { Name, Sort })
         }
         /**
          * 删除好友分组
          * @param GID 
          */
         delGroup(GID: number) {
-           return this.post('delGroup', {GID})
+            return this._post('delGroup', { GID })
         }
         /**
          * 用户分组
          * @param data 
          */
         group(data: GroupMemberParams) {
-            if(data.GID.toString().length == 0) {
+            if (data.GID.toString().length == 0) {
                 throw new Error(ErrorType.IM.GID_LENGTH_IS_ZERO)
             }
-            if(data.UIDs.length == 0) {
+            if (data.UIDs.length == 0) {
                 throw new Error(ErrorType.IM.UIDS_LENGTH_IS_ZERO)
             }
-           return this.post('group', { data })
+            return this._post('group', { data })
         }
     }
     export const Member = new member();
@@ -162,7 +162,7 @@ export namespace IM {
             FMID?: string | number
         } = {}) {
             // if(Opt.Files)
-            return this.post('send', Object.assign(Opt, { To, Text }))
+            return this._post('send', Object.assign(Opt, { To, Text }))
         }
         /**
          * 读取消息
@@ -171,10 +171,10 @@ export namespace IM {
          * @param UID 对方编号，群组为群组编号
          */
         read(P: number = 1, N: number = 10, UIDs: string[] = []) {
-            if(!(UIDs instanceof Array) || UIDs.length == 0) {
-                throw new Error(ErrorType.IM.GID_PARAMS_IS_ERROR) 
+            if (!(UIDs instanceof Array) || UIDs.length == 0) {
+                throw new Error(ErrorType.IM.GID_PARAMS_IS_ERROR)
             }
-            return this.post('read', { P, N, UIDs })
+            return this._post('read', { P, N, UIDs })
         }
     }
     export const Msg = new msg()
@@ -187,32 +187,32 @@ export namespace IM {
          * @param data 
          */
         adds(data: IMClassUsers[]) {
-            if(!(data instanceof Array)) throw new Error(ErrorType.IM.PARAMS_IS_ERROR)
-            if(data.length == 0 || data.length > 2000) {
+            if (!(data instanceof Array)) throw new Error(ErrorType.IM.PARAMS_IS_ERROR)
+            if (data.length == 0 || data.length > 2000) {
                 throw new Error(ErrorType.IM.DATA_LENGTH_IS_ERROR)
             }
-            for(let x of data) {
-                if(x.Nick.length == 0 || x.Nick.length > 30) {
+            for (let x of data) {
+                if (x.Nick.length == 0 || x.Nick.length > 30) {
                     throw new Error(ErrorType.IM.NICK_LENGTH_IS_ERROR)
                 }
-                if(x.Head.length > 50) {
+                if (x.Head.length > 50) {
                     throw new Error(ErrorType.IM.HEAD_LENGTH_IS_EXCEED_50)
                 }
             }
-           return this.post('adds', {data})
+            return this._post('adds', { data })
         }
         /**
          * 修改用户信息
          * @param data 
          */
         save(data: IMClassUsers) {
-            if(!data.UID) {
+            if (!data.UID) {
                 throw new Error(ErrorType.IM.UID_PARAMS_IS_ERROR)
             }
-            if(data.Nick.length == 0 || data.Nick.length > 30) {
+            if (data.Nick.length == 0 || data.Nick.length > 30) {
                 throw new Error(ErrorType.IM.NICK_LENGTH_IS_ERROR)
             }
-           return this.post('save',data)
+            return this._post('save', data)
         }
         /**
          * 用户账户查询
@@ -221,7 +221,7 @@ export namespace IM {
          * @param N 
          */
         search(Keyword: string, P: number, N: number) {
-          return this.post('search',{Keyword, P, N})
+            return this._post('search', { Keyword, P, N })
         }
     }
     export const User = new user()

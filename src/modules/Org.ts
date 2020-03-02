@@ -101,17 +101,17 @@ namespace Organ {
     }
     class organ extends ApiController {
         list(data: { P?: number, N?: number, Sort?: string, Keyword?: string, W?: { [index: string]: any } }): Promise<any> {
-            return this.post('list', data);
+            return this._post('list', data);
         }
         adds(data: OrgOrgan[]) {
             if (data.length > 0) {
-                return this.post('adds', data);
+                return this._post('adds', data);
             }
             throw new Error(ErrorType.Org.ORGAN_SHOULD_BE_ARRAY)
         }
         save(UnitIDs: number[], data: any) {
             if (UnitIDs.length > 0) {
-                return this.post('save', { UnitIDs, Data: data })
+                return this._post('save', { UnitIDs, Data: data })
             }
             throw new Error(ErrorType.Org.UNITIDS_SHOULD_BE_ARRAY)
         }
@@ -184,7 +184,7 @@ namespace Organ {
          * @param data 
          */
         list(data: { P?: number, N?: number, Sort?: string, Keyword?: string, W?: { [index: string]: any } }) {
-            return this.post('list', data);
+            return this._post('list', data);
         }
         /**
          * 批量添加区域信息
@@ -192,7 +192,7 @@ namespace Organ {
          */
         adds(data: OrgArea[]) {
             if (data.length > 0) {
-                return this.post('adds', data);
+                return this._post('adds', data);
             }
             throw new Error(ErrorType.Org.ORGAN_SHOULD_BE_ARRAY)
         }
@@ -203,7 +203,7 @@ namespace Organ {
          */
         save(AIDs: number[], data: any) {
             if (AIDs.length > 0) {
-                return this.post('save', { AIDs, Data: data })
+                return this._post('save', { AIDs, Data: data })
             }
             throw new Error(ErrorType.Org.UNITIDS_SHOULD_BE_ARRAY)
         }
@@ -238,7 +238,7 @@ namespace Organ {
                     }
                 }
             }
-            return this.post('link', Object.assign(data, { Type: type }))
+            return this._post('link', Object.assign(data, { Type: type }))
         }
     }
     export enum LinkType {

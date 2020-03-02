@@ -147,10 +147,10 @@ namespace AreaApi {
     }
     class area extends ApiController {
         read(PCode: number): Promise<{ Level: number, Rows: Area[] }> {
-            return this.post('read', { PCode });
+            return this._post('read', { PCode });
         }
         save(Code: number, Name: number, Level: number): Promise<boolean> {
-            return this.post('save', { Code, Name, Level })
+            return this._post('save', { Code, Name, Level })
         }
     }
     /**
@@ -167,7 +167,7 @@ namespace AreaApi {
     export const CommunityApi = new community('Community', prefix)
     class family extends ControllerApi {
         check(CID: number, Type: number, Name: string, Phone: string, BuildingNo: string, UnitNo: string, Floor: string, No: string) {
-            return this.post('check', {
+            return this._post('check', {
                 CID, Type, Name, Phone, BuildingNo, UnitNo, Floor, No,
             })
         }

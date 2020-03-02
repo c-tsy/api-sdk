@@ -3,7 +3,7 @@ namespace DataApi {
     const p = '_data'
     class kd extends ApiController {
         query(No: string) {
-            return this.get('query', { No });
+            return this._get('query', { No });
         }
     }
     export const Kd = new kd('Kd', p);
@@ -13,14 +13,14 @@ namespace DataApi {
          * @param Keyword 
          */
         search(Keyword: string) {
-            return this.post('search', { Keyword });
+            return this._post('search', { Keyword });
         }
         /**
          * 获取企业详细信息
          * @param PID 
          */
         info(PID: string) {
-            return this.post('info', { PID });
+            return this._post('info', { PID });
         }
     }
     var areas: { [index: string]: any } = {};

@@ -103,7 +103,7 @@ export namespace User {
             super('Admin', prefix);
         }
         tokenLogin(Token: string, UID: string) {
-            return this.post('tokenLogin', { Token, UID })
+            return this._post('tokenLogin', { Token, UID })
         }
     }
     class group extends ApiController {
@@ -118,7 +118,7 @@ export namespace User {
             if (!['list', 'tree', 'all'].includes(Type)) {
                 throw new Error(ErrorType.User.TYPE_PARAMS_IS_ERROR)
             }
-            return this.get('all', { Type })
+            return this._get('all', { Type })
         }
         /**
          * 更新分组信息
@@ -126,7 +126,7 @@ export namespace User {
          * @param Data 
          */
         save(UGID: number, Data: any) {
-            return this.post('save', { UGID, Data });
+            return this._post('save', { UGID, Data });
         }
         /**
          * 获取分组用户
@@ -135,7 +135,7 @@ export namespace User {
          * @param N 
          */
         members(UGID: number, P: number = 1, N: number = 10) {
-            return this.post('members', { UGID, P, N });
+            return this._post('members', { UGID, P, N });
         }
         /**
          * 添加分组
@@ -145,7 +145,7 @@ export namespace User {
          * @param PUGID 
          */
         add(Title: string, Memo: string, Sort: number = 0, PUGID: number = 0) {
-            return this.post('add', { Title, Memo, Sort, PUGID })
+            return this._post('add', { Title, Memo, Sort, PUGID })
         }
         /**
          * 用户分组
@@ -153,7 +153,7 @@ export namespace User {
          * @param UIDs 
          */
         link(UGID: number, UIDs: number[]) {
-            return this.post('link', { UGID, UIDs });
+            return this._post('link', { UGID, UIDs });
         }
         /**
          * 移除用户分组关系
@@ -161,14 +161,14 @@ export namespace User {
          * @param UIDs 
          */
         unlink(UGID: number, UIDs: number[]) {
-            return this.post('unlink', { UGID, UIDs });
+            return this._post('unlink', { UGID, UIDs });
         }
         /**
          * 查询指定用户组的权限信息
          * @param UGIDs 
          */
         rules(UGIDs: number[]) {
-            return this.post('rules', { UGIDs })
+            return this._post('rules', { UGIDs })
         }
         /**
          * 权限分配
@@ -176,7 +176,7 @@ export namespace User {
          * @param RIDs 权限ID值
          */
         rlink(UGID: number, RIDs: number[]) {
-            return this.post('rlink', { UGID, RIDs })
+            return this._post('rlink', { UGID, RIDs })
         }
         /**
          * 移除权限分配
@@ -184,7 +184,7 @@ export namespace User {
          * @param RIDs 权限ID值
          */
         runlink(UGID: number, RIDs: number[]) {
-            return this.post('runlink', { UGID, RIDs })
+            return this._post('runlink', { UGID, RIDs })
         }
     }
     export const Group = new group();
@@ -202,7 +202,7 @@ export namespace User {
          * @param Force 
          */
         my(UID: number = 0, Force: boolean = false) {
-            return this.post('my', { UID, Force })
+            return this._post('my', { UID, Force })
         }
         getGMenus() {
 
@@ -227,13 +227,13 @@ export namespace User {
          * @param remove 
          */
         vcheck(data: any, remove: boolean = true) {
-            return this.post('vcheck', { data, remove })
+            return this._post('vcheck', { data, remove })
         }
         vcode(data: any, expire: number | any = 0) {
             if (expire.appid) {
                 return ''
             }
-            return this.post('vcode', { data, expire })
+            return this._post('vcode', { data, expire })
         }
         /**
          * 账号密码登陆
@@ -247,7 +247,7 @@ export namespace User {
             if ('string' != typeof PWD) {
                 throw new Error(ErrorType.User.PWD_SHOULD_BE_STRING)
             }
-            let rs = await this.post('login', { Account, PWD: md5(PWD) })
+            let rs = await this._post('login', { Account, PWD: md5(PWD) })
             if (rs.UID) {
                 hook.emit('logined', HookWhen.After, '', rs);
                 ApiConfig.UID = rs.UID
@@ -260,7 +260,7 @@ export namespace User {
          * @param Account 
          */
         async thirdLogin(Type: string, Account: string) {
-            return await this.post('alogin', { Type, Account });
+            return await this._post('alogin', { Type, Account });
         }
         /**
          * 
@@ -268,32 +268,32 @@ export namespace User {
          * @param Account 
          */
         async thirdBind(Type: string, Account: string) {
-            return await this.post('abind', { Type, Account });
+            return await this._post('abind', { Type, Account });
         }/**
          * 
          * @param Type 三方登陆解绑
          * @param Account 
          */
         async thirdUnBind(Type: string, Account: string) {
-            return await this.post('aunbind', { Type, Account });
+            return await this._post('aunbind', { Type, Account });
         }
         /**
          * 获取我的权限
          */
         async getPermissions() {
-            return await this.post('getPermissions', '');
+            return await this._post('getPermissions', '');
         }
         /**
          * 获取当前登录用户信息
          */
         async info() {
-            return await this.post('info', {});
+            return await this._post('info', {});
         }
         /**
          * 退出登录
          */
         async logout() {
-            let rs = await this.post('logout', {});
+            let rs = await this._post('logout', {});
             hook.emit('logout', HookWhen.After, '', rs);
             ApiConfig.UID = ''
             return rs;
@@ -302,7 +302,7 @@ export namespace User {
          * 检查并获取当前登录状态，返回内容同登录操作
          */
         async relogin() {
-            let rs = await this.get('relogin')
+            let rs = await this._get('relogin')
             if (rs.UID) {
                 hook.emit('login', HookWhen.After, '', rs);
                 ApiConfig.UID = rs.UID
@@ -327,7 +327,7 @@ export namespace User {
             if (!/.{6,}/.test(OldPWD)) {
                 throw new Error(ErrorType.User.OLDPWD_PARAMS_IS_ERROR)
             }
-            return this.post('reset', { OldPWD: md5(OldPWD), PWD: md5(PWD) })
+            return this._post('reset', { OldPWD: md5(OldPWD), PWD: md5(PWD) })
         }
         /**
          * 账号注册
@@ -348,7 +348,7 @@ export namespace User {
             if (!/.{6,}/.test(PWD)) {
                 throw new Error(ErrorType.User.PWD_PARAMS_IS_ERROR)
             }
-            return await this.post('regist', { Name, Nick, Sex, Account, PWD: md5(PWD), PUID })
+            return await this._post('regist', { Name, Nick, Sex, Account, PWD: md5(PWD), PUID })
         }
         /**
          * 忘记密码重设
@@ -369,14 +369,14 @@ export namespace User {
             if (!/^[\w\b_-]{5,}$/.test(Account)) {
                 throw new Error(ErrorType.User.ACCOUNT_PARAMS_IS_ERROR)
             }
-            return this.post('forget', { Account, PWD, VCode });
+            return this._post('forget', { Account, PWD, VCode });
         }
         /**
          * 重写session
          * @param UID 
          */
         rsession(UID: any) {
-            return this.post('rsession', { UID })
+            return this._post('rsession', { UID })
         }
     }
     export const Auth = new auth();
@@ -402,7 +402,7 @@ export namespace User {
                 conf = W;
                 W = W.W;
             }
-            return this.post('search', {
+            return this._post('search', {
                 W: W,
                 Keyword: conf.Keyword || "",
                 N: conf.N || 10,
@@ -441,11 +441,11 @@ export namespace User {
             if (Object.keys(d).length == 0) {
                 throw new Error('Nick/Sex/Status')
             }
-            return this.post('save', Object.assign({ UID }, data))
+            return this._post('save', Object.assign({ UID }, data))
         }
 
         myteam(UID: number, P: number, N: number) {
-            return this.post('myteam', { UID, P, N })
+            return this._post('myteam', { UID, P, N })
         }
     }
     export const User = new user();
@@ -492,20 +492,20 @@ export namespace User {
          * 获取我的权限列表
          */
         mine(): Promise<number[]> {
-            return this.post('mine');
+            return this._post('mine');
         }
         /**
          * 获取所有的权限信息
          */
         all(): Promise<RuleClass[]> {
-            return this.get('all');
+            return this._get('all');
         }
         /**
          * 获取所有的权限及权限组信息
          */
         async group(): Promise<{ [index: string]: RuleGroupClass }> {
             let rs: { [index: string]: RuleGroupClass } = {}, map: { [index: string]: number[] } = {};
-            let { Rules, Groups } = await this.get('group');
+            let { Rules, Groups } = await this._get('group');
             let tGroups: { [index: string]: RuleGroupClass } = {};
             for (let x of Groups) {
                 x.Subs = [];
@@ -552,14 +552,14 @@ export namespace User {
          * @param Contact 
          */
         save(UID: number, Contact: { T: string, V: string, C: string }[]) {
-            return this.post('save', { UID, Contact })
+            return this._post('save', { UID, Contact })
         }
         /**
          * 批量读取联系信息
          * @param UIDs 
          */
         read(UIDs: number[]) {
-            return this.post('read', { UIDs });
+            return this._post('read', { UIDs });
         }
     }
     /**

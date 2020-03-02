@@ -49,7 +49,7 @@ namespace Wechat {
                     } else { throw new Error('First 参数错误') }
 
                 }
-                return this.post('send', { TemplateID, Data });
+                return this._post('send', { TemplateID, Data });
             }
             throw new Error('消息内容应该为数组且长度大于0')
         }

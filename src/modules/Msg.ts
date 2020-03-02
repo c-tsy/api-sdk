@@ -7,7 +7,7 @@ export namespace Msg {
          * @param Tel 手机号码 1开头的11位手机号，目前仅支持中国号码
          */
         vcode(Tel: string) {
-            return this.post('vcode', { Tel });
+            return this._post('vcode', { Tel });
         }
     }
     export const Sms = new sms('Sms', prefix);

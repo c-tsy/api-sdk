@@ -177,7 +177,7 @@ namespace ArtApi {
          * @param {number} N 分页页内条数，默认为10
          */
         list(sw: SearchWhere): Promise<ApiCommon.List<ClassArt>> {
-            return this.post('list', sw);
+            return this._post('list', sw);
         }
 
         /**
@@ -195,7 +195,7 @@ namespace ArtApi {
             if (!['status', 'top'].includes(Op.toLowerCase())) {
                 throw new Error('Op Error')
             }
-            return this.post('batch', { ArtIDs, Op, Val: !!Val ? 1 : 0 })
+            return this._post('batch', { ArtIDs, Op, Val: !!Val ? 1 : 0 })
         }
 
         /**
@@ -211,7 +211,7 @@ namespace ArtApi {
             if (V) {
                 p.push(V);
             }
-            return this.post(p.join('/') + '.json', { ArtID, V })
+            return this._post(p.join('/') + '.json', { ArtID, V })
         }
 
         /**
@@ -225,7 +225,7 @@ namespace ArtApi {
             // if (data.Content.length == 0) {
             //     throw new Error('Content.length>0')
             // }
-            return this.post('save', data);
+            return this._post('save', data);
         }
 
         /**
@@ -245,7 +245,7 @@ namespace ArtApi {
                     throw new Error('CIDs');
                 }
             }
-            return this.post('classify', { ArtID, CIDs });
+            return this._post('classify', { ArtID, CIDs });
         }
     }
 
@@ -363,7 +363,7 @@ namespace ArtApi {
          * 按Sort和CID排序后返回
          */
         all(w: { [index: string]: string | number | Object }): Promise<ClassClassify[]> {
-            return this.post('all', w);
+            return this._post('all', w);
         }
         /**
          * 批量添加文章分类
@@ -373,7 +373,7 @@ namespace ArtApi {
             if (data.length == 0) {
                 throw new Error(ErrorType.Art.DATA_LENGTH_IS_ZERO);
             }
-            return this.post('adds', data);
+            return this._post('adds', data);
         }
         /**
          * 保存文章分类
@@ -395,7 +395,7 @@ namespace ArtApi {
             } else {
                 throw new Error(ErrorType.Art.DATA_LENGTH_IS_ERROR)
             }
-            return this.post('saves', data);
+            return this._post('saves', data);
         }
     }
 
@@ -407,7 +407,7 @@ namespace ArtApi {
          * 获取所有支持的文章类型
          */
         all() {
-            return this.post('all');
+            return this._post('all');
         }
     }
 

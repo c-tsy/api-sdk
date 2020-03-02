@@ -6,7 +6,7 @@ const md5: any = require('md5')
 namespace Upload {
     class upload extends ApiController {
         sign(what: string, file: File, oname: string = '', expire: number = 0, acl: 'private' | 'read' = 'private') {
-            return this.post('sign', {
+            return this._post('sign', {
                 what,
                 oname,
                 expire,
@@ -18,7 +18,7 @@ namespace Upload {
             });
         }
         list(data: { Keyword?: string, W: any, P?: number, N?: number, Sort?: string }) {
-            return this.post('list', { data })
+            return this._post('list', { data })
         }
     }
     export const Upload = new upload('Upload', '_upload')
