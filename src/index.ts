@@ -202,7 +202,7 @@ export class ApiController {
      * @param data 
      * @param opt 
      */
-    post(method: string, data: any = {}) {
+    _post(method: string, data: any = {}) {
         return request('post', this.get_url(method), data);
     }
     /**
@@ -210,7 +210,7 @@ export class ApiController {
      * @param method 
      * @param data 
      */
-    get(method: string, data: any = {}) {
+    _get(method: string, data: any = {}) {
         return request('get', this.get_url(method), data);
     }
 }
@@ -285,18 +285,18 @@ export namespace ApiCommon {
 export class ControllerApi extends ApiController {
     PK: string = "ID"
     search<T>(d: SearchWhere): PromiseLike<SearchResult<T>> {
-        return this.post('search', d);
+        return this._post('search', d);
     }
     add<T>(d: any): Promise<T> {
-        return this.post('add', d);
+        return this._post('add', d);
     }
     adds<T>(d: any[]): Promise<T[]> {
-        return this.post('adds', d);
+        return this._post('adds', d);
     }
     save(PKID: number, Params: Object) {
-        return this.post('save', { [this.PK]: PKID, Params })
+        return this._post('save', { [this.PK]: PKID, Params })
     }
     del(PKID: number) {
-        return this.post('del', { [this.PK]: PKID });
+        return this._post('del', { [this.PK]: PKID });
     }
 }
