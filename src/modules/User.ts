@@ -252,6 +252,8 @@ export namespace User {
                 hook.emit('logined', HookWhen.After, '', rs);
                 ApiConfig.UID = rs.UID
             }
+            if (!rs.RIDs) { rs.RIDs = [] }
+            if (!rs.UGIDs) { rs.UGIDs = [] }
             return rs;
         }
         /**
