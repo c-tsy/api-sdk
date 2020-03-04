@@ -539,9 +539,19 @@ namespace Paper {
          */
         public Items: ClassQuestionItem[] = [];
     }
+    /**
+     * 试卷处理类
+     */
     class paper extends ApiController {
         constructor() {
             super('Paper', prefix);
+        }
+        /**
+         * 读取试卷内容测试
+         * @param PID 
+         */
+        get(PID: number) {
+            return this._post('get', { PID });
         }
         /**
          * 添加题目，支持题项的自动处理并要求题项内容不能为空
@@ -586,7 +596,7 @@ namespace Paper {
     }
     export const PaperApi = new paper()
     /**
-     * 题目累
+     * 题目
      */
     class question extends ApiController {
         /**
