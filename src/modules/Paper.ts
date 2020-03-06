@@ -5,7 +5,139 @@ import { SearchResult } from '../lib';
  * 答题部分模块
  */
 namespace Paper {
-    const prefix = "_paper"
+    const prefix = "_paper"/**
+    * 试卷答题结论 Answered
+    * 结论编号 PAID 自增(bigint(20))
+    * 试卷编号 PID 序号(bigint(20))
+    * 答题人 CUID 序号(bigint(20))
+    * 总分 Total 2位小数(double(20,2))
+    * 得分 Score 2位小数(double(20,2))
+    * 答题次数 Times 状态(tinyint(1))
+    * 开始时间 STime datetime(datetime)
+    * 结束时间 ETime datetime(datetime)
+    * 总计耗时 Seconds 序号(bigint(20))
+    * 有效答题 Accept 状态(tinyint(1))
+    * 应用编号 AID 序号(bigint(20))
+    * 分组编号 GID 序号(bigint(20))
+    * 分组键 Key char(100)(char(100))
+    * 创建时间 CTime datetime(datetime)
+    * 创建人 CUID2 序号(bigint(20))
+    * 更新时间 UTime datetime(datetime)
+    * 更新人 UUID 序号(bigint(20))
+    * 删除时间 DTime datetime(datetime)
+    * 删除人 DUID 序号(bigint(20))
+    * 答题IP IP char(50)(char(50))
+    * 答题设备 Device char(50)(char(50))
+    * 答题唯一键 Uniq char(50)(char(50))
+  */
+    export class ClassPaperAnswered {
+
+        /**
+         * 结论编号
+         * 
+         */
+        public PAID: number = 0;
+        /**
+         * 试卷编号
+         * 
+         */
+        public PID: number = 0;
+        /**
+         * 答题人
+         * 
+         */
+        public CUID: number = 0;
+        /**
+         * 总分
+         * 
+         */
+        public Total: number = 0;
+        /**
+         * 得分
+         * 
+         */
+        public Score: number = 0;
+        /**
+         * 答题次数
+         * 第一次为1，按次累计
+         */
+        public Times: number = 1;
+        /**
+         * 开始时间
+         * 
+         */
+        public STime: Date = new Date;
+        /**
+         * 结束时间
+         * 
+         */
+        public ETime: Date = new Date;
+        /**
+         * 总计耗时
+         * 
+         */
+        public Seconds: number = 0;
+        /**
+         * 有效答题
+         * 1有效0无效，针对允许重复答题
+         */
+        public Accept: number = 1;
+        /**
+         * 应用编号
+         * 
+         */
+        public AID: number = 0;
+        /**
+         * 分组编号
+         * 
+         */
+        public GID: number = 0;
+        /**
+         * 分组键
+         * 
+         */
+        public Key: string = "";
+        /**
+         * 创建时间
+         * 
+         */
+        public CTime: Date = new Date;
+        /**
+         * 更新时间
+         * 
+         */
+        public UTime: Date = new Date;
+        /**
+         * 更新人
+         * 
+         */
+        public UUID: number = 0;
+        /**
+         * 删除时间
+         * 
+         */
+        public DTime: Date = new Date;
+        /**
+         * 删除人
+         * 
+         */
+        public DUID: number = 0;
+        /**
+         * 答题IP
+         * 
+         */
+        public IP: string = "";
+        /**
+         * 答题设备
+         * 
+         */
+        public Device: string = "";
+        /**
+         * 答题唯一键
+         * 
+         */
+        public Uniq: string = "";
+    }
     /**
   * 答题情况 PaperAnswer
   * 答题编号 PAID 自增(bigint(20))
@@ -115,25 +247,25 @@ namespace Paper {
         public JUID: number = 0;
     }
     /**
-  * 试卷生成规则 Config
-  * 规则编号 CID 自增(bigint(20))
-  * 试卷编号 PID 序号(bigint(20))
-  * 题组编号 QGID 序号(bigint(20))
-  * 题目源 Source JSON(json)
-  * 抽取题数 Use 序号(bigint(20))
-  * 题组分值 Score 2位小数(double(20,2))
-  * 排序 Sort 序号(bigint(20))
-  * 规则标题 Title char(255)(char(255))
-  * 删除人 DUID 序号(bigint(20))
-  * 删除时间 DTime datetime(datetime)
-  * 更新人 UUID 序号(bigint(20))
-  * 更新时间 UTime datetime(datetime)
-  * 创建人 CUID 序号(bigint(20))
-  * 创建时间 CTime datetime(datetime)
-  * 分组键 Key char(100)(char(100))
-  * 分组编号 GID 序号(bigint(20))
-  * 应用编号 AID 序号(bigint(20))
-*/
+     * 试卷生成规则 Config
+     * 规则编号 CID 自增(bigint(20))
+     * 试卷编号 PID 序号(bigint(20))
+     * 题组编号 QGID 序号(bigint(20))
+     * 题目源 Source JSON(json)
+     * 抽取题数 Use 序号(bigint(20))
+     * 题组分值 Score 2位小数(double(20,2))
+     * 排序 Sort 序号(bigint(20))
+     * 规则标题 Title char(255)(char(255))
+     * 删除人 DUID 序号(bigint(20))
+     * 删除时间 DTime datetime(datetime)
+     * 更新人 UUID 序号(bigint(20))
+     * 更新时间 UTime datetime(datetime)
+     * 创建人 CUID 序号(bigint(20))
+     * 创建时间 CTime datetime(datetime)
+     * 分组键 Key char(100)(char(100))
+     * 分组编号 GID 序号(bigint(20))
+     * 应用编号 AID 序号(bigint(20))
+    */
     export class ClassPaperConfig {
 
         /**
@@ -221,6 +353,11 @@ namespace Paper {
          * 
          */
         public AID: number = 0;
+        /**
+         * 题组内随机抽题
+         * 
+         */
+        public Rand: boolean = true;
     }
     /**
     * 题项 QuestionItem
@@ -238,7 +375,7 @@ namespace Paper {
     * 更新人 UUID 序号(bigint(20))
     * 删除时间 DTime datetime(datetime)
     * 删除人 DUID 序号(bigint(20))
-  */
+    */
     export class ClassQuestionItem {
         /**
          * 题项编号
@@ -548,25 +685,25 @@ namespace Paper {
         }
         /**
          * 读取试卷内容测试
-         * @param PID 
+         * @param PID 试卷编号
          */
         get(PID: number) {
             return this._post('get', { PID });
         }
         /**
          * 添加题目，支持题项的自动处理并要求题项内容不能为空
-         * @param Questions 
+         * @param Papers 试题
          */
-        adds(Questions: ClassPaper[]): Promise<ClassPaper[]> {
-            return this._post('adds', Questions)
+        adds(Papers: ClassPaper[]): Promise<ClassPaper[]> {
+            return this._post('adds', Papers)
         }
         /**
          * 修改后保存题干信息，不支持题项的自动处理
          * @param QID 
          * @param Params 
          */
-        save(QID: number, Params: ClassPaper): Promise<ClassPaper | boolean> {
-            return this._post('save', { QID, Params })
+        save(PID: number, Params: ClassPaper): Promise<ClassPaper | boolean> {
+            return this._post('save', { PID, Params })
         }
         /**
          * 搜索查询试卷
@@ -576,9 +713,24 @@ namespace Paper {
             return this._post('search', w);
         }
         /**
-         * 答题
+         * 答题结果提交
+         * @param PID 试卷编号
+         * @param UID 用户编号
+         * @param STime 开始时间
+         * @param ETime 结束时间
+         * @param GID 分组编号
+         * @param Key 分组键
+         * @param Answers 答案选项内容
          */
-        answer() { }
+        answer(PID: number, UID: number, STime: Date, ETime: Date, GID: number = 0, Key: string = "", Answers: { QID: number, SlectedQIDs: number[] }[]) {
+            let answers: any = {};
+            for (let x of Answers) {
+                answers[x.QID] = x.SlectedQIDs;
+            }
+            return this._post('answer', {
+                UID, PID, STime, ETime, Key, GID, Answers: answers
+            })
+        }
         /**
          * 读取试卷信息
          * @param PID 
@@ -854,5 +1006,6 @@ namespace Paper {
         }
     }
     export const QuestionGroupApi = new QuestionGroup();
+
 }
 export default Paper;
