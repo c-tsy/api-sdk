@@ -726,10 +726,10 @@ namespace Paper {
          * @param Key 分组键
          * @param Answers 答案选项内容
          */
-        answer(PID: number, UID: number, STime: Date, ETime: Date, GID: number = 0, Key: string = "", Answers: { QID: number, SlectedQIDs: number[] }[]) {
+        answer(PID: number, UID: number, STime: Date, ETime: Date, GID: number = 0, Key: string = "", Answers: { QID: number, SelectedQIIDs: number[] }[]) {
             let answers: any = {};
             for (let x of Answers) {
-                answers[x.QID] = x.SlectedQIDs;
+                answers[x.QID] = x.SelectedQIIDs;
             }
             return this._post('answer', {
                 UID, PID, STime, ETime, Key, GID, Answers: answers
