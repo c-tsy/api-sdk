@@ -588,6 +588,15 @@ namespace ArtApi {
             return this._post('rlog', { GID, ArtID, UID, Key })
         }
     }
+    class comment extends ApiController {
+        adds(Comments: ClassArtComment[]) {
+            return this._post('adds', Comments);
+        }
+        read(ArtID: number) {
+            return this._post('read', { ArtID });
+        }
+    }
+    export const CommentApi = new comment('Comment', prefix)
     /**
      * 文章管理
      */
