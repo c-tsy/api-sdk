@@ -358,6 +358,10 @@ namespace Paper {
          * 
          */
         public Rand: boolean = true;
+        /**
+         * 该配置所属题组中的题目数组
+         */
+        public Questions:ClassQuestion[]=[];
     }
     /**
     * 题项 QuestionItem
