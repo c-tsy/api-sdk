@@ -1,7 +1,152 @@
 import { ApiController, ApiCommon } from '../index';
 import { ErrorType, SearchWhere } from '../lib';
 namespace ArtApi {
+    const prefix = "_art"
+    export class ClassArtComment {
 
+        /**
+         * CID
+         * 
+         */
+        public CID: number = 0;
+        /**
+         * ArtID
+         * 
+         */
+        public ArtID: number = 0;
+        /**
+         * GID
+         * 
+         */
+        public GID: number = 0;
+        /**
+         * Key
+         * 
+         */
+        public Key: string = "";
+        /**
+         * 评论人
+         * 
+         */
+        public CUID: number = 0;
+        /**
+         * 评论内容
+         * 
+         */
+        public Desc: string = "";
+        /**
+         * 图片
+         * 
+         */
+        public Img: string = "";
+        /**
+         * 评论时间
+         * 
+         */
+        public CTime: Date = new Date;
+        /**
+         * 引用评论
+         * 
+         */
+        public PCID: number = 0;
+    }
+    /**
+     * 文章阅读统计对象
+     */
+    export class ClassArtRead {
+
+        /**
+         * RID
+         * 
+         */
+        public RID: number = 0;
+        /**
+         * 阅读人
+         * 
+         */
+        public UID: number = 0;
+        /**
+         * 累计时间
+         * 
+         */
+        public Secend: number = 0;
+        /**
+         * 文章编号
+         * 
+         */
+        public ArtID: number = 0;
+        /**
+         * 阅读次数
+         * 
+         */
+        public Times: number = 0;
+        /**
+         * AID
+         * 
+         */
+        public AID: number = 0;
+        /**
+         * GID
+         * 
+         */
+        public GID: number = 0;
+        /**
+         * Key
+         * 
+         */
+        public Key: string = "";
+    }
+    /**
+     * 文章阅读详情对象
+     */
+    export class ClassArtReadLog {
+
+        /**
+         * RLID
+         * 
+         */
+        public RLID: number = 0;
+        /**
+         * 阅读人
+         * 
+         */
+        public UID: number = 0;
+        /**
+         * 开始时间
+         * 
+         */
+        public STime: Date = new Date;
+        /**
+         * 结束时间
+         * 
+         */
+        public ETime: Date = new Date;
+        /**
+         * 更新时间
+         * 
+         */
+        public UTime: Date = new Date;
+        /**
+         * 文章编号
+         * 
+         */
+        public ArtID: number = 0;
+        /**
+         * 阅读次数
+         * 
+         */
+        public Times: number = 0;
+        /**
+         * 阅读编号
+         * 
+         */
+        public RID: number = 0;
+        /**
+         * GID
+         * 
+         */
+        public GID: number = 0;
+    }
     /**
       * 文章 Art
       * 文章编号 ArtID 自增编号(bigint(20))
@@ -27,11 +172,6 @@ namespace ArtApi {
          * 
          */
         public ArtID: number = 0;
-        /**
-         * 应用编号
-         * 
-         */
-        public AID: number = 0;
         /**
          * 标题
          * 
@@ -410,20 +550,63 @@ namespace ArtApi {
             return this._post('all');
         }
     }
-
+    export class ClassArtReadDetail extends ClassArtRead {
+        /**
+         * 明细记录
+         */
+        Logs: ClassArtReadLog[] = [];
+    }
+    /**
+     * 阅读记录
+     */
+    class read extends ApiController {
+        /**
+         * 读取分析数据记录，若涉及到统计分析请前端处理
+         * @param GID 
+         */
+        analyze(GID: number): Promise<ClassArtRead> {
+            return this._post('analyze', { GID })
+        }
+        /**
+         * 添加阅读记录
+         * @param GID 分组编号，如 按企业切分则是企业编号
+         * @param ArtID 文章编号
+         * @param UID 阅读人
+         * @param Key 字符串切分键
+         */
+        alog(GID: number, ArtID: number, UID: number, Key: string): Promise<true> {
+            return this._post('alog', { GID, ArtID, UID, Key })
+        }
+        /**
+         * 读取阅读记录
+         * @param GID 分组编号，如 按企业切分则是企业编号
+         * @param ArtID 文章编号
+         * @param UID 阅读人
+         * @param Key 字符串切分键
+         */
+        rlog(GID: number, ArtID: number, UID: number, Key: string): Promise<ClassArtReadDetail> {
+            return this._post('rlog', { GID, ArtID, UID, Key })
+        }
+    }
     /**
      * 文章管理
      */
-    export const Art = new art('Art', '_art');
+    export const Art = new art('Art', prefix);
+    export const ArtApi = Art;
 
     /**
      * 文章类型
      */
-    export const Type = new type('Type', '_art');
+    export const Type = new type('Type', prefix);
+    export const TypeApi = Type
 
     /**
      * 文章分类管理
      */
-    export const Classify = new classify('Classify', '_art');
+    export const Classify = new classify('Classify', prefix);
+    export const ClassifyApi = Classify
+
+    export const ReadApi = new read('Read', prefix)
+
 }
 export default ArtApi;
