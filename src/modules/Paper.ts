@@ -680,6 +680,9 @@ namespace Paper {
          */
         public Items: ClassQuestionItem[] = [];
     }
+    /**
+     * 统计分析结论
+     */
     export class ClassPaperAnalyzeR {
         /**
          * 用户数组，以用户组编号为键
@@ -744,6 +747,9 @@ namespace Paper {
                 Num: {},
             };
     }
+    /**
+     * 统计分析大对象
+     */
     export class ClassPaperAnalyze {
         L: ClassPaperAnswered[] = []
         UIDs: number[] = []
