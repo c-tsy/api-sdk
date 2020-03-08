@@ -165,6 +165,8 @@ namespace ArtApi {
       * 置顶 Top 状态值(tinyint(1))
       * 评论 Comment 状态值(tinyint(1))
       * 发布时间 PTime 时间(datetime)
+      * 原创标志 Own boolean
+      * 原文链接 URL string
     */
     export class ClassArt {
         /**
@@ -246,6 +248,14 @@ namespace ArtApi {
          * MD5
          */
         public MD5: string = "";
+        /**
+         * 原创标志
+         */
+        public Own: boolean = false;
+        /**
+         * 原文链接
+         */
+        public URL: string = "";
     }
 
     export class ClassArtOpParams {
