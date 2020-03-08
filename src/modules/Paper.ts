@@ -361,7 +361,7 @@ namespace Paper {
         /**
          * 该配置所属题组中的题目数组
          */
-        public Questions:ClassQuestion[]=[];
+        public Questions: ClassQuestion[] = [];
     }
     /**
     * 题项 QuestionItem
@@ -686,6 +686,9 @@ namespace Paper {
     class paper extends ApiController {
         constructor() {
             super('Paper', prefix);
+        }
+        analyze(GID?: number, PID?: number) {
+            return this._post('analyze', { GID, PID });
         }
         /**
          * 读取试卷内容测试

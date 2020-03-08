@@ -564,8 +564,8 @@ namespace ArtApi {
          * 读取分析数据记录，若涉及到统计分析请前端处理
          * @param GID 
          */
-        analyze(GID: number): Promise<ClassArtRead> {
-            return this._post('analyze', { GID })
+        analyze(GID?: number, ArtID?: number): Promise<ClassArtRead> {
+            return this._post('analyze', { GID, ArtID })
         }
         /**
          * 添加阅读记录
