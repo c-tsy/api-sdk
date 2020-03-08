@@ -680,6 +680,75 @@ namespace Paper {
          */
         public Items: ClassQuestionItem[] = [];
     }
+    export class ClassPaperAnalyzeR {
+        /**
+         * 用户数组，以用户组编号为键
+         */
+        UGIDMap: { [index: string]: number[] } = {};
+        /**
+         * 人次
+         */
+        Times: number = 0;
+        /**
+         * 人数
+         */
+        Num: number = 0;
+        /**
+         * 平均清空
+         */
+        Avg: {
+            /**
+             * 平均消耗时间，单位为s
+             */
+            Secend: number
+        } = {
+                Secend: 0
+            }
+        /**
+         * 累计数据
+         */
+        Total: {
+            /**
+             * 累计消耗时间，单位为s
+             */
+            Secend: number
+        } = {
+                Secend: 0
+            };
+        /**
+         * 成绩分布情况
+         */
+        ScoreMap: {
+            //人次
+            Times: { [index: string]: number },
+            //人数
+            Num: { [index: string]: number },
+        } = {
+                //人次
+                Times: {},
+                //人数
+                Num: {},
+            };
+        /**
+         * 日期分布情况
+         */
+        DateMap: {
+            //人次
+            Times: { [index: string]: number },
+            //人数
+            Num: { [index: string]: number },
+        } = {
+                //人次
+                Times: {},
+                //人数
+                Num: {},
+            };
+    }
+    export class ClassPaperAnalyze {
+        L: ClassPaperAnswered[] = []
+        UIDs: number[] = []
+        R: ClassPaperAnalyzeR = new ClassPaperAnalyzeR
+    }
     /**
      * 试卷处理类
      */
@@ -687,8 +756,18 @@ namespace Paper {
         constructor() {
             super('Paper', prefix);
         }
-        analyze(GID?: number, PID?: number) {
-            return this._post('analyze', { GID, PID });
+        /**
+         * 统计分析
+         * @param GID 
+         * @param PID 
+         * @param Conf 
+         * @param Fields 
+         */
+        analyze(GID: number, PID: number, Conf: {
+            UIDs?: number[],
+            UGIDs?: number[],
+        } = {}, Fields: ('L' | 'UIDs' | 'UGIDMap')[] = []): Promise<ClassPaperAnalyze> {
+            return this._post('analyze', { GID, PID, UIDs: Conf.UIDs, UGIDs: Conf.UGIDs, Fields: Fields });
         }
         /**
          * 读取试卷内容测试
