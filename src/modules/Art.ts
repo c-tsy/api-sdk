@@ -313,7 +313,7 @@ namespace ArtApi {
         /**
          * 内容
          */
-        public Content: string = "";
+        public Content: string | string[] = "";
     }
     /**
      * 文章管理类
@@ -353,7 +353,7 @@ namespace ArtApi {
          * @param ArtID 文章编号
          * @param V 版本号
          */
-        read(ArtID: number, V?: number): Promise<ClassArt> {
+        async read(ArtID: number, V?: number, raw: boolean = false): Promise<ClassArt> {
             if (!ArtID) {
                 throw new Error('ArtID')
             }
@@ -361,7 +361,11 @@ namespace ArtApi {
             if (V) {
                 p.push(V);
             }
-            return this._post(p.join('/') + '.json', { ArtID, V })
+            let rs = await this._post(p.join('/') + '.json', { ArtID, V })
+            if (rs.Content.Type == 1 && false === raw) {
+                rs.Content.Content = rs.Content.Content.split(',').map((v: string) => `<img src="${v}"/>`).join('<br/>')
+            }
+            return rs;
         }
 
         /**
@@ -375,6 +379,16 @@ namespace ArtApi {
             // if (data.Content.length == 0) {
             //     throw new Error('Content.length>0')
             // }
+            if (data.CType == 1) {
+                if (data.Content instanceof Array) {
+                    for (let x of data.Content) {
+                        if ('string' != typeof x) {
+                            throw new Error('内容数据错误')
+                        }
+                    }
+                    data.Content = data.Content.join(',')
+                }
+            }
             return this._post('save', data);
         }
 
