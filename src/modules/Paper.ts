@@ -482,6 +482,11 @@ namespace Paper {
          */
         public PID: number = 0;
         /**
+         * 文章编号
+         * 
+         */
+        public ArtID: number = 0;
+        /**
          * 试卷名称
          * 
          */
