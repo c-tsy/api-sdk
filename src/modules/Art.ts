@@ -613,11 +613,21 @@ namespace ArtApi {
         }
     }
     class comment extends ApiController {
+        /**
+         * 添加评论
+         * 支持引用评论，请传入PCID参数作为引用的评论编号
+         * @param Comments 
+         */
         adds(Comments: ClassArtComment[]) {
             return this._post('adds', Comments);
         }
-        read(ArtID: number) {
-            return this._post('read', { ArtID });
+        /**
+         * 读取评论内容
+         * @param ArtID 
+         * @param GID 
+         */
+        read(ArtID: number, GID?: number, Tree: boolean = true, P: number = 1, N: number = 10) {
+            return this._post('read', { ArtID, GID, P, N, Tree });
         }
     }
     export const CommentApi = new comment('Comment', prefix)
