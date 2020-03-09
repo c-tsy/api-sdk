@@ -137,6 +137,11 @@ namespace Paper {
          * 
          */
         public Uniq: string = "";
+        /**
+         * 签名内容
+         * 
+         */
+        public Sign: string = "";
     }
     /**
   * 答题情况 PaperAnswer
