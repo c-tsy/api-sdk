@@ -688,6 +688,16 @@ namespace Paper {
          * 用户数组，以用户组编号为键
          */
         UGIDMap: { [index: string]: number[] } = {};
+
+        Question: {
+            //所有题目
+            Times: number,
+            //唯一性题目数
+            Num: number
+        } = {
+                Times: 0,
+                Num: 0
+            }
         /**
          * 人次
          */
