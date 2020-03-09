@@ -693,6 +693,19 @@ namespace Paper {
          * 用户数组，以用户组编号为键
          */
         UGIDMap: { [index: string]: number[] } = {};
+        // 按用户号分组的统计数据
+        UIDMap: {
+            [index: string]: {
+                //总计耗时
+                Secends: number,
+                //应得总分
+                Total: number,
+                //实得总分
+                Score: number,
+                //答题次数
+                Times: number
+            }
+        } = {}
 
         Question: {
             //所有题目
