@@ -195,6 +195,11 @@ namespace ArtApi {
          */
         public CUID: number = 0;
         /**
+         * 阅读/学习时间 以s为单位
+         * 
+         */
+        public Secend: number = 300;
+        /**
          * 状态
          * 1发布0暂存-1删除
          */
