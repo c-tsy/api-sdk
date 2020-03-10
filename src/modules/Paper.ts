@@ -591,6 +591,8 @@ namespace Paper {
          * 多个题组的配置
          */
         public Configs: ClassPaperConfig[] = [];
+
+        public Art?: { ArtID: number, Title: string } = { ArtID: 0, Title: '' }
     }
     /**
       * 题目 Question
