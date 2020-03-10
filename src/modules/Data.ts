@@ -1,4 +1,4 @@
-import { ApiController, jsonp } from '../index';
+import { ApiController, jsonp, ApiConfig } from '../index';
 namespace DataApi {
     const p = '_data'
     class kd extends ApiController {
@@ -33,6 +33,15 @@ namespace DataApi {
             return areas;
         }
     }
+    class excel extends ApiController {
+        save(File: string, Data: { [index: string]: any[] }): Promise<{ Token: string }> {
+            return this._post('save', { File, Data })
+        }
+        down(Token: string) {
+            window.open([ApiConfig.Host, p, 'Excel', 'down', Token].join('/'))
+        }
+    }
+    export const Excel = new excel('Excel', p);
     export const AreaApi = new area('Area', p);
     export const Company = new company('Company', p)
 }
