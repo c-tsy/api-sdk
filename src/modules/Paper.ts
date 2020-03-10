@@ -592,7 +592,7 @@ namespace Paper {
          */
         public Configs: ClassPaperConfig[] = [];
 
-        public Art?: { ArtID: number, Title: string } = { ArtID: 0, Title: '' }
+        public Art?: { ArtID: number, Title: string, Memo: string, Head: string } = { ArtID: 0, Title: '', Memo: '', Head: '' }
     }
     /**
       * 题目 Question
