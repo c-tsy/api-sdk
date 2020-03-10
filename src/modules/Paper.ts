@@ -713,7 +713,14 @@ namespace Paper {
                 Times: number
             }
         } = {}
-
+        Log: {
+            [index: string]: {
+                Score: number,
+                Times: number,
+                CTime: Date,
+                Secends: number,
+            }
+        } = {};
         Question: {
             //所有题目
             Times: number,
