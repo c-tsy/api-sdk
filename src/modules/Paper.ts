@@ -1131,13 +1131,12 @@ namespace Paper {
             return this._post('save', { QGID, Params })
         }
         /**
-         * 分组
-         * @param QGID 
-         * @param QIDs 
-         * @param Type 
+         * 题目分组
+         * @param {{ QGID: number, QIDs: number[] } | { QGIDs: number[], QID: number }} Data 分组数据
+         * @param Type 分组方式，支持replace替换和append追加
          */
-        link(QGID: number, QIDs: number[], Type: LinkType) {
-            return this._post('link', { QGID, QIDs, Type })
+        link(Data: { QGID: number, QIDs: number[] } | { QGIDs: number[], QID: number }, Type: LinkType) {
+            return this._post('link', Object.assign({ Type }, Data))
         }
         /**
          * 删除分组关联

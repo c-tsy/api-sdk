@@ -7,10 +7,10 @@
     "sourceMap": true,
     "declaration": true,
     "module": "commonjs",
+    "removeComments": false,
     // "moduleResolution": "node",
     "outDir": "dist",
     "experimentalDecorators": true,
-
     "strictFunctionTypes": false
   }
 }
