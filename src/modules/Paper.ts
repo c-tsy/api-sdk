@@ -795,6 +795,13 @@ namespace Paper {
     export class ClassPaperAnalyze {
         L: ClassPaperAnswered[] = []
         UIDs: number[] = []
+        GIDMap: {
+            [index: string]: {
+                UIDs: number[],
+                Score: { [index: string]: number },
+                Times: number
+            }
+        } = {}
         R: ClassPaperAnalyzeR = new ClassPaperAnalyzeR
     }
     /**
@@ -814,8 +821,9 @@ namespace Paper {
         analyze(GID: number, PID: number, Conf: {
             UIDs?: number[],
             UGIDs?: number[],
+            GIDs?: number[]
         } = {}, Fields: ('L' | 'UIDs' | 'UGIDMap')[] = []): Promise<ClassPaperAnalyze> {
-            return this._post('analyze', { GID, PID, UIDs: Conf.UIDs, UGIDs: Conf.UGIDs, Fields: Fields });
+            return this._post('analyze', { GID, PID, GIDs: Conf.GIDs, UIDs: Conf.UIDs, UGIDs: Conf.UGIDs, Fields: Fields });
         }
         /**
          * 读取试卷内容测试
