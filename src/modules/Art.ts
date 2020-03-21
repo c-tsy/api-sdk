@@ -403,7 +403,7 @@ namespace ArtApi {
          * @param CIDs 
          */
         classify(ArtID: number, CIDs: number[]): Promise<boolean> {
-            if (ArtID <= 0 || CIDs.length == 0) {
+            if (ArtID <= 0) {
                 throw new Error(ErrorType.Art.PARAMS_IS_ERROR);
             }
             for (let x in CIDs) {
