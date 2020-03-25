@@ -210,6 +210,13 @@ export namespace User {
         runlink(UGID: number, RIDs: number[]) {
             return this._post('runlink', { UGID, RIDs })
         }
+        /**
+         * 删除用户组接口
+         * @param UGID 
+         */
+        del(UGID: number): Promise<boolean> {
+            return this._post('del', { UGID });
+        }
     }
     export const Group = new group();
     export const GroupApi = Group;
