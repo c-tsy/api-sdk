@@ -141,8 +141,8 @@ export namespace User {
         /**
          * 按数据返回用户组数据结构
          */
-        list(P: number = 1, N: number = 999): Promise<SearchResult<ClassUserGroup>> {
-            return this._post('list', { P, N })
+        list(W: { PUGID?: number } = {}, P: number = 1, N: number = 999): Promise<SearchResult<ClassUserGroup>> {
+            return this._post('list', { P, N, W })
         }
         /**
          * 更新分组信息
