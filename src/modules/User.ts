@@ -1,6 +1,6 @@
 import { ApiController, ApiConfig } from '../';
 import hook, { HookWhen } from '@ctsy/hook';
-import { ErrorType } from '../lib';
+import { ErrorType, SearchResult } from '../lib';
 
 const get: Function = require("get-value");
 const set: Function = require("set-value");
@@ -106,6 +106,24 @@ export namespace User {
             return this._post('tokenLogin', { Token, UID })
         }
     }
+    /**
+     * 用户组 UserGroup
+     * UGID UGID 自增序号(bigint)
+     * 组名 Title 字符50(char(50))
+     * 组序 Sort 序号(bigint)
+     * 父组号 PUGID 序号(bigint)
+     * 备注 Memo 字符50(char(50))
+     * 继承组 EUGID 序号(bigint)
+    */
+    export class ClassUserGroup {
+
+        public UGID: number = 0;
+        public Title: string = "";
+        public Sort: number = 0;
+        public PUGID: number = 0;
+        public Memo: string = "";
+        public EUGID: number = 0;
+    }
     class group extends ApiController {
         constructor() {
             super('Group', prefix);
@@ -118,7 +136,13 @@ export namespace User {
             if (!['list', 'tree', 'all'].includes(Type)) {
                 throw new Error(ErrorType.User.TYPE_PARAMS_IS_ERROR)
             }
-            return this._get('all', { Type })
+            return this._post('all', { Type })
+        }
+        /**
+         * 按数据返回用户组数据结构
+         */
+        list(P: number = 1, N: number = 999): Promise<SearchResult<ClassUserGroup>> {
+            return this._post('list', { P, N })
         }
         /**
          * 更新分组信息
