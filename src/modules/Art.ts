@@ -367,7 +367,7 @@ namespace ArtApi {
                 p.push(V);
             }
             let rs = await this._post(p.join('/') + '.json', { ArtID, V })
-            if (rs.Content.Type == 1 && false === raw) {
+            if (rs.Content && rs.Content.Type == 1 && false === raw) {
                 rs.Content.Content = rs.Content.Content.split(',').map((v: string) => `<img src="${v}"/>`).join('<br/>')
             }
             return rs;
