@@ -465,14 +465,14 @@ export namespace User {
             if ('string' == typeof data.Nick && data.Nick.length > 0) {
                 d.Nick = data.Nick
             }
-            if (data.Sex && [0, 1, 2].includes(data.Sex)) {
+            if (undefined !== data.Sex && [0, 1, 2].includes(data.Sex)) {
                 d.Sex = data.Sex
             }
-            if (data.Status && [-1, 0, 1].includes(data.Status)) {
+            if (undefined !== data.Status && [-1, 0, 1].includes(data.Status)) {
                 d.Status = data.Status
             }
             if (Object.keys(d).length == 0) {
-                throw new Error('Nick/Sex/Status')
+                throw new Error('缺少修改参数')
             }
             return this._post('save', Object.assign({ UID }, data))
         }
