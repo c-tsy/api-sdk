@@ -165,6 +165,8 @@ namespace ArtApi {
       * 置顶 Top 状态值(tinyint(1))
       * 评论 Comment 状态值(tinyint(1))
       * 发布时间 PTime 时间(datetime)
+      * 原创标志 Own boolean
+      * 原文链接 URL string
     */
     export class ClassArt {
         /**
@@ -192,6 +194,11 @@ namespace ArtApi {
          * 
          */
         public CUID: number = 0;
+        /**
+         * 阅读/学习时间 以s为单位
+         * 
+         */
+        public Secend: number = 300;
         /**
          * 状态
          * 1发布0暂存-1删除
@@ -246,6 +253,14 @@ namespace ArtApi {
          * MD5
          */
         public MD5: string = "";
+        /**
+         * 原创标志
+         */
+        public Own: boolean = false;
+        /**
+         * 原文链接
+         */
+        public URL: string = "";
     }
 
     export class ClassArtOpParams {
@@ -303,7 +318,7 @@ namespace ArtApi {
         /**
          * 内容
          */
-        public Content: string = "";
+        public Content: string | string[] = "";
     }
     /**
      * 文章管理类
@@ -343,7 +358,7 @@ namespace ArtApi {
          * @param ArtID 文章编号
          * @param V 版本号
          */
-        read(ArtID: number, V?: number): Promise<ClassArt> {
+        async read(ArtID: number, V?: number, raw: boolean = false): Promise<ClassArt> {
             if (!ArtID) {
                 throw new Error('ArtID')
             }
@@ -351,7 +366,11 @@ namespace ArtApi {
             if (V) {
                 p.push(V);
             }
-            return this._post(p.join('/') + '.json', { ArtID, V })
+            let rs = await this._post(p.join('/') + '.json', { ArtID, V })
+            if (rs.Content && rs.Content.Type == 1 && false === raw) {
+                rs.Content.Content = rs.Content.Content.split(',').map((v: string) => `<img src="${v}"/>`).join('<br/>')
+            }
+            return rs;
         }
 
         /**
@@ -365,6 +384,16 @@ namespace ArtApi {
             // if (data.Content.length == 0) {
             //     throw new Error('Content.length>0')
             // }
+            if (data.CType == 1) {
+                if (data.Content instanceof Array) {
+                    for (let x of data.Content) {
+                        if ('string' != typeof x) {
+                            throw new Error('内容数据错误')
+                        }
+                    }
+                    data.Content = data.Content.join(',')
+                }
+            }
             return this._post('save', data);
         }
 
@@ -374,7 +403,7 @@ namespace ArtApi {
          * @param CIDs 
          */
         classify(ArtID: number, CIDs: number[]): Promise<boolean> {
-            if (ArtID <= 0 || CIDs.length == 0) {
+            if (ArtID <= 0) {
                 throw new Error(ErrorType.Art.PARAMS_IS_ERROR);
             }
             for (let x in CIDs) {
@@ -564,8 +593,8 @@ namespace ArtApi {
          * 读取分析数据记录，若涉及到统计分析请前端处理
          * @param GID 
          */
-        analyze(GID: number): Promise<ClassArtRead> {
-            return this._post('analyze', { GID })
+        analyze(GID?: number, ArtID?: number): Promise<ClassArtRead> {
+            return this._post('analyze', { GID, ArtID })
         }
         /**
          * 添加阅读记录
@@ -589,11 +618,21 @@ namespace ArtApi {
         }
     }
     class comment extends ApiController {
+        /**
+         * 添加评论
+         * 支持引用评论，请传入PCID参数作为引用的评论编号
+         * @param Comments 
+         */
         adds(Comments: ClassArtComment[]) {
             return this._post('adds', Comments);
         }
-        read(ArtID: number) {
-            return this._post('read', { ArtID });
+        /**
+         * 读取评论内容
+         * @param ArtID 
+         * @param GID 
+         */
+        read(ArtID: number, GID?: number, Tree: boolean = true, P: number = 1, N: number = 10) {
+            return this._post('read', { ArtID, GID, P, N, Tree });
         }
     }
     export const CommentApi = new comment('Comment', prefix)

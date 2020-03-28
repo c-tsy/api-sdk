@@ -49,7 +49,7 @@ namespace Wechat {
                     } else { throw new Error('First 参数错误') }
 
                 }
-                return this._post('send', { TemplateID, Data });
+                return this._post('send/' + WechatID, { TemplateID, Data });
             }
             throw new Error('消息内容应该为数组且长度大于0')
         }
@@ -64,6 +64,6 @@ namespace Wechat {
     export const Admin = new admin('Admin', prefix);
     export const Js = new js('Js', prefix);
     export const Menu = new menu('Menu', prefix);
-    export const MsgApi = new msg('Menu', prefix);
+    export const MsgApi = new msg('Msg', prefix);
 }
 export default Wechat;

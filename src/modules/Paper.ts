@@ -137,6 +137,11 @@ namespace Paper {
          * 
          */
         public Uniq: string = "";
+        /**
+         * 签名内容
+         * 
+         */
+        public Sign: string = "";
     }
     /**
   * 答题情况 PaperAnswer
@@ -361,7 +366,7 @@ namespace Paper {
         /**
          * 该配置所属题组中的题目数组
          */
-        public Questions:ClassQuestion[]=[];
+        public Questions: ClassQuestion[] = [];
     }
     /**
     * 题项 QuestionItem
@@ -482,6 +487,11 @@ namespace Paper {
          */
         public PID: number = 0;
         /**
+         * 文章编号
+         * 
+         */
+        public ArtID: number = 0;
+        /**
          * 试卷名称
          * 
          */
@@ -581,6 +591,8 @@ namespace Paper {
          * 多个题组的配置
          */
         public Configs: ClassPaperConfig[] = [];
+
+        public Art?: { ArtID: number, Title: string, Memo: string, Head: string } = { ArtID: 0, Title: '', Memo: '', Head: '' }
     }
     /**
       * 题目 Question
@@ -681,11 +693,137 @@ namespace Paper {
         public Items: ClassQuestionItem[] = [];
     }
     /**
+     * 统计分析结论
+     */
+    export class ClassPaperAnalyzeR {
+        /**
+         * 用户数组，以用户组编号为键
+         */
+        UGIDMap: { [index: string]: number[] } = {};
+        // 按用户号分组的统计数据
+        UIDMap: {
+            [index: string]: {
+                //总计耗时
+                Secends: number,
+                //应得总分
+                Total: number,
+                //实得总分
+                Score: number,
+                //答题次数
+                Times: number
+            }
+        } = {}
+        Log: {
+            [index: string]: {
+                Score: number,
+                Times: number,
+                CTime: Date,
+                Secends: number,
+            }
+        } = {};
+        Question: {
+            //所有题目
+            Times: number,
+            //唯一性题目数
+            Num: number
+        } = {
+                Times: 0,
+                Num: 0
+            }
+        /**
+         * 人次
+         */
+        Times: number = 0;
+        /**
+         * 人数
+         */
+        Num: number = 0;
+        /**
+         * 平均清空
+         */
+        Avg: {
+            /**
+             * 平均消耗时间，单位为s
+             */
+            Secend: number
+        } = {
+                Secend: 0
+            }
+        /**
+         * 累计数据
+         */
+        Total: {
+            /**
+             * 累计消耗时间，单位为s
+             */
+            Secend: number
+        } = {
+                Secend: 0
+            };
+        /**
+         * 成绩分布情况
+         */
+        ScoreMap: {
+            //人次
+            Times: { [index: string]: number },
+            //人数
+            Num: { [index: string]: number },
+        } = {
+                //人次
+                Times: {},
+                //人数
+                Num: {},
+            };
+        /**
+         * 日期分布情况
+         */
+        DateMap: {
+            //人次
+            Times: { [index: string]: number },
+            //人数
+            Num: { [index: string]: number },
+        } = {
+                //人次
+                Times: {},
+                //人数
+                Num: {},
+            };
+    }
+    /**
+     * 统计分析大对象
+     */
+    export class ClassPaperAnalyze {
+        L: ClassPaperAnswered[] = []
+        UIDs: number[] = []
+        GIDMap: {
+            [index: string]: {
+                UIDs: number[],
+                Score: { [index: string]: number },
+                Times: number
+            }
+        } = {}
+        R: ClassPaperAnalyzeR = new ClassPaperAnalyzeR
+    }
+    /**
      * 试卷处理类
      */
     class paper extends ApiController {
         constructor() {
             super('Paper', prefix);
+        }
+        /**
+         * 统计分析
+         * @param GID 
+         * @param PID 
+         * @param Conf 
+         * @param Fields 
+         */
+        analyze(GID: number, PID: number, Conf: {
+            UIDs?: number[],
+            UGIDs?: number[],
+            GIDs?: number[]
+        } = {}, Fields: ('L' | 'UIDs' | 'UGIDMap')[] = []): Promise<ClassPaperAnalyze> {
+            return this._post('analyze', { GID, PID, GIDs: Conf.GIDs, UIDs: Conf.UIDs, UGIDs: Conf.UGIDs, Fields: Fields });
         }
         /**
          * 读取试卷内容测试
@@ -726,7 +864,16 @@ namespace Paper {
          * @param Key 分组键
          * @param Answers 答案选项内容
          */
-        answer(PID: number, UID: number, STime: Date, ETime: Date, GID: number = 0, Key: string = "", Answers: { QID: number, SelectedQIIDs: number[] }[]) {
+        answer(PID: number, UID: number, STime: Date, ETime: Date, GID: number = 0, Key: string = "", Answers: { QID: number, SlectedQIDs: number[] }[]): Promise<{
+            /**正确答案 {QID:[QIID]} QID为键，QIID为数组，正确选项的数组*/
+            Right: { [index: string]: number[] },
+            //当前答题得分
+            Score: number,
+            //当前答题次数
+            Times: number,
+            //消耗时间
+            Seconds: number
+        }> {
             let answers: any = {};
             for (let x of Answers) {
                 answers[x.QID] = x.SelectedQIIDs;
@@ -992,13 +1139,12 @@ namespace Paper {
             return this._post('save', { QGID, Params })
         }
         /**
-         * 分组
-         * @param QGID 
-         * @param QIDs 
-         * @param Type 
+         * 题目分组
+         * @param {{ QGID: number, QIDs: number[] } | { QGIDs: number[], QID: number }} Data 分组数据
+         * @param Type 分组方式，支持replace替换和append追加
          */
-        link(QGID: number, QIDs: number[], Type: LinkType) {
-            return this._post('link', { QGID, QIDs, Type })
+        link(Data: { QGID: number, QIDs: number[] } | { QGIDs: number[], QID: number }, Type: LinkType) {
+            return this._post('link', Object.assign({ Type }, Data))
         }
         /**
          * 删除分组关联
