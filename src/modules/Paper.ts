@@ -864,7 +864,7 @@ namespace Paper {
          * @param Key 分组键
          * @param Answers 答案选项内容
          */
-        answer(PID: number, UID: number, STime: Date, ETime: Date, GID: number = 0, Key: string = "", Answers: { QID: number, SlectedQIDs: number[] }[]): Promise<{
+        answer(PID: number, UID: number, STime: Date, ETime: Date, GID: number = 0, Key: string = "", Answers: { QID: number, SelectedQIIDs: number[] }[]): Promise<{
             /**正确答案 {QID:[QIID]} QID为键，QIID为数组，正确选项的数组*/
             Right: { [index: string]: number[] },
             //当前答题得分
