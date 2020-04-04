@@ -97,7 +97,7 @@ namespace Upload {
         return new Promise((s, j) => {
             var reader = new FileReader();
             reader.onload = () => {
-                if ('string' == reader.result)
+                if ('string' == typeof reader.result)
                     s(reader.result);
                 else {
                     j('读取失败')
