@@ -130,7 +130,17 @@ async function request(method: 'post' | 'get', path: string, data: any) {
         throw new Error(e.message)
     });
 }
-
+/**
+ * 记录请求日志
+ * @param path 
+ * @param method 
+ * @param time 
+ * @param t 
+ * @param status 
+ * @param reqlen 
+ * @param replen 
+ * @param err 
+ */
 function log(path: string, method: string, time: number, t: number, status: number, reqlen: number, replen: number, err: string = '') {
     // axios.get('https://tsy-app.cn-hangzhou.log.aliyuncs.com/logstores/tsy-web-api/track_ua.gif?APIVersion=0.6.0&__topic__=api&' + ['appid=' + ApiConfig.AppID, 'uid=' + ApiConfig.UID, 'token=' + Token, 'time=' + time, 'path=' + encodeURI(path), 'reqlen=' + reqlen, 'replen=' + replen, 'method=' + method, 'key=' + ApiConfig.Key, 't=' + t, 'status=' + status, 'e=' + err].join('&'))
 }
@@ -139,7 +149,9 @@ export class ApiHooks {
     static Created = 'ApiCreated';
     static IMEvent = 'IMEvent'
 }
-
+/**
+ * 应用配置信息
+ */
 class ApiConfigClass {
     /**
      * 应用AppID
