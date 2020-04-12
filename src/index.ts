@@ -60,13 +60,14 @@ req.interceptors.request.use((conf: any) => {
     if (Token) {
         conf.headers['token'] = Token;
     }
-    conf.headers['appid'] = ApiConfig.AppID + '_' + ApiConfig.Key;
-    conf.headers['rand'] = Date.now();
-    conf.headers['md5']
-    if (ApiConfig.UID) {
-        conf.headers['uid'] = ApiConfig.UID;
-    }
-    let txt = [conf.headers['rand'], conf.headers['uid'] || '', conf.url, ApiConfig.Secret].join('');
+    // conf.headers['appid'] = ApiConfig.AppID + '_' + ApiConfig.Key;
+    // conf.headers['rand'] = Date.now();
+    // conf.headers['md5']
+    // if (ApiConfig.UID) {
+    //     conf.headers['uid'] = ApiConfig.UID;
+    // }
+    let rand = Date.now()
+    let txt = [rand, conf.url, ApiConfig.Secret].join('');
     if ('string' != typeof conf.data) {
         if (conf.method == 'get') {
             conf.data = qs.stringify(conf.data);
@@ -80,10 +81,11 @@ req.interceptors.request.use((conf: any) => {
             txt += conf.data;
         }
     }
-    conf.headers['md5'] = md5(txt);
-    if (ApiConfig.Rand) {
-        conf.headers['rkey'] = ApiConfig.Rand;
-    }
+    // conf.headers['md5'] = md5(txt);
+    // if (ApiConfig.Rand) {
+    //     conf.headers['rkey'] = ApiConfig.Rand;
+    // }
+    conf.headers['auth'] = [ApiConfig.AppID, ApiConfig.Key, rand, md5(txt)].join('_');
     conf.path = conf.url.replace('/_', '');
     conf.url = ApiConfig.Host + conf.url
     // conf.headers['accept'] = 'application/x-protobuf,*/*'
