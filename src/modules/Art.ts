@@ -2,6 +2,9 @@ import { ApiController, ApiCommon } from '../index';
 import { ErrorType, SearchWhere } from '../lib';
 namespace ArtApi {
     const prefix = "_art"
+    /**
+     * 文章评论对象
+     */
     export class ClassArtComment {
 
         /**
