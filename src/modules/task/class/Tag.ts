@@ -7,7 +7,7 @@
   * 图标 Icon 字符50(char(50))
   * 团队编号 UnitID 序号(bigint)
 */
-export default class ClassTaskTags {
+export default class ClassTaskTag {
 
   /**
    * 任务标签
