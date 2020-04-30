@@ -7,7 +7,7 @@
         "type": "node",
         "request": "launch",
         "name": "ApiSDK",
-        "program": "${workspaceFolder}/dist/test.js",
+        "program": "${workspaceFolder}/dist/demo.js",
         "cwd": "${workspaceFolder}",
         "outFiles": [
             "${workspaceFolder}/**/*.js"
