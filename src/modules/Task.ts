@@ -2,6 +2,7 @@ import { ApiController, ControllerApi } from "..";
 import comment from "./task/class/Comment";
 import ClassTask from "./task/class/Task";
 import { SearchWhere } from "../lib";
+import ClassTaskTag from "./task/class/Tag";
 
 namespace TaskApi {
     let prefix = '_task';
@@ -13,6 +14,10 @@ namespace TaskApi {
     class project extends ControllerApi {
     }
     export const ProjectApi = new project('Project', prefix);
+
+    class taskGroup extends ControllerApi {
+    }
+    export const TaskGroupApi = new taskGroup('TaskGroup', prefix);
 
     class tag extends ApiController {
         /**
@@ -27,8 +32,8 @@ namespace TaskApi {
          * 添加Tag
          * @param Names 
          */
-        adds(Titles: string[]) {
-            return this._post('adds', Titles);
+        adds(data: ClassTaskTag[]) {
+            return this._post('adds', data);
         }
         /**
          * 移除任务的Tag关联
