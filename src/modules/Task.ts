@@ -8,18 +8,22 @@ namespace TaskApi {
     let prefix = '_task';
 
     class task extends ControllerApi {
+        PK = "TID"
     }
     export const TaskApi = new task('Task', prefix);
 
     class project extends ControllerApi {
+        PK = "PID"
     }
     export const ProjectApi = new project('Project', prefix);
 
     class taskGroup extends ControllerApi {
+        PK = "TGID"
     }
     export const TaskGroupApi = new taskGroup('TaskGroup', prefix);
 
     class tag extends ApiController {
+        PK = "TagID"
         /**
          * 添加任务的Tag关联
          * @param TID 、
