@@ -44,6 +44,41 @@ namespace TaskApi {
          */
         Stopped = 4,
     }
+
+
+
+
+    export enum ProjectStatus {
+        /**
+         * 已删除
+         */
+        Del = -1,
+        /**
+         * 未开始
+         */
+        NotStart = 0,
+        /**
+         * 进行中
+         */
+        Doing = 1,
+        /**
+         * 已暂停
+         */
+        Paused = 2,
+        /**
+         * 已完成
+         */
+        Finish = 3,
+        /**
+         * 已停止
+         */
+        Stopped = 4,
+        /**
+         * 已归档
+         */
+        Forzen = 5,
+    }
+
     /**
      * 任务管理对象
      */
@@ -68,6 +103,21 @@ namespace TaskApi {
 
     class project extends ControllerApi {
         PK = "PID"
+
+        /**
+         * Tag的关联关系处理
+         * @param data 关联数据
+         */
+        async link(Type: LinkType, Users: {
+            UID: number,
+            Memo: string,
+            Type: number,
+            Status: number,
+        }[], PID: number) {
+            return this._post('link', {
+                PID, Type, Users
+            });
+        }
     }
     export const ProjectApi = new project('Project', prefix);
 
