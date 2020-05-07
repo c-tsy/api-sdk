@@ -1,7 +1,7 @@
 import { ApiController, ControllerApi } from "..";
 import comment from "./task/class/Comment";
 import ClassTask from "./task/class/Task";
-import { SearchWhere } from "../lib";
+import { SearchWhere, LinkType } from "../lib";
 import ClassTaskTag from "./task/class/Tag";
 
 namespace TaskApi {
@@ -25,12 +25,11 @@ namespace TaskApi {
     class tag extends ApiController {
         PK = "TagID"
         /**
-         * 添加任务的Tag关联
-         * @param TID 、
-         * @param TagIDs 
+         * Tag的关联关系处理
+         * @param data 关联数据
          */
-        link(TID: number, TagIDs: number[]) {
-            return this._post('link', { TID, TagIDs });
+        async link(data: { TagID: number, TIDs: number[], Type: LinkType } | { TagIDs: number[], TID: number, Type: LinkType }) {
+            return this._post('link', data);
         }
         /**
          * 添加Tag
