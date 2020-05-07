@@ -70,5 +70,9 @@ export enum LinkType {
     //追加
     append,
     //替换
-    replace
+    replace,
+    /**
+     * 移除
+     */
+    remove
 }
