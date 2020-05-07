@@ -7,8 +7,62 @@ import ClassTaskTag from "./task/class/Tag";
 namespace TaskApi {
     let prefix = '_task';
 
+
+    /**
+     * 任务的关联对象OType字典
+     */
+    export enum TaskOType {
+        Task = "Task",
+        Project = "Project",
+        TaskGroup = "TaskGroup",
+    }
+
+
+    export enum TaskStatus {
+        /**
+         * 已删除
+         */
+        Del = -1,
+        /**
+         * 未开始
+         */
+        NotStart = 0,
+        /**
+         * 进行中
+         */
+        Doing = 1,
+        /**
+         * 已暂停
+         */
+        Paused = 2,
+        /**
+         * 已完成
+         */
+        Finish = 3,
+        /**
+         * 已停止
+         */
+        Stopped = 4,
+    }
+    /**
+     * 任务管理对象
+     */
     class task extends ControllerApi {
         PK = "TID"
+        /**
+         * Tag的关联关系处理
+         * @param data 关联数据
+         */
+        async link(Type: LinkType, Users: {
+            UID: number,
+            Memo: string,
+            Type: number,
+            Status: number,
+        }[], TID: number) {
+            return this._post('link', {
+                TID, Type, Users
+            });
+        }
     }
     export const TaskApi = new task('Task', prefix);
 

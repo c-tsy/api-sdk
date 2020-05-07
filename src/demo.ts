@@ -1,7 +1,7 @@
 import TaskApi from './modules/Task';
 import ClassTask from './modules/task/class/Task';
 import { ApiConfig, Token } from '.';
-Token = 'abc'
+// Token = 'abc'
 ApiConfig.Host = 'http://192.168.31.22:3000';
 ApiConfig.AppID = 'dev'
 ApiConfig.Secret = 'dev2930sf9fwopfwe9';
