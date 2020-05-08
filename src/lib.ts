@@ -56,7 +56,7 @@ export class SearchResult<T> {
  * 查询条件
  */
 export class SearchWhere {
-    W?: { [index: string]: any } = {}
+    W: { [index: string]: any } = {}
     Keyword?: string = "";
     P?: number = 1;
     N?: number = 10;
