@@ -19,7 +19,19 @@ p.wrappers[".google.protobuf.Timestamp"] = {
     }
 };
 const md5: any = require('md5')
-export var Token = store.get('token') || ''
+/**
+ * 用户识别符
+ */
+export let Token = ''
+Token = store.get('token') || '';
+/**
+ * 设置通信Token
+ * @param token 
+ */
+export function set_token(token: string) {
+    Token = token;
+    store.set('token', token)
+}
 const req = axios.create({
     // responseType: "arraybuffer",
     withCredentials: true,
