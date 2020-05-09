@@ -92,7 +92,7 @@ namespace TaskApi {
          * @param {ClassTaskFiles} Files 
          * @param {number} TID 
          */
-        async file(Type: LinkType,
+        file(Type: LinkType,
             Files: {
                 FID?: number,
                 Path: string,
@@ -108,10 +108,17 @@ namespace TaskApi {
             });
         }
         /**
+         * 任务详情，
+         * @param {number[]} TIDs 任务编号数组
+         */
+        detail(TIDs: number[]): Promise<{ [index: string]: { File: ClassTaskFiles } }> {
+            return this._post('detail', { TIDs })
+        }
+        /**
          * Tag的关联关系处理
          * @param data 关联数据
          */
-        async link(Type: LinkType, Users: {
+        link(Type: LinkType, Users: {
             UID: number,
             Memo: string,
             Type: number,
@@ -127,6 +134,13 @@ namespace TaskApi {
     class project extends ControllerApi {
         PK = "PID"
 
+        /**
+         * 读取项目详情，
+         * @param {number[]} PIDs 项目编号数组
+         */
+        detail(PIDs: number[]): Promise<{ [index: string]: { File: ClassTaskFiles } }> {
+            return this._post('detail', { PIDs })
+        }
         /**
          * Tag的关联关系处理
          * @param data 关联数据
