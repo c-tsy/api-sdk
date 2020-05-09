@@ -103,7 +103,7 @@ namespace TaskApi {
                 Size: number,
                 Status: number,
             }[], TID: number) {
-            return this._post('link', {
+            return this._post('file', {
                 TID, Type, Files
             });
         }
@@ -158,7 +158,7 @@ namespace TaskApi {
                 Size: number,
                 Status: number,
             }[], PID: number) {
-            return this._post('link', {
+            return this._post('file', {
                 PID, Type, Files
             });
         }
