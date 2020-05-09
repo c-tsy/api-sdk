@@ -30,10 +30,25 @@ export default class ClassTaskFiles {
    */
   public OID: number = 0;
   /**
-   * 关联路径
+   * 关联路径，用于目录级别显示
    * 
    */
   public Path: string = "";
+  /**
+   * 文件名称
+   * 
+   */
+  public Name: string = "";
+  /**
+   * 文件访问路径
+   * 
+   */
+  public URL: string = "";
+  /**
+   * 备注信息
+   * 
+   */
+  public Memo: string = "";
   /**
    * 文件类型
    * 

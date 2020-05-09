@@ -1,3 +1,5 @@
+import ClassTaskMember from "./Member";
+
 /**
   * 任务 Task
   * 任务编号 TID 自增序号(bigint)
@@ -135,4 +137,6 @@ export default class ClassTask {
    * 
    */
   public Key: string = "";
+
+  public Member: ClassTaskMember[] = [];
 }

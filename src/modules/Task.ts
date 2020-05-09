@@ -3,6 +3,7 @@ import comment from "./task/class/Comment";
 import ClassTask from "./task/class/Task";
 import { SearchWhere, LinkType } from "../lib";
 import ClassTaskTag from "./task/class/Tag";
+import ClassTaskFiles from "./task/class/Files";
 
 namespace TaskApi {
     let prefix = '_task';
@@ -84,6 +85,28 @@ namespace TaskApi {
      */
     class task extends ControllerApi {
         PK = "TID"
+
+        /**
+         * 关联文件管理
+         * @param {LinkType} Type 
+         * @param {ClassTaskFiles} Files 
+         * @param {number} TID 
+         */
+        async file(Type: LinkType,
+            Files: {
+                FID?: number,
+                Path: string,
+                Name: string,
+                URL: string,
+                Memo: string,
+                Type: string,
+                Size: number,
+                Status: number,
+            }[], TID: number) {
+            return this._post('link', {
+                TID, Type, Files
+            });
+        }
         /**
          * Tag的关联关系处理
          * @param data 关联数据
@@ -116,6 +139,27 @@ namespace TaskApi {
         }[], PID: number) {
             return this._post('link', {
                 PID, Type, Users
+            });
+        }
+        /**
+         * 关联文件管理
+         * @param {LinkType} Type 
+         * @param {ClassTaskFiles} Files 
+         * @param {number} TID 
+         */
+        async file(Type: LinkType,
+            Files: {
+                FID?: number,
+                Path: string,
+                Name: string,
+                URL: string,
+                Memo: string,
+                Type: string,
+                Size: number,
+                Status: number,
+            }[], PID: number) {
+            return this._post('link', {
+                PID, Type, Files
             });
         }
     }

@@ -1,3 +1,5 @@
+import ClassTaskMember from "./Member";
+
 /**
   * 项目 Project
   * 项目编号 PID 自增序号(bigint)
@@ -117,4 +119,5 @@ export default class ClassTaskProject {
    * 
    */
   public Key: string = "";
+  public Member: ClassTaskMember[] = [];
 }
