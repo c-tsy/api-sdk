@@ -218,7 +218,7 @@ namespace TaskApi {
     }
     export const TagApi = new tag('Tag', prefix);
     class comment extends ControllerApi {
-
+        PK = "CID"
     }
     export const CommentApi = new comment('Comment', prefix)
 }
