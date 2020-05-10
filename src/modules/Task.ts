@@ -108,6 +108,16 @@ namespace TaskApi {
             });
         }
         /**
+         * 修改任务状态信息
+         * @param {{ TID: number, FromStatus: TaskStatus, ToStatus: TaskStatus, Memo: string }[]} data 批量修改任务状态的数组
+         */
+        status(data: { TID: number, FromStatus: TaskStatus, ToStatus: TaskStatus, Memo: string }[]) {
+            if (!(data instanceof Array)) {
+                throw new Error('参数应为数组')
+            }
+            return this._post('status', data);
+        }
+        /**
          * 任务详情，
          * @param {number[]} TIDs 任务编号数组
          */
