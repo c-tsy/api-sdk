@@ -4,6 +4,14 @@ import * as qs from 'querystring'
 import * as p from 'protobufjs';
 import { SearchWhere, SearchResult } from './lib';
 import { base_covert } from '@ctsy/covert';
+import hook, { Hook, HookWhen } from '@ctsy/hook';
+/**
+ * ApiSDK Hooks
+ */
+export enum ApiSDKHooks {
+    Request = '@ctsy/api-sdk/request'
+}
+
 declare let window: any;
 p.wrappers[".google.protobuf.Timestamp"] = {
     fromObject: function (object: any) {
@@ -65,7 +73,7 @@ req.interceptors.response.use(async (data: any) => {
     }
     return data;
 })
-req.interceptors.request.use((conf: any) => {
+req.interceptors.request.use(async (conf: any) => {
     if (!ApiConfig.AppID || !ApiConfig.Secret) {
         // throw new Error('AppID or Secret')
     }
@@ -101,6 +109,7 @@ req.interceptors.request.use((conf: any) => {
     conf.path = conf.url.replace('/_', '');
     conf.url = ApiConfig.Host + conf.url
     // conf.headers['accept'] = 'application/x-protobuf,*/*'
+    await hook.emit(ApiSDKHooks.Request, HookWhen.Before, req, conf)
     return conf;
 })
 // function check_proto(path: string) {
@@ -129,7 +138,8 @@ async function request(method: 'post' | 'get', path: string, data: any) {
     if (method == 'get') {
         // path += ('?' + query.stringify(data));
     }
-    return await q(path, method == 'get' ? conf : data, conf).then((e: any) => {
+    return await q(path, method == 'get' ? conf : data, conf).then(async (e: any) => {
+        await hook.emit(ApiSDKHooks.Request, HookWhen.After, req, e)
         log(path, method, e.config.headers['rand'], Date.now() - e.config.headers['rand'], e.data.c || e.status, e.config.data.length, e.headers['content-length'], e.data.e ? e.data.e.m : '')
         if (e.data.c != 200) {
             let err = e.data.e || {};
