@@ -44,6 +44,16 @@ namespace Organ {
          */
         public Name: string = "";
         /**
+         * 分组键
+         * 
+         */
+        public Key: string = "";
+        /**
+         * 关联字段
+         * 
+         */
+        public GID: number = 0;
+        /**
          * 联系电话
          * 
          */
