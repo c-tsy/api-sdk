@@ -271,14 +271,14 @@ export namespace User {
          * @param Account 
          * @param PWD 
          */
-        async login(Account: string, PWD: string) {
+        async login(Account: string, PWD: string, MD5PWD: string = '') {
             if ('string' != typeof Account) {
                 throw new Error(ErrorType.User.ACCOUNT_SHOULD_BE_STRING)
             }
             if ('string' != typeof PWD) {
                 throw new Error(ErrorType.User.PWD_SHOULD_BE_STRING)
             }
-            let rs = await this._post('login', { Account, PWD: md5(PWD) })
+            let rs = await this._post('login', { Account, PWD: MD5PWD || md5(PWD) })
             if (rs.UID) {
                 hook.emit('logined', HookWhen.After, '', rs);
                 ApiConfig.UID = rs.UID
