@@ -368,7 +368,7 @@ export namespace User {
          * @param PWD 
          * @param PUID 
          */
-        async regist(Name: string, Nick: string, Account: string, PWD: string, Sex: number = 1, PUID: number = 0) {
+        async regist(Name: string, Nick: string, Account: string, PWD: string, Sex: number = 1, PUID: number = 0, MD5PWD: string = "") {
             if (Name == '' || Nick == '') {
                 throw new Error(ErrorType.User.NAME_OR_NICK_CANNOT_BE_EMPTY)
             }
@@ -381,7 +381,7 @@ export namespace User {
             if (!/.{6,}/.test(PWD)) {
                 throw new Error(ErrorType.User.PWD_PARAMS_IS_ERROR)
             }
-            return await this._post('regist', { Name, Nick, Sex, Account, PWD: md5(PWD), PUID })
+            return await this._post('regist', { Name, Nick, Sex, Account, PWD: MD5PWD || md5(PWD), PUID })
         }
         /**
          * 忘记密码重设
@@ -389,7 +389,7 @@ export namespace User {
          * @param PWD 
          * @param VCode 
          */
-        forget(Account: string, PWD: string, VCode: string) {
+        forget(Account: string, PWD: string, VCode: string, MD5PWD: string = "") {
             if ('string' != typeof PWD) {
                 throw new Error(ErrorType.User.PWD_SHOULD_BE_STRING)
             }
@@ -402,7 +402,7 @@ export namespace User {
             if (!/^[\w\b_-]{5,}$/.test(Account)) {
                 throw new Error(ErrorType.User.ACCOUNT_PARAMS_IS_ERROR)
             }
-            return this._post('forget', { Account, PWD, VCode });
+            return this._post('forget', { Account, PWD: MD5PWD || md5(PWD), VCode });
         }
         /**
          * 重写session
