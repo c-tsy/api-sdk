@@ -108,6 +108,16 @@ namespace Organ {
          * 
          */
         public PUnitID: number = 0;
+
+        /**
+         * 是否自动创建用户组
+         */
+        public WithGroup?: boolean = false;
+
+        /**
+         * 是否自动根据电话创建账号，默认密码为当前传入的Tel字段
+         */
+        public WithAdmin?: boolean = false;
     }
     class organ extends ApiController {
         list(data: { P?: number, N?: number, Sort?: string, Keyword?: string, W?: { [index: string]: any } }): Promise<any> {
