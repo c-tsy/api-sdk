@@ -14,6 +14,11 @@ namespace Organ {
          */
         public Title: string = "";
         /**
+         * 全称名称
+         * 
+         */
+        public LTitle: string = "";
+        /**
          * 助记码
          * 
          */
