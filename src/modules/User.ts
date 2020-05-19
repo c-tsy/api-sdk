@@ -248,6 +248,32 @@ export namespace User {
             super('MenuGroup', prefix);
         }
     }
+
+    /**
+     * 联系人信息
+     */
+    export class ClassContact {
+        /**
+         * 用户编号
+         */
+        public UID: number = 0;
+        /**
+         * 联系名称
+         */
+        public T: string = "";
+        /**
+         * 联系值
+         */
+        public V: string = "";
+        /**
+         * 配置信息，支持不超过250个字节的字符串
+         */
+        public C: string = "";
+    }
+
+    /**
+     * 认证
+     */
     class auth extends ApiController {
         constructor() {
             super('Auth', prefix);
@@ -260,6 +286,11 @@ export namespace User {
         vcheck(data: any, remove: boolean = true) {
             return this._post('vcheck', { data, remove })
         }
+        /**
+         * 发送验证码内容
+         * @param data 
+         * @param expire 
+         */
         vcode(data: any, expire: number | any = 0) {
             if (expire.appid) {
                 return ''
@@ -363,12 +394,17 @@ export namespace User {
             return this._post('reset', { OldPWD: md5(OldPWD), PWD: md5(PWD) })
         }
         /**
-         * 账号注册
-         * @param Account 
-         * @param PWD 
-         * @param PUID 
+         * 信息注册
+         * @param Name 姓名
+         * @param Nick 昵称
+         * @param Account 账号
+         * @param PWD 密码
+         * @param Sex 性别
+         * @param PUID 推介人的UID
+         * @param MD5PWD 加密后的密码
+         * @param Contacts 联系信息列表
          */
-        async regist(Name: string, Nick: string, Account: string, PWD: string, Sex: number = 1, PUID: number = 0, MD5PWD: string = "") {
+        async regist(Name: string, Nick: string, Account: string, PWD: string, Sex: number = 1, PUID: number = 0, MD5PWD: string = "", Contacts: ClassContact[]) {
             if (Name == '' || Nick == '') {
                 throw new Error(ErrorType.User.NAME_OR_NICK_CANNOT_BE_EMPTY)
             }
@@ -381,7 +417,7 @@ export namespace User {
             if (!/.{6,}/.test(PWD)) {
                 throw new Error(ErrorType.User.PWD_PARAMS_IS_ERROR)
             }
-            return await this._post('regist', { Name, Nick, Sex, Account, PWD: MD5PWD || md5(PWD), PUID })
+            return await this._post('regist', { Name, Nick, Sex, Account, PWD: MD5PWD || md5(PWD), PUID, Contacts })
         }
         /**
          * 忘记密码重设
