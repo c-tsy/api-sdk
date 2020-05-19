@@ -250,6 +250,11 @@ namespace Paper {
          * 
          */
         public JUID: number = 0;
+        /**
+         * 结论编号
+         * 
+         */
+        public PADID: number = 0;
     }
     /**
      * 试卷生成规则 Config
