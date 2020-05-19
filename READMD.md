@@ -14,3 +14,5 @@ create('tsy','3F3fw24F5e5','dxzef23d2dxs1','rand内容(有rand情况下secret为
 
 // 此处的Secret和Key均为不正确的，请联系工作人员申请
 ```
+
+[2020-05-19] 用户账户模块 更新 注册接口增加Contacts参数，用于在注册时创建该用户的联系信息数据
