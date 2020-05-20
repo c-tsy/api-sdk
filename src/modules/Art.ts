@@ -402,8 +402,8 @@ namespace ArtApi {
 
         /**
          * 文章分类管理：注意该操作会清除该文章的分类后再添加，请确保传入了所有该文章的分类设定
-         * @param ArtID 
-         * @param CIDs 
+         * @param ArtID 要操作的文章的ID
+         * @param CIDs 文章分类的ID组成的数组，支持将一个文章绑定到多个分类上
          */
         classify(ArtID: number, CIDs: number[]): Promise<boolean> {
             if (ArtID <= 0) {
