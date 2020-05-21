@@ -661,6 +661,59 @@ namespace ArtApi {
          * 内容
          */
         public Content: string | string[] = "";
+        /**
+         * 音视频或直播的扩展信息
+         */
+        public Live: ArtExtendLive | boolean = false
+    }
+
+    /**
+     * 音视频直播扩展 ArtExtendLive
+     * 文章编号 ArtID 编号(bigint(20))
+     * 推流地址 PUSH char255(char(255))
+     * 拉流RTMP RTMP char255(char(255))
+     * 拉流FLV FLV char255(char(255))
+     * 拉流M3U8 M3U8 char255(char(255))
+     * 已播时长 PlayTime 时间(datetime)
+     * 总计时长 TotalTime 时间(datetime)
+    */
+    export class ArtExtendLive {
+
+        /**
+         * 文章编号
+         * 
+         */
+        public ArtID: number = 0;
+        /**
+         * 推流地址
+         * 
+         */
+        public PUSH: string = "";
+        /**
+         * 拉流RTMP
+         * 
+         */
+        public RTMP: string = "";
+        /**
+         * 拉流FLV
+         * 
+         */
+        public FLV: string = "";
+        /**
+         * 拉流M3U8
+         * 
+         */
+        public M3U8: string = "";
+        /**
+         * 已播时长
+         * 
+         */
+        public PlayTime: Date = new Date;
+        /**
+         * 总计时长
+         * 
+         */
+        public TotalTime: Date = new Date;
     }
     /**
      * 文章管理类
