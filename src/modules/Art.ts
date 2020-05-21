@@ -1,5 +1,5 @@
-import { ApiController, ApiCommon } from '../index';
-import { ErrorType, SearchWhere } from '../lib';
+import { ApiController, ApiCommon, ControllerApi } from '../index';
+import { ErrorType, SearchWhere, LinkType } from '../lib';
 namespace ArtApi {
     const prefix = "_art"
     /**
@@ -156,38 +156,298 @@ namespace ArtApi {
         public GID: number = 0;
     }
     /**
-      * 文章 Art
-      * 文章编号 ArtID 自增编号(bigint(20))
-      * 章节编号 CID 自增编号(bigint(20))
-      * 应用编号 AID 编号(bigint(20))
-      * 标题 Title char255(char(255))
-      * 摘要 Memo char255(char(255))
-      * 创建时间 CTime 时间(datetime)
-      * 创建人 CUID 编号(bigint(20))
-      * 状态 Status 状态值(tinyint(1))
-      * 版本号 V 编号(bigint(20))
-      * 更新时间 UTime 时间(datetime)
-      * 更新人 UUID 编号(bigint(20))
-      * 首图 Head char255(char(255))
-      * 文章类型 Type 编号(bigint(20))
-      * 内容类型 CType 状态值(tinyint(1))
-      * 置顶 Top 状态值(tinyint(1))
-      * 评论 Comment 状态值(tinyint(1))
-      * 发布时间 PTime 时间(datetime)
-      * 原创标志 Own boolean
-      * 原文链接 URL string
+     * 文章附件 ArtFiles
+     * 附件编号 AFID 自增编号(bigint(20))
+     * 文章编号 ArtID 编号(bigint(20))
+     * 创建时间 CTime 时间(datetime)
+     * 创建人 CUID 编号(bigint(20))
+     * 状态 Status 状态值(tinyint(1))
+     * 下载 Open 状态值(tinyint(1))
+     * 消耗价值 Price 金额(double(20,2))
+     * 价值类型 PType 状态值(tinyint(1))
+     * 存储驱动 Driver char(50)(char(50))
+     * 存储路径 Path char255(char(255))
+     * 访问路径 URL char255(char(255))
+     * 下载次数 TDown 编号(bigint(20))
+     * 文件大小 Size 金额(double(20,2))
     */
-    export class ClassArt {
+    export class CMSArtFiles {
+        /**
+         * 附件编号
+         * 
+         */
+        public AFID: number = 0;
         /**
          * 文章编号
          * 
          */
         public ArtID: number = 0;
         /**
-         * 章节编号，默认为0，
+         * 创建时间
          * 
          */
-        public CID: number = 0;
+        public CTime: Date = new Date;
+        /**
+         * 创建人
+         * 
+         */
+        public CUID: number = 0;
+        /**
+         * 状态
+         * 1正常0不发布-1删除
+         */
+        public Status: number = 0;
+        /**
+         * 下载
+         * 0开放1不开放
+         */
+        public Open: number = 0;
+        /**
+         * 消耗价值
+         * 
+         */
+        public Price: number = 0;
+        /**
+         * 价值类型
+         * 关联钱包模块，提供扣除相应成本的能力
+         */
+        public PType: number = 0;
+        /**
+         * 存储驱动
+         * 存储驱动对应签名等能力
+         */
+        public Driver: string = "";
+        /**
+         * 存储路径
+         * 针对存储路径进行签名
+         */
+        public Path: string = "";
+        /**
+         * 访问路径
+         * 外网访问路径
+         */
+        public URL: string = "";
+        /**
+         * 下载次数
+         * 累计下载次数
+         */
+        public TDown: number = 0;
+        /**
+         * 文件大小
+         * 
+         */
+        public Size: number = 0;
+    }
+
+    /**
+     * 文章覆盖范围 Rule
+     * RID RID 自增(bigint(20))
+     * 名称 Name char(50)(char(50))
+     * 文章编号 ArtID 序号(bigint(20))
+     * 类型 Type 状态(tinyint(1))
+     * 覆盖值 V 序号(bigint(20))
+     * 值类型 VType 状态(tinyint(1))
+     * 包含子组? Sub 状态(tinyint(1))
+     * 应用编号 AID 编号(bigint(20))
+     * 创建时间 CTime 时间(datetime)
+     * 创建人 CUID 编号(bigint(20))
+     * GID GID 编号(bigint(20))
+     * Key Key char(50)(char(50))
+    */
+    export class CMSRule {
+
+        /**
+         * RID
+         * 
+         */
+        public RID: number = 0;
+        /**
+         * 名称
+         * 
+         */
+        public Name: string = "";
+        /**
+         * 文章编号
+         * 
+         */
+        public ArtID: number = 0;
+        /**
+         * 类型
+         * 1包含0排除-1禁用
+         */
+        public Type: number = 1;
+        /**
+         * 覆盖值
+         * 
+         */
+        public V: number = 0;
+        /**
+         * 值类型
+         * 1用户组0用户
+         */
+        public VType: number = 1;
+        /**
+         * 包含子组?
+         * 0不包含1包含
+         */
+        public Sub: number = 1;
+        /**
+         * 应用编号
+         * 
+         */
+        public AID: number = 0;
+        /**
+         * 创建时间
+         * 
+         */
+        public CTime: Date = new Date;
+        /**
+         * 创建人
+         * 
+         */
+        public CUID: number = 0;
+        /**
+         * GID
+         * 
+         */
+        public GID: number = 0;
+        /**
+         * Key
+         * 
+         */
+        public Key: string = "";
+    }
+    /**
+      * 文章类型 ArtType
+      * 类型编号 ATID 编号(bigint(20))
+      * 类型名称 Name char(50)(char(50))
+      * 类型代码 Code char(50)(char(50))
+      * 控制类 class CMSchar(50)(char(50))
+      * 站点编号 SID 编号(bigint(20))
+    */
+    export class CMSArtType {
+
+        /**
+         * 类型编号
+         * 
+         */
+        public ATID: number = 0;
+        /**
+         * 类型名称
+         * 
+         */
+        public Name: string = "";
+        /**
+         * 类型代码
+         * 
+         */
+        public Code: string = "";
+        /**
+         * 控制类
+         * 
+         */
+        public Class: string = "";
+        /**
+         * 站点编号
+         * 
+         */
+        public SID: number = 0;
+    }
+    /**
+     * 音视频直播扩展 ArtExtendLive 
+     * 文章编号 {number} ArtID 编号(bigint(20)) 
+     * 推流地址 PUSH char255(char(255)) 
+     * 拉流RTMP RTMP char255(char(255)) 
+     * 拉流FLV FLV char255(char(255)) 
+     * 拉流M3U8 M3U8 char255(char(255)) 
+     * 已播时长 PlayTime 时间(datetime) 
+     * 总计时长 TotalTime 时间(datetime) 
+    */
+    export class CMSArtExtendLive {
+
+        /**
+         * 文章编号
+         * 
+         */
+        public ArtID: number = 0;
+        /**
+         * 推流地址
+         * 
+         */
+        public PUSH: string = "";
+        /**
+         * 拉流RTMP
+         * 
+         */
+        public RTMP: string = "";
+        /**
+         * 拉流FLV
+         * 
+         */
+        public FLV: string = "";
+        /**
+         * 拉流M3U8
+         * 
+         */
+        public M3U8: string = "";
+        /**
+         * 已播时长
+         * 
+         */
+        public PlayTime: Date = new Date;
+        /**
+         * 总计时长
+         * 
+         */
+        public TotalTime: Date = new Date;
+    }
+
+    /**
+     * 文章 Art
+     * 文章编号 ArtID 自增编号(bigint(20))
+     * 应用编号 AID 编号(bigint(20))
+     * 标题 Title char255(char(255))
+     * 摘要 Memo char255(char(255))
+     * 创建时间 CTime 时间(datetime)
+     * 创建人 CUID 编号(bigint(20))
+     * 状态 Status 状态值(tinyint(1))
+     * 版本号 V 编号(bigint(20))
+     * 更新时间 UTime 时间(datetime)
+     * 更新人 UUID 编号(bigint(20))
+     * 首图 Head char255(char(255))
+     * 文章类型 Type 编号(bigint(20))
+     * 内容类型 CType 状态值(tinyint(1))
+     * 置顶 Top 状态值(tinyint(1))
+     * 评论 Comment 状态值(tinyint(1))
+     * 发布时间 PTime 时间(datetime)
+     * 阅读次数 RTimes 编号(bigint(20))
+     * 可见性 Vis 状态值(tinyint(1))
+     * GID GID 编号(bigint(20))
+     * Key Key char(50)(char(50))
+     * 开始时间 STime 时间(datetime)
+     * 结束时间 ETime 时间(datetime)
+     * 点赞数 TStar 编号(bigint(20))
+     * 观看量 TView 编号(bigint(20))
+     * 评论数 TComment 编号(bigint(20))
+     * 预计阅读时长 ReadMin 编号(bigint(20))
+     * 学时 StudyMin 编号(bigint(20))
+     * 章节编号 CID 编号(bigint(20))
+     * 作者编号 AUID 编号(bigint(20))
+     * Secend Secend 编号(bigint(20))
+     * MD5 MD5 char(50)(char(50))
+    */
+    export class ClassArt {
+
+        /**
+         * 文章编号
+         * 
+         */
+        public ArtID: number = 0;
+        /**
+         * 应用编号
+         * 
+         */
+        public AID: number = 0;
         /**
          * 标题
          * 
@@ -209,13 +469,8 @@ namespace ArtApi {
          */
         public CUID: number = 0;
         /**
-         * 阅读/学习时间 以s为单位
-         * 
-         */
-        public Secend: number = 300;
-        /**
          * 状态
-         * 1发布0暂存-1删除
+         * 1已发布0暂存-1删除
          */
         public Status: number = 0;
         /**
@@ -240,7 +495,7 @@ namespace ArtApi {
         public Head: string = "";
         /**
          * 文章类型
-         * 
+         * 1 普通文章 2文献类 3录播音频 4 录播视频 5直播视频 6直播音频
          */
         public Type: number = 0;
         /**
@@ -255,24 +510,97 @@ namespace ArtApi {
         public Top: number = 0;
         /**
          * 评论
-         * 
+         * 1开启0关闭
          */
-        public Comment: number = 0;
+        public Comment: number = 1;
         /**
          * 发布时间
          * 定时发布用
          */
         public PTime: Date = new Date;
         /**
+         * 阅读次数
+         * 
+         */
+        public RTimes: number = 0;
+        /**
+         * 可见性
+         * 0不可见1全网可见2好友可见3回复可见4仅自己可见5密码
+         */
+        public Vis: number = 0;
+        /**
+         * GID
+         * 
+         */
+        public GID: number = 0;
+        /**
+         * Key
+         * 
+         */
+        public Key: string = "";
+        /**
+         * 开始时间
+         * 
+         */
+        public STime: Date = new Date("1970-01-01 00:00:00");
+        /**
+         * 结束时间
+         * 
+         */
+        public ETime: Date = new Date("1970-01-01 00:00:00");
+        /**
+         * 点赞数
+         * 累计点赞
+         */
+        public TStar: number = 0;
+        /**
+         * 观看量
+         * 累计观看
+         */
+        public TView: number = 0;
+        /**
+         * 评论数
+         * 累计评论
+         */
+        public TComment: number = 0;
+        /**
+         * 预计阅读时长
+         * 以分钟计算的预计阅读时长，用于提醒用户
+         */
+        public ReadMin: number = 0;
+        /**
+         * 学时
+         * 以分钟计算的学时计算，每60为一个学时
+         */
+        public StudyMin: number = 0;
+        /**
+         * 章节编号
+         * 绑定到文章分类的章节编号上
+         */
+        public CID: number = 0;
+        /**
+         * 作者编号
+         * 发布人!=作者
+         */
+        public AUID: number = 0;
+        /**
+         * Secend
+         * 
+         */
+        public Secend: number = 0;
+        /**
+         * 原创标识
+         * 
+         */
+        public Own: number = 0;
+        /**
          * MD5
+         * 
          */
         public MD5: string = "";
         /**
-         * 原创标志
-         */
-        public Own: boolean = false;
-        /**
-         * 原文链接
+         * URL
+         * 
          */
         public URL: string = "";
     }
@@ -430,8 +758,76 @@ namespace ArtApi {
             }
             return this._post('classify', { ArtID, CIDs });
         }
+        /**
+         * 规则配置
+         * @param {LinkType} Type 关联方式
+         * @param {ArtRuleOp[]} Rules 关联规则
+         */
+        rule(Type: LinkType, Rules: ArtRuleOp[]) {
+            return this._post('rule', { Type, Rules });
+        }
     }
+    /**
+     * 文章规则操作对象
+     */
+    export class ArtRuleOp {
+        /**
+         * RID
+         * 
+         */
+        public RID: number = 0;
+        /**
+         * 名称
+         * 
+         */
+        public Name: string = "";
+        /**
+         * 文章编号
+         * 
+         */
+        public ArtID: number = 0;
+        /**
+         * 类型
+         * 1包含0排除-1禁用
+         */
+        public Type: number = 1;
+        /**
+         * 值
+         * 如果
+         */
+        public V: number = 0;
+        /**
+         * 值类型
+         * 1用户组0用户  当前仅支持用户组方式
+         */
+        public VType: number = 1;
+        /**
+         * 包含子组?
+         * 0不包含1包含
+         */
+        public Sub: number = 1;
+        /**
+         * GID
+         * 
+         */
+        public GID: number = 0;
+        /**
+         * Key
+         * 
+         */
+        public Key: string = "";
+    }
+    /**
+     * 讲师、作者信息
+     * 提供adds,save ,del 接口
+     */
+    export class author extends ControllerApi {
 
+    }
+    /**
+     * 讲师、作者信息
+     */
+    export const AutherApi = new author('Author', prefix)
     /**
      * 添加文章分类对象
      */
