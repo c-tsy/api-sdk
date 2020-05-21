@@ -600,6 +600,24 @@ namespace Paper {
         public Art?: { ArtID: number, Title: string, Memo: string, Head: string } = { ArtID: 0, Title: '', Memo: '', Head: '' }
     }
     /**
+     * 题目附件类型
+     */
+    export enum QuestionFType {
+        /**
+         * 附件
+         */
+        Image,
+        /**
+         * 视频
+         */
+        Video,
+        /**
+         * 音频
+         */
+        Audio,
+    }
+
+    /**
       * 题目 Question
       * 题目编号 QID 自增(bigint(20))
       * 题型 QType 状态(tinyint(1))
@@ -692,6 +710,18 @@ namespace Paper {
          * 组号
          */
         public QGID: number = 0;
+        /**
+         * 难易成都
+         */
+        public Diffcult: number = 0;
+        /**
+         * 附件类型
+         */
+        public FType: QuestionFType = QuestionFType.Image;
+        /**
+         * 链接地址
+         */
+        public URL: string = '';
         /**
          * 选项内容
          */
