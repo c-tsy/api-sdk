@@ -67,9 +67,13 @@ export class SearchWhere {
  * 连接处理方式
  */
 export enum LinkType {
-    //追加
+    /**
+     * 追加
+     */
     append,
-    //替换
+    /**
+     * 替换
+     */
     replace,
     /**
      * 移除
