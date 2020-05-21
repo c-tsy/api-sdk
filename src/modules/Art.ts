@@ -79,6 +79,11 @@ namespace ArtApi {
          */
         public ArtID: number = 0;
         /**
+         * 章节编号，默认为0
+         * 
+         */
+        public CID: number = 0;
+        /**
          * 阅读次数
          * 
          */
@@ -153,6 +158,7 @@ namespace ArtApi {
     /**
       * 文章 Art
       * 文章编号 ArtID 自增编号(bigint(20))
+      * 章节编号 CID 自增编号(bigint(20))
       * 应用编号 AID 编号(bigint(20))
       * 标题 Title char255(char(255))
       * 摘要 Memo char255(char(255))
@@ -177,6 +183,11 @@ namespace ArtApi {
          * 
          */
         public ArtID: number = 0;
+        /**
+         * 章节编号，默认为0，
+         * 
+         */
+        public CID: number = 0;
         /**
          * 标题
          * 
