@@ -80,13 +80,9 @@ req.interceptors.request.use(async (conf: any) => {
     if (Token) {
         conf.headers['token'] = Token;
     }
-    // conf.headers['appid'] = ApiConfig.AppID + '_' + ApiConfig.Key;
-    // conf.headers['rand'] = Date.now();
-    // conf.headers['md5']
-    // if (ApiConfig.UID) {
-    //     conf.headers['uid'] = ApiConfig.UID;
-    // }
+    // 取得当前13位毫秒时间戳
     let rand = Date.now()
+    // 准备一个字符串，用于存储签名内容，分别用 时间戳，请求路径，密钥 组合
     let txt = [rand, conf.url, ApiConfig.Secret].join('');
     if ('string' != typeof conf.data) {
         if (conf.method == 'get') {
@@ -98,13 +94,11 @@ req.interceptors.request.use(async (conf: any) => {
         } else {
             conf.headers['content-type'] = 'application/json';
             conf.data = JSON.stringify(conf.data);
+            // 将请求的内容字符串化后添加到签名字符串中，
             txt += conf.data;
         }
     }
-    // conf.headers['md5'] = md5(txt);
-    // if (ApiConfig.Rand) {
-    //     conf.headers['rkey'] = ApiConfig.Rand;
-    // }
+    // 生成签名内容 分别是 AppID，Key，随机数，md5后的签名用下划线链接
     conf.headers['auth'] = [ApiConfig.AppID, ApiConfig.Key, rand, md5(txt)].join('_');
     conf.path = conf.url.replace('/_', '');
     conf.url = ApiConfig.Host + conf.url
