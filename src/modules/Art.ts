@@ -875,7 +875,7 @@ namespace ArtApi {
      * 提供adds,save ,del 接口
      */
     export class author extends ControllerApi {
-
+        PK = "AUID";
     }
     /**
      * 讲师、作者信息
