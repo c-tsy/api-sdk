@@ -394,6 +394,20 @@ export namespace User {
             return this._post('reset', { OldPWD: md5(OldPWD), PWD: md5(PWD) })
         }
         /**
+         * 管理员重置密码
+         * @param {number} UID 用户编号
+         * @param {string} PWD 要设置的密码，
+         */
+        areset(UID: number, PWD: string) {
+            if ('string' != typeof PWD) {
+                throw new Error(ErrorType.User.PWD_SHOULD_BE_STRING)
+            }
+            if (!/.{6,}/.test(PWD)) {
+                throw new Error(ErrorType.User.PWD_PARAMS_IS_ERROR)
+            }
+            return this._post('areset', { UID, PWD: md5(PWD) })
+        }
+        /**
          * 信息注册
          * @param Name 姓名
          * @param Nick 昵称
