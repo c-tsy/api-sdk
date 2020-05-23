@@ -312,18 +312,18 @@ export namespace ApiCommon {
 /**
  * 不完整的完整控制器
  */
-export class ControllerApi extends ApiController {
+export class ControllerApi<T> extends ApiController {
     PK: string = "ID"
-    search<T>(d: SearchWhere): PromiseLike<SearchResult<T>> {
+    search(d: SearchWhere): PromiseLike<SearchResult<T>> {
         return this._post('search', d);
     }
-    add<T>(d: any): Promise<T> {
+    add(d: any): Promise<T> {
         return this._post('add', d);
     }
-    adds<T>(d: any[]): Promise<T[]> {
+    adds(d: any[]): Promise<T[]> {
         return this._post('adds', d);
     }
-    save(PKID: number, Params: Object) {
+    save(PKID: number, Params: T) {
         return this._post('save', { [this.PK]: PKID, Params })
     }
     del(PKID: number) {

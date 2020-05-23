@@ -932,7 +932,7 @@ namespace ArtApi {
      * 讲师、作者信息
      * 提供adds,save ,del 接口
      */
-    export class author extends ControllerApi {
+    export class author extends ControllerApi<Author> {
         PK = "AUID";
     }
     /**
