@@ -870,6 +870,64 @@ namespace ArtApi {
          */
         public Key: string = "";
     }
+
+
+    /**
+      * 作者 Author
+      * 作者编号 AUID 编号(bigint(20))
+      * 学历 Degree char255(char(255))
+      * 学历类型 DType char255(char(255))
+      * 职称 Title char255(char(255))
+      * 履历 Resume char255(char(255))
+      * 特长专业 Major char255(char(255))
+      * 应用编号 AID 编号(bigint(20))
+      * GID GID 编号(bigint(20))
+      * Key Key char(50)(char(50))
+    */
+    export class Author {
+
+        /**
+         * 作者编号=用户编号
+         * 
+         */
+        public AUID: number = 0;
+        /**
+         * 学历
+         * 
+         */
+        public Degree: string = "";
+        /**
+         * 学历类型
+         * 
+         */
+        public DType: string = "";
+        /**
+         * 职称
+         * 
+         */
+        public Title: string = "";
+        /**
+         * 履历
+         * 
+         */
+        public Resume: string = "";
+        /**
+         * 特长专业
+         * 
+         */
+        public Major: string = "";
+        /**
+         * GID
+         * 
+         */
+        public GID: number = 0;
+        /**
+         * Key
+         * 
+         */
+        public Key: string = "";
+    }
+
     /**
      * 讲师、作者信息
      * 提供adds,save ,del 接口
