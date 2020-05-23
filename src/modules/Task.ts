@@ -1,9 +1,11 @@
 import { ApiController, ControllerApi } from "..";
-import comment from "./task/class/Comment";
+import ClassComment from "./task/class/Comment";
 import ClassTask from "./task/class/Task";
 import { SearchWhere, LinkType } from "../lib";
 import ClassTaskTag from "./task/class/Tag";
 import ClassTaskFiles from "./task/class/Files";
+import ClassTaskGroup from "./task/class/TaskGroup";
+import ClassProject from "./task/class/Project";
 
 namespace TaskApi {
     let prefix = '_task';
@@ -83,7 +85,7 @@ namespace TaskApi {
     /**
      * 任务管理对象
      */
-    class task extends ControllerApi {
+    class task extends ControllerApi<ClassTask> {
         PK = "TID"
 
         /**
@@ -141,7 +143,7 @@ namespace TaskApi {
     }
     export const TaskApi = new task('Task', prefix);
 
-    class project extends ControllerApi {
+    class project extends ControllerApi<ClassProject> {
         PK = "PID"
 
         /**
@@ -189,7 +191,7 @@ namespace TaskApi {
     }
     export const ProjectApi = new project('Project', prefix);
 
-    class taskGroup extends ControllerApi {
+    class taskGroup extends ControllerApi<ClassTaskGroup> {
         PK = "TGID"
     }
     export const TaskGroupApi = new taskGroup('TaskGroup', prefix);
@@ -227,7 +229,7 @@ namespace TaskApi {
         }
     }
     export const TagApi = new tag('Tag', prefix);
-    class comment extends ControllerApi {
+    class comment extends ControllerApi<ClassComment> {
         PK = "CID"
     }
     export const CommentApi = new comment('Comment', prefix)
