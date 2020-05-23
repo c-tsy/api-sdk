@@ -6,7 +6,7 @@ const md5: any = require('md5')
 namespace Upload {
     export class ClassUploadFileConfig {
         /**
-         * 上传原因
+         * 上传原因，如 做什么操作 导致的上传，英文标识，20个字符以下
          */
         what: string = ''
         /**
@@ -14,23 +14,23 @@ namespace Upload {
          */
         oname: string = ''
         /**
-         * 过期控制，OSS存储标签
+         * 过期控制，OSS存储标签，如果不需要过期控制请传入false，否则传入数字表示多少天过期
          */
         expire: string | number | boolean = ''
         /**
-         * 存储权限，私有或者公有读
+         * 存储权限，私有或者公有读，默认为私有，私有的情况下没法直接通过URL链接来访问
          */
         acl: 'private' | 'read' = 'private'
         /**
-         * 成功回调
+         * 成功回调，弃用
          */
         success?: Function
         /**
-         * 失败回调
+         * 失败回调，弃用，
          */
         error?: Function
         /**
-         * 文件名称
+         * 文件名称，存储的文件名称
          */
         name?: string
     }
@@ -128,8 +128,17 @@ namespace Upload {
      * 上传文件
      * @param data 文件对象
      * @param conf 配置内容
+     * @returns {{
+        URL: string,
+        Original: string,
+        Auth: string
+    }}
      */
-    export async function upload_file(data: File, conf: ClassUploadFileConfig) {
+    export async function upload_file(data: File, conf: ClassUploadFileConfig): Promise<{
+        URL: string,
+        Original: string,
+        Auth: string
+    }> {
         let config = {
             headers: { 'Content-Type': 'multipart/form-data' }
         }
@@ -159,8 +168,11 @@ namespace Upload {
         let rs = await axios.post(d.host, form, config)
         let drs = {
             url: d.host + '/' + d.file,
+            URL: d.host + '/' + d.file,
             original: data.name,
+            Original: data.name,
             auth: d,
+            Auth: d,
             rs,
         };
         if (conf.success instanceof Function) {
