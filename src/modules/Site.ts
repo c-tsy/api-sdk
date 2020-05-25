@@ -259,6 +259,7 @@ namespace SiteApi {
      * 不支持add，del，delw，replace，replacew，savew
      */
     class display extends ControllerApi<Display> {
+        PK = "DID"
 
     }
     export const DisplayApi = new display('Display', prefix)
@@ -267,6 +268,7 @@ namespace SiteApi {
      * 不支持add，del，delw，replace，replacew，savew
      */
     class displayItem extends ControllerApi<DisplayItem> {
+        PK = "DIID"
 
     }
     export const DisplayItemApi = new displayItem('DisplayItem', prefix)
@@ -275,6 +277,7 @@ namespace SiteApi {
      * 不支持add，del，delw，replace，replacew，savew
      */
     class sites extends ControllerApi<Sites> {
+        PK = "SID"
 
     }
     export const SitesApi = new sites('Sites', prefix)
