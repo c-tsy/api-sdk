@@ -317,10 +317,10 @@ export class ControllerApi<T> extends ApiController {
     search(d: SearchWhere): PromiseLike<SearchResult<T>> {
         return this._post('search', d);
     }
-    add(d: any): Promise<T> {
+    add(d: T): Promise<T> {
         return this._post('add', d);
     }
-    adds(d: any[]): Promise<T[]> {
+    adds(d: T[]): Promise<T[]> {
         return this._post('adds', d);
     }
     save(PKID: number, Params: T) {
