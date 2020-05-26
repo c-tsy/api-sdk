@@ -616,7 +616,19 @@ namespace Paper {
          */
         Audio,
     }
-
+    /**
+     * 题目类型
+     */
+    export enum QuestionType {
+        // 单选
+        Single,
+        // 多选
+        Duplex,
+        // 判断
+        Judge,
+        // 简答
+        Answer,
+    }
     /**
       * 题目 Question
       * 题目编号 QID 自增(bigint(20))
@@ -899,7 +911,18 @@ namespace Paper {
          * @param Key 分组键
          * @param Answers 答案选项内容
          */
-        answer(PID: number, UID: number, STime: Date, ETime: Date, GID: number = 0, Key: string = "", Answers: { QID: number, SelectedQIIDs: number[] }[]): Promise<{
+        answer(PID: number, UID: number, STime: Date, ETime: Date, GID: number = 0, Key: string = "", Answers: {
+            QID: number,
+            SelectedQIIDs?: number[],
+            QType?: QuestionType,
+            Desc?: string,
+            Memo?: string,
+            Imgs?: ({
+                Name: string,
+                Memo: string,
+                URL: string,
+            } | string)[]
+        }[]): Promise<{
             /**正确答案 {QID:[QIID]} QID为键，QIID为数组，正确选项的数组*/
             Right: { [index: string]: number[] },
             //当前答题得分
@@ -911,7 +934,23 @@ namespace Paper {
         }> {
             let answers: any = {};
             for (let x of Answers) {
-                answers[x.QID] = x.SelectedQIIDs;
+                // answers[x.QID] = x.SelectedQIIDs;
+                if (x.Imgs && x.Imgs.length > 0) {
+                    for (let i of x.Imgs) {
+                        if ('string' == typeof i && i.indexOf('base64')) {
+                            throw new Error('禁止提交Base64编码的图片')
+                        }
+                    }
+                }
+                answers[x.QID] = {
+                    QType: undefined == x.QType ? QuestionType.Single : x.QType,
+                    QIIDs: x.SelectedQIIDs || [],
+                    Desc: x.Desc || '',
+                    Imgs: x.Imgs || [],
+                    Memo: x.Memo || ''
+                }
+                // 允许为空的提交，所以不用判断
+                // if([QuestionType.Single,QuestionType.Duplex].includes(answers[x.QID].QType))
             }
             return this._post('answer', {
                 UID, PID, STime, ETime, Key, GID, Answers: answers
