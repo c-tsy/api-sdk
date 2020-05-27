@@ -628,6 +628,8 @@ namespace Paper {
         Judge,
         // 简答
         Answer,
+        // 填空
+        Input,
     }
     /**
       * 题目 Question
@@ -910,28 +912,33 @@ namespace Paper {
          * @param GID 分组编号
          * @param Key 分组键
          * @param Answers 答案选项内容
+         * @param {boolean} Cheat 作弊与否 false 表示不作弊
          */
         answer(PID: number, UID: number, STime: Date, ETime: Date, GID: number = 0, Key: string = "", Answers: {
             QID: number,
             SelectedQIIDs?: number[],
             QType?: QuestionType,
+            //填空或简答的内容
             Desc?: string,
+            //答题备注
             Memo?: string,
+            //答题所涉及到的图片内容，目前仅易安鸟用
             Imgs?: ({
                 Name: string,
                 Memo: string,
                 URL: string,
             } | string)[]
-        }[]): Promise<{
-            /**正确答案 {QID:[QIID]} QID为键，QIID为数组，正确选项的数组*/
-            Right: { [index: string]: number[] },
-            //当前答题得分
-            Score: number,
-            //当前答题次数
-            Times: number,
-            //消耗时间
-            Seconds: number
-        }> {
+        }[],
+            Cheat: boolean = false): Promise<{
+                /**正确答案 {QID:[QIID]} QID为键，QIID为数组，正确选项的数组*/
+                Right: { [index: string]: number[] },
+                //当前答题得分
+                Score: number,
+                //当前答题次数
+                Times: number,
+                //消耗时间
+                Seconds: number
+            }> {
             let answers: any = {};
             for (let x of Answers) {
                 // answers[x.QID] = x.SelectedQIIDs;
@@ -953,7 +960,7 @@ namespace Paper {
                 // if([QuestionType.Single,QuestionType.Duplex].includes(answers[x.QID].QType))
             }
             return this._post('answer', {
-                UID, PID, STime, ETime, Key, GID, Answers: answers
+                UID, PID, STime, ETime, Key, GID, Answers: answers, Cheat
             })
         }
         /**
