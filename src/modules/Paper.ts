@@ -855,6 +855,24 @@ namespace Paper {
         R: ClassPaperAnalyzeR = new ClassPaperAnalyzeR
     }
     /**
+     * 答题情况的接口类
+     */
+    class answer extends ApiController {
+        /**
+         * 读取答题明细
+         * @param PID 试卷编号
+         * @param UID 用户编号
+         * @param GID 分组键，如企业编号，组织结构编号
+         */
+        detail(PID: number, UID: number, GID: number = 0): Promise<ClassPaperAnswer> {
+            return this._post('detail', { PID, UID, GID });
+        }
+    }
+    /**
+     * 答题情况接口
+     */
+    export const AnswerApi = new answer('Answer', prefix);
+    /**
      * 试卷处理类
      */
     class paper extends ApiController {
