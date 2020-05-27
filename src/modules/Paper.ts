@@ -864,8 +864,17 @@ namespace Paper {
          * @param UID 用户编号
          * @param GID 分组键，如企业编号，组织结构编号
          */
-        detail(PID: number, UID: number, GID: number = 0, PIDs: number[]): Promise<{ L: ClassPaperAnswer }> {
-            return this._post('detail', { PID, UID, GID, PIDs });
+        detail(UIDs: number[], GID: number = 0, PIDs: number[]): Promise<{ L: ClassPaperAnswer }> {
+            return this._post('detail', { UIDs, GID, PIDs });
+        }
+        /**
+         * 读取已答题的结论概况
+         * @param UIDs 用户编号列表
+         * @param GID 分组键
+         * @param PIDs 可选 试卷编号列表，
+         */
+        answered(UIDs: number[], GID: number, PIDs: number[] = []) {
+            return this._post('answered', { UIDs, PIDs, GID })
         }
     }
     /**
