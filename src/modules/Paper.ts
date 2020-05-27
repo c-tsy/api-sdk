@@ -1,6 +1,7 @@
 import { ApiController, ControllerApi } from '..';
 import { SearchWhere, LinkType } from '../lib';
 import { SearchResult } from '../lib';
+import { ParamsError } from '../errors';
 /**
  * 答题部分模块
  */
@@ -886,6 +887,64 @@ namespace Paper {
          * @param Papers 试题
          */
         adds(Papers: ClassPaper[]): Promise<ClassPaper[]> {
+
+            if (Papers instanceof Array && Papers.length > 0) {
+                let QIDs: number[] = [], QGIDs: number[] = [], ArtIDs: number[] = [];
+                for (let x of Papers) {
+                    if ('string' != typeof x.Title || x.Title.length < 1) {
+                        throw new ParamsError('标题错误')
+                    }
+                    if (x.Total <= 0) {
+                        throw new ParamsError('总分不得小于1')
+                    }
+                    if (x.Configs instanceof Array && x.Configs.length > 0) {
+
+                    } else {
+                        throw new ParamsError('试卷配置为空')
+                    }
+
+                    if (x.ArtID > 0) {
+                        ArtIDs.push(x.ArtID)
+                    }
+
+                    let eQGIDs: number[] = [];
+                    for (let ci in x.Configs) {
+                        let c = x.Configs[ci];
+                        if (eQGIDs.includes(c.QGID)) {
+                            throw new ParamsError('题组重复')
+                        }
+                        eQGIDs.push(c.QGID);
+                        QGIDs.push(c.QGID);
+                        if (c.Score <= 0) {
+                            throw new ParamsError('单项分数低于1')
+                        }
+                        if (c.Use < 1) {
+                            throw new ParamsError('抽取题数小于1')
+                        }
+                        if (c.Title.length < 1) {
+                            throw new ParamsError('题组标题长度小于1')
+                        }
+                        if (c.QGID < 1) {
+                            throw new ParamsError('未选择题组');
+                        }
+                        if (false === c.Rand) {
+                            if (c.Source instanceof Array) {
+                                if (c.Source.length < 1) {
+                                    throw new ParamsError('没有正确设置题目信息');
+                                }
+                                for (let s of c.Source) {
+                                    if ('number' != typeof s) {
+                                        throw new ParamsError('题目信息类型错误')
+                                    }
+                                }
+                                QIDs.push(...c.Source)
+                            } else {
+                                throw new ParamsError('题目源数据不存在');
+                            }
+                        }
+                    }
+                }
+            }
             return this._post('adds', Papers)
         }
         /**
