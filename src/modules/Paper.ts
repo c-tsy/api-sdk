@@ -929,7 +929,7 @@ namespace Paper {
                 URL: string,
             } | string)[]
         }[],
-            Cheat: boolean = false): Promise<{
+            Cheat: boolean = false, Addr: string = ""): Promise<{
                 /**正确答案 {QID:[QIID]} QID为键，QIID为数组，正确选项的数组*/
                 Right: { [index: string]: number[] },
                 //当前答题得分
