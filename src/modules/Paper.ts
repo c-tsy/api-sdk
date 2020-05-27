@@ -864,7 +864,7 @@ namespace Paper {
          * @param UID 用户编号
          * @param GID 分组键，如企业编号，组织结构编号
          */
-        detail(PID: number, UID: number, GID: number = 0): Promise<ClassPaperAnswer> {
+        detail(PID: number, UID: number, GID: number = 0): Promise<{ L: ClassPaperAnswer }> {
             return this._post('detail', { PID, UID, GID });
         }
     }
