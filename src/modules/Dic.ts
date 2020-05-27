@@ -226,7 +226,7 @@ namespace Dic {
     export class types extends ControllerApi<Types>{
         PK = 'TID';
     }
-    export const TypesApi = new dics('Types', prefix);
+    export const TypesApi = new types('Types', prefix);
     /**
      * 关联关系管理接口
      */
