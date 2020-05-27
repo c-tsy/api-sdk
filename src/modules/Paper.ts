@@ -988,7 +988,8 @@ namespace Paper {
                 URL: string,
             } | string)[]
         }[],
-            Cheat: boolean = false, Addr: string = ""): Promise<{
+            Cheat: boolean = false,
+            Addr: string = ""): Promise<{
                 /**正确答案 {QID:[QIID]} QID为键，QIID为数组，正确选项的数组*/
                 Right: { [index: string]: number[] },
                 //当前答题得分
@@ -1019,7 +1020,15 @@ namespace Paper {
                 // if([QuestionType.Single,QuestionType.Duplex].includes(answers[x.QID].QType))
             }
             return this._post('answer', {
-                UID, PID, STime, ETime, Key, GID, Answers: answers, Cheat
+                Addr,
+                UID,
+                PID,
+                STime,
+                ETime,
+                Key,
+                GID,
+                Answers: answers,
+                Cheat
             })
         }
         /**
