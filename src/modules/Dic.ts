@@ -68,6 +68,16 @@ namespace Dic {
          * 
          */
         public CTime: Date = new Date;
+        /**
+         * 备注
+         * 
+         */
+        public Memo: string = "";
+        /**
+         * 图标
+         * 
+         */
+        public Icon: string = "";
     }
     /**
      * 字典关联 Link
