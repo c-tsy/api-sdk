@@ -864,8 +864,8 @@ namespace Paper {
          * @param UID 用户编号
          * @param GID 分组键，如企业编号，组织结构编号
          */
-        detail(UIDs: number[], GID: number = 0, PIDs: number[]): Promise<{ L: ClassPaperAnswer }> {
-            return this._post('detail', { UIDs, GID, PIDs });
+        detail(UIDs: number[], GIDs: number[], PIDs: number[]): Promise<{ L: ClassPaperAnswer }> {
+            return this._post('detail', { UIDs, GIDs, PIDs });
         }
         /**
          * 读取已答题的结论概况
@@ -1015,7 +1015,9 @@ namespace Paper {
                 URL: string,
             } | string)[]
         }[],
+            // 是否作弊
             Cheat: boolean = false,
+            // 答题位置
             Addr: string = ""): Promise<{
                 /**正确答案 {QID:[QIID]} QID为键，QIID为数组，正确选项的数组*/
                 Right: { [index: string]: number[] },
