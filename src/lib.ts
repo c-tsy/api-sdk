@@ -41,6 +41,14 @@ export namespace ErrorType {
 }
 
 export function tree() { }
+
+/**
+ * SDK的Hook
+ */
+export enum ApiSDKHooks {
+    Request = "Request"
+}
+
 /**
  * 查询结果
  */
