@@ -1,6 +1,6 @@
 {
   "name": "@ctsy/api-sdk",
-  "version": "2.0.130",
+  "version": "2.0.131",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
@@ -28,7 +28,7 @@
     "castle-function": "*",
     "get-value": "*",
     "md5": "*",
-    "protobufjs": "*",
+    "protobufjs": "^6.9.0",
     "set-value": "*",
     "store": "*"
   },
