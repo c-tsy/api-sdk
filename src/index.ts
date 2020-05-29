@@ -106,6 +106,36 @@ req.interceptors.request.use(async (conf: any) => {
     await hook.emit(ApiSDKHooks.Request, HookWhen.Before, req, conf)
     return conf;
 })
+
+if (window.uni) {
+    //uniapp 环境
+    //真机获取  
+    axios.defaults.adapter = function (config: any) {
+        return new Promise((resolve, reject) => {
+            var settle = require('axios/lib/core/settle');
+            var buildURL = require('axios/lib/helpers/buildURL');
+            window.uni.request({
+                method: config.method.toUpperCase(),
+                url: buildURL(config.url, config.params, config.paramsSerializer),
+                header: config.headers,
+                data: config.data,
+                dataType: config.dataType,
+                responseType: config.responseType,
+                sslVerify: config.sslVerify,
+                complete: function complete(response: any) {
+                    response = {
+                        data: response.data,
+                        status: response.statusCode,
+                        errMsg: response.errMsg,
+                        header: response.header,
+                        config: config
+                    };
+                    settle(resolve, reject, response);
+                }
+            })
+        })
+    }
+}
 // function check_proto(path: string) {
 //     let [m, c, f] = path.replace('_', '').split('/')
 //     if (ApiConfig.protos[m] && ApiConfig.protos[m][c])
