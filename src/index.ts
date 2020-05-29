@@ -15,8 +15,14 @@ export enum ApiSDKHooks {
 declare let window: any;
 declare let uni: any;
 
-var global: any = globalThis;
-var isWindow: boolean = global.__proto__.constructor.name == 'Window'
+var isWindow: boolean = true
+try {
+    //uniapp中不存在globalThis变量
+    var global: any = globalThis;
+    isWindow = global.__proto__.constructor.name == 'Window';
+} catch (error) {
+
+}
 
 p.wrappers[".google.protobuf.Timestamp"] = {
     fromObject: function (object: any) {
@@ -146,7 +152,8 @@ async function request(method: 'post' | 'get', path: string, data: any) {
                                     data: response.data,
                                     status: response.statusCode,
                                     errMsg: response.errMsg,
-                                    header: response.header,
+                                    statusText: response.errMsg,
+                                    headers: response.header,
                                     config: config
                                 };
                                 settle(resolve, reject, response);
