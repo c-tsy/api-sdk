@@ -132,17 +132,16 @@ async function request(method: 'post' | 'get', path: string, data: any) {
     if (method == 'get') {
         // path += ('?' + query.stringify(data));
     }
-    await hook.emit(ApiSDKHooks.Request, HookWhen.Before, conf, { req: data, rep: {}, error: "" });
+    await hook.emit(ApiSDKHooks.Request, HookWhen.Before, req, { conf, req: data, rep: {}, error: "" });
     return await q(path, method == 'get' ? conf : data, conf).then(async (e: any) => {
-        await hook.emit(ApiSDKHooks.Request, HookWhen.After, req, e)
         log(path, method, e.config.headers['rand'], Date.now() - e.config.headers['rand'], e.data.c || e.status, e.config.data.length, e.headers['content-length'], e.data.e ? e.data.e.m : '')
         if (e.data.c != 200) {
             let err = e.data.e || {};
             err = 'object' == typeof err ? err.m : ('string' == typeof err ? err : e.data.c)
-            await hook.emit(ApiSDKHooks.Request, HookWhen.Error, conf, { req: data, rep: e, error: err });
+            await hook.emit(ApiSDKHooks.Request, HookWhen.Error, req, { conf, req: data, rep: e, error: err });
             throw new Error(err);
         }
-        await hook.emit(ApiSDKHooks.Request, HookWhen.After, conf, { req: data, rep: e, error: "" });
+        await hook.emit(ApiSDKHooks.Request, HookWhen.After, req, { conf, req: data, rep: e, error: "" });
         return e.data.d;
     }).catch(async (e: any) => {
         let err = e.message;
@@ -150,7 +149,7 @@ async function request(method: 'post' | 'get', path: string, data: any) {
             log(path, method, e.config.headers['rand'], Date.now() - e.config.headers['rand'], e.response.status, e.config.data.length, e.response.headers['content-length'], e.response.data.e.m)
             err = e.response.data.e.m;
         }
-        await hook.emit(ApiSDKHooks.Request, HookWhen.Error, conf, { req: data, rep: e, error: err });
+        await hook.emit(ApiSDKHooks.Request, HookWhen.Error, req, { conf, req: data, rep: e, error: err });
         throw new Error(err);
     });
 }
