@@ -1,7 +1,7 @@
 import axios from 'axios';
 import * as store from 'store'
 import * as qs from 'querystring'
-import * as p from 'protobufjs';
+import * as p from 'protobufjs/light';
 import { SearchWhere, SearchResult } from './lib';
 import { base_covert } from '@ctsy/covert';
 import hook, { Hook, HookWhen } from '@ctsy/hook';
@@ -13,6 +13,11 @@ export enum ApiSDKHooks {
 }
 
 declare let window: any;
+declare let uni: any;
+
+var global: any = globalThis;
+var isWindow: boolean = global.__proto__.constructor.name == 'Window'
+
 p.wrappers[".google.protobuf.Timestamp"] = {
     fromObject: function (object: any) {
         //Convert ISO-8601 to epoch millis
@@ -26,6 +31,7 @@ p.wrappers[".google.protobuf.Timestamp"] = {
         return new Date(message.seconds * 1000 + message.nanos);
     }
 };
+
 const md5: any = require('md5')
 /**
  * 用户识别符
@@ -61,7 +67,8 @@ req.interceptors.response.use(async (data: any) => {
             protoed[m] = p.Root.fromJSON(pjson.data)
         }
         let msg = protoed[m].lookupType([c, f].join('_'));
-        pd.d = msg.toObject(msg.decode(pd.d));
+        let decoded = msg.decode(pd.d);
+        pd.d = msg.toObject(decoded);
         if (pd.d._ && pd.d._ instanceof Array) {
             pd.d = pd.d._;
         } else if (pd.d._m) {
@@ -114,47 +121,52 @@ req.interceptors.request.use(async (conf: any) => {
 async function request(method: 'post' | 'get', path: string, data: any) {
     let q: any = req[method], conf: any = {};
     if (false === ApiConfig.inited) {
-        await axios.get(ApiConfig.Host + '/proto/list.json').then((d) => {
-            ApiConfig.protos = d.data;
-            // debugger
-        })
-        if (window && window.uni) {
-            //uniapp 环境
-            //真机获取  
-            axios.defaults.adapter = function (config: any) {
-                return new Promise((resolve, reject) => {
-                    var settle = require('axios/lib/core/settle');
-                    var buildURL = require('axios/lib/helpers/buildURL');
-                    window.uni.request({
-                        method: config.method.toUpperCase(),
-                        url: buildURL(config.url, config.params, config.paramsSerializer),
-                        header: config.headers,
-                        data: config.data,
-                        dataType: config.dataType,
-                        responseType: config.responseType,
-                        sslVerify: config.sslVerify,
-                        complete: function complete(response: any) {
-                            response = {
-                                data: response.data,
-                                status: response.statusCode,
-                                errMsg: response.errMsg,
-                                header: response.header,
-                                config: config
-                            };
-                            settle(resolve, reject, response);
-                        }
+        if (ApiConfig.Debug == false)
+            await axios.get(ApiConfig.Host + '/proto/list.json').then((d) => {
+                ApiConfig.protos = d.data;
+                // debugger
+            })
+        try {
+            if (isWindow && uni) {
+                //uniapp 环境
+                axios.defaults.adapter = function (config: any) {
+                    return new Promise((resolve, reject) => {
+                        var settle = require('axios/lib/core/settle');
+                        var buildURL = require('axios/lib/helpers/buildURL');
+                        uni.request({
+                            method: config.method.toUpperCase(),
+                            url: buildURL(config.url, config.params, config.paramsSerializer),
+                            header: config.headers,
+                            data: config.data,
+                            dataType: config.dataType,
+                            responseType: config.responseType,
+                            sslVerify: config.sslVerify,
+                            complete: function complete(response: any) {
+                                response = {
+                                    data: response.data,
+                                    status: response.statusCode,
+                                    errMsg: response.errMsg,
+                                    header: response.header,
+                                    config: config
+                                };
+                                settle(resolve, reject, response);
+                            }
+                        })
                     })
-                })
+                }
             }
+        } catch (error) {
+
         }
         ApiConfig.inited = true;
     }
     let [m, c, f] = path.replace('/_', '').split('/');
     if (
-        ApiConfig.protos[m]
+        isWindow
+        && ApiConfig.Debug === false
+        && ApiConfig.protos[m]
         && ApiConfig.protos[m][c]
         && ApiConfig.protos[m][c][f]
-        && ApiConfig.Debug === false
     ) {
         conf.responseType = "arraybuffer";
         conf.headers = { accept: 'application/x-protobuf' }
