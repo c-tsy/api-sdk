@@ -859,13 +859,14 @@ namespace Paper {
      */
     class answer extends ApiController {
         /**
-         * 读取答题明细
-         * @param PID 试卷编号
-         * @param UID 用户编号
-         * @param GID 分组键，如企业编号，组织结构编号
+         * 读取答题试卷明细
+         * @param UIDs 
+         * @param GIDs 
+         * @param PIDs 
+         * @param PAIDs 某次答题的记录编号
          */
-        detail(UIDs: number[], GIDs: number[], PIDs: number[]): Promise<{ L: ClassPaperAnswer }> {
-            return this._post('detail', { UIDs, GIDs, PIDs });
+        detail(UIDs?: number[], GIDs?: number[], PIDs?: number[], PAIDs?: number[]): Promise<{ L: ClassPaperAnswer }> {
+            return this._post('detail', { UIDs, GIDs, PIDs, PAIDs });
         }
         /**
          * 读取已答题的结论概况
