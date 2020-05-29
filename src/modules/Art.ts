@@ -628,6 +628,16 @@ namespace ArtApi {
          */
         public Status: number = 0;
         /**
+         * 价格类型，当前默认为1
+         * 
+         */
+        public PType: number = 1;
+        /**
+         * 价格，默认为0表示无需价格
+         * 
+         */
+        public Price: number = 0;
+        /**
          * 首图
          * 
          */
