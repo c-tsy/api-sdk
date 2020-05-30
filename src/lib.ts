@@ -46,7 +46,7 @@ export function tree() { }
  * SDK的Hook
  */
 export enum ApiSDKHooks {
-    Request = "Request"
+    Request = "apisdk/Request"
 }
 
 /**

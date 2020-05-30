@@ -2,15 +2,9 @@ import axios from 'axios';
 import * as store from 'store'
 import * as qs from 'querystring'
 import * as p from 'protobufjs/light';
-import { SearchWhere, SearchResult } from './lib';
+import { SearchWhere, SearchResult, ApiSDKHooks } from './lib';
 import { base_covert } from '@ctsy/covert';
 import hook, { Hook, HookWhen } from '@ctsy/hook';
-/**
- * ApiSDK Hooks
- */
-export enum ApiSDKHooks {
-    Request = '@ctsy/api-sdk/request'
-}
 
 declare let window: any;
 declare let uni: any;
@@ -187,7 +181,7 @@ async function request(method: 'post' | 'get', path: string, data: any) {
         if (e.data.c != 200) {
             let err = e.data.e || {};
             err = 'object' == typeof err ? err.m : ('string' == typeof err ? err : e.data.c)
-            await hook.emit(ApiSDKHooks.Request, HookWhen.Error, req, { conf, req: data, rep: e, error: err });
+            // await hook.emit(ApiSDKHooks.Request, HookWhen.Error, req, { conf, req: data, rep: e, error: err });
             throw new Error(err);
         }
         await hook.emit(ApiSDKHooks.Request, HookWhen.After, req, { conf, req: data, rep: e, error: "" });
