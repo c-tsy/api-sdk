@@ -2,13 +2,15 @@ import axios from 'axios';
 import * as store from 'store'
 import * as qs from 'querystring'
 import * as p from 'protobufjs/light';
-import { SearchWhere, SearchResult, ApiSDKHooks } from './lib';
+import { SearchWhere, SearchResult, ApiSDKHooks as hooks } from './lib';
 import { base_covert } from '@ctsy/covert';
 import hook, { Hook, HookWhen } from '@ctsy/hook';
 import * as rpc from '@ctsy/ws-rpc-client';
 
 declare let window: any;
 declare let uni: any;
+
+export const ApiSDKHooks = hooks;
 
 const rate = {
     time: {},
