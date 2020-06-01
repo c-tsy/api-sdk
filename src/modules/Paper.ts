@@ -865,8 +865,8 @@ namespace Paper {
          * @param PIDs 
          * @param PAIDs 某次答题的记录编号
          */
-        detail(UIDs?: number[], GIDs?: number[], PIDs?: number[], PAIDs?: number[]): Promise<{ L: ClassPaperAnswer }> {
-            return this._post('detail', { UIDs, GIDs, PIDs, PAIDs });
+        detail(UIDs?: number[], GIDs?: number[], PIDs?: number[], PAIDs?: number[], Keys?: string[]): Promise<{ L: ClassPaperAnswer }> {
+            return this._post('detail', { UIDs, GIDs, PIDs, PAIDs, Keys });
         }
         /**
          * 读取已答题的结论概况
@@ -1034,7 +1034,7 @@ namespace Paper {
                 // answers[x.QID] = x.SelectedQIIDs;
                 if (x.Imgs && x.Imgs.length > 0) {
                     for (let i of x.Imgs) {
-                        if ('string' == typeof i && i.indexOf('base64')) {
+                        if ('string' == typeof i && i.includes('base64')) {
                             throw new Error('禁止提交Base64编码的图片')
                         }
                     }

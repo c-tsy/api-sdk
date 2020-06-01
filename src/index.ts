@@ -5,9 +5,14 @@ import * as p from 'protobufjs/light';
 import { SearchWhere, SearchResult, ApiSDKHooks } from './lib';
 import { base_covert } from '@ctsy/covert';
 import hook, { Hook, HookWhen } from '@ctsy/hook';
+import * as rpc from '@ctsy/ws-rpc-client';
 
 declare let window: any;
 declare let uni: any;
+
+const rate = {
+    time: {},
+}
 
 var isWindow: boolean = true
 try {
