@@ -102,9 +102,9 @@ export namespace User {
         constructor() {
             super('Admin', prefix);
         }
-        tokenLogin(Token: string, UID: string, Referer: string) {
+        tokenLogin(Token: string, UID: string, Referer: string, IP: string) {
             //  添加登陆的referer用做校验信息
-            return this._post('tokenLogin', { Token, UID, Referer })
+            return this._post('tokenLogin', { Token, UID, Referer, IP })
         }
     }
     /**
