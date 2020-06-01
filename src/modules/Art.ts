@@ -936,6 +936,11 @@ namespace ArtApi {
          * 
          */
         public Key: string = "";
+        /**
+         * JSON 扩展
+         * 
+         */
+        public Extend: Object = {};
     }
 
     /**
