@@ -102,8 +102,9 @@ export namespace User {
         constructor() {
             super('Admin', prefix);
         }
-        tokenLogin(Token: string, UID: string) {
-            return this._post('tokenLogin', { Token, UID })
+        tokenLogin(Token: string, UID: string, Referer: string) {
+            //  添加登陆的referer用做校验信息
+            return this._post('tokenLogin', { Token, UID, Referer })
         }
     }
     /**
