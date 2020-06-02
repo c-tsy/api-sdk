@@ -107,9 +107,9 @@ req.interceptors.request.use(async (conf: any) => {
             }
         } else {
             conf.headers['content-type'] = 'application/json';
-            conf.data = JSON.stringify(conf.data);
+            txt += JSON.stringify(conf.data);
             // 将请求的内容字符串化后添加到签名字符串中，
-            txt += conf.data;
+            // txt += conf.data;
         }
     }
     // 生成签名内容 分别是 AppID，Key，随机数，md5后的签名用下划线链接
@@ -117,7 +117,8 @@ req.interceptors.request.use(async (conf: any) => {
     conf.path = conf.url.replace('/_', '');
     conf.url = ApiConfig.Host + conf.url
     // conf.headers['accept'] = 'application/x-protobuf,*/*'
-    await hook.emit(ApiSDKHooks.Request, HookWhen.Before, req, conf)
+    // await hook.emit(ApiSDKHooks.Request, HookWhen.Before, req, conf)
+    await hook.emit(ApiSDKHooks.Request, HookWhen.Before, req, { conf, config: conf, req: conf.data, rep: {}, error: "" });
     return conf;
 })
 
@@ -182,15 +183,16 @@ async function request(method: 'post' | 'get', path: string, data: any) {
     if (method == 'get') {
         // path += ('?' + query.stringify(data));
     }
-    await hook.emit(ApiSDKHooks.Request, HookWhen.Before, req, { conf, config: conf, req: data, rep: {}, error: "" });
+
     return await q(path, method == 'get' ? conf : data, conf).then(async (e: any) => {
-        log(path, method, e.config.headers['rand'], Date.now() - e.config.headers['rand'], e.data.c || e.status, e.config.data.length, e.headers['content-length'], e.data.e ? e.data.e.m : '')
+        conf = e.config;
         if (e.data.c != 200) {
             let err = e.data.e || {};
             err = 'object' == typeof err ? err.m : ('string' == typeof err ? err : e.data.c)
             // await hook.emit(ApiSDKHooks.Request, HookWhen.Error, req, { conf, req: data, rep: e, error: err });
             throw new Error(err);
         }
+        log(path, method, e.config.headers['rand'], Date.now() - e.config.headers['rand'], e.data.c || e.status, e.config.data.length, e.headers['content-length'], e.data.e ? e.data.e.m : '')
         await hook.emit(ApiSDKHooks.Request, HookWhen.After, req, { conf, config: conf, req: data, rep: e.data, error: "" });
         return e.data.d;
     }).catch(async (e: any) => {
