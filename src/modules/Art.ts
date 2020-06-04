@@ -1049,7 +1049,7 @@ namespace ArtApi {
          */
         public Icon: string = "";
         /**
-         * 分类类型
+         * 分类类型 1默认分类，2
          * 
          */
         public Type: number = 0;
@@ -1069,6 +1069,13 @@ namespace ArtApi {
          */
         all(w: { [index: string]: string | number | Object }): Promise<ClassClassify[]> {
             return this._post('all', w);
+        }
+        /**
+         * 搜索
+         * @param w 
+         */
+        search(w: SearchWhere) {
+            return this._post('search', w);
         }
         /**
          * 批量添加文章分类
