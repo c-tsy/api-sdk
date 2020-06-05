@@ -419,7 +419,7 @@ export namespace User {
          * @param MD5PWD 加密后的密码
          * @param Contacts 联系信息列表
          */
-        async regist(Name: string, Nick: string, Account: string, PWD: string, Sex: number = 1, PUID: number = 0, MD5PWD: string = "", Contacts: ClassContact[]) {
+        async regist(Name: string, Nick: string, Account: string, PWD: string, Sex: number = 1, PUID: number = 0, MD5PWD: string = "", Contacts: ClassContact[], Avatar: string = '') {
             if (Name == '' || Nick == '') {
                 throw new Error(ErrorType.User.NAME_OR_NICK_CANNOT_BE_EMPTY)
             }
@@ -432,7 +432,7 @@ export namespace User {
             if (!/.{6,}/.test(PWD)) {
                 throw new Error(ErrorType.User.PWD_PARAMS_IS_ERROR)
             }
-            return await this._post('regist', { Name, Nick, Sex, Account, PWD: MD5PWD || md5(PWD), PUID, Contacts })
+            return await this._post('regist', { Name, Nick, Sex, Account, PWD: MD5PWD || md5(PWD), PUID, Contacts, Avatar })
         }
         /**
          * 忘记密码重设
