@@ -1078,6 +1078,15 @@ namespace ArtApi {
             return this._post('search', w);
         }
         /**
+         * 获取分类树
+         * @param {number[]} CIDs 要取得的树的CID列表
+         * @param {number} Deep 循环深度，最大为10，默认为3
+         * @description 返回的内容为数组，请使用array_tree方法生成想要的树
+         */
+        tree(CIDs: number[], Deep: number = 3): Promise<ClassClassify[]> {
+            return this._post('tree', { CIDs });
+        }
+        /**
          * 批量添加文章分类
          * @param data 
          */
