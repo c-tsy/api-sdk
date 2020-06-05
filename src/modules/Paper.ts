@@ -864,9 +864,11 @@ namespace Paper {
          * @param GIDs 
          * @param PIDs 
          * @param PAIDs 某次答题的记录编号
+         * @param P 分页页码
+         * @param N 分页每页数量
          */
-        detail(UIDs?: number[], GIDs?: number[], PIDs?: number[], PAIDs?: number[], Keys?: string[]): Promise<{ L: ClassPaperAnswer }> {
-            return this._post('detail', { UIDs, GIDs, PIDs, PAIDs, Keys });
+        detail(UIDs?: number[], GIDs?: number[], PIDs?: number[], PAIDs?: number[], Keys?: string[], P?: number, N?: number): Promise<{ L: ClassPaperAnswer }> {
+            return this._post('detail', { UIDs, GIDs, PIDs, PAIDs, Keys, P, N });
         }
         /**
          * 读取已答题的结论概况
