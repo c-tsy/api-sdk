@@ -749,13 +749,13 @@ namespace ArtApi {
          * @param {'Status'|'Top'} Op 操作标识
          * @param {boolean} Val 操作值
          */
-        batch(ArtIDs: number[], Op: 'Status' | 'Top', Val: boolean) {
+        batch(ArtIDs: number[], Op: 'Status' | 'Top' | 'Comment', Val: boolean) {
             for (let x of ArtIDs) {
                 if (!(Number(x) > 0)) {
                     throw new Error('ArtIDs: ' + x)
                 }
             }
-            if (!['status', 'top'].includes(Op.toLowerCase())) {
+            if (!['status', 'top', 'comment'].includes(Op.toLowerCase())) {
                 throw new Error('Op Error')
             }
             return this._post('batch', { ArtIDs, Op, Val: !!Val ? 1 : 0 })
