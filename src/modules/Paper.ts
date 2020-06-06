@@ -908,9 +908,12 @@ namespace Paper {
         /**
          * 读取试卷内容测试
          * @param PID 试卷编号
+         * @param {boolean} _Ext.AllQuestion 是否读取该试卷的所有题目，用于判卷使用，可能会因为权限问题而被拒绝
          */
-        get(PID: number) {
-            return this._post('get', { PID });
+        get(PID: number, _Ext?: {
+            AllQuestion: boolean
+        }) {
+            return this._post('get', { PID, _Ext });
         }
         /**
          * 添加题目，支持题项的自动处理并要求题项内容不能为空
