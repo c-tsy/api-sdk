@@ -893,10 +893,10 @@ namespace Paper {
         }
         /**
          * 统计分析
-         * @param GID 
-         * @param PID 
+         * @param {number} GID 
+         * @param {number} PID 
          * @param Conf 
-         * @param Fields 
+         * @param {string[]} Fields 
          */
         analyze(GID: number, PID: number, Conf: {
             UIDs?: number[],
@@ -906,8 +906,8 @@ namespace Paper {
             return this._post('analyze', { GID, PID, GIDs: Conf.GIDs, UIDs: Conf.UIDs, UGIDs: Conf.UGIDs, Fields: Fields });
         }
         /**
-         * 读取试卷内容测试
-         * @param PID 试卷编号
+         * 读取试卷内容
+         * @param {number} PID 试卷编号
          * @param {boolean} _Ext.AllQuestion 是否读取该试卷的所有题目，用于判卷使用，可能会因为权限问题而被拒绝
          */
         get(PID: number, _Ext?: {
@@ -917,7 +917,7 @@ namespace Paper {
         }
         /**
          * 添加题目，支持题项的自动处理并要求题项内容不能为空
-         * @param Papers 试题
+         * @param  {ClassPaper[]} Papers 试题
          */
         adds(Papers: ClassPaper[]): Promise<ClassPaper[]> {
 
@@ -982,27 +982,27 @@ namespace Paper {
         }
         /**
          * 修改后保存题干信息，不支持题项的自动处理
-         * @param QID 
-         * @param Params 
+         * @param {number} QID 题目编号 
+         * @param {ClassPaper} Params 修改的题目参数
          */
         save(PID: number, Params: ClassPaper): Promise<ClassPaper | boolean> {
             return this._post('save', { PID, Params })
         }
         /**
          * 搜索查询试卷
-         * @param w 
+         * @param w 查询条件
          */
         search(w: SearchWhere): Promise<SearchResult<ClassPaper>> {
             return this._post('search', w);
         }
         /**
          * 答题结果提交
-         * @param PID 试卷编号
-         * @param UID 用户编号
-         * @param STime 开始时间
-         * @param ETime 结束时间
-         * @param GID 分组编号
-         * @param Key 分组键
+         * @param {number} PID 试卷编号
+         * @param {number} UID 用户编号
+         * @param {Date} STime 开始时间
+         * @param {Date} ETime 结束时间
+         * @param {number} GID 分组编号
+         * @param {string} Key 分组键
          * @param Answers 答案选项内容
          * @param {boolean} Cheat 作弊与否 false 表示不作弊
          */
