@@ -12,15 +12,15 @@ namespace Upload {
         /**
          * 原始文件名称
          */
-        oname: string = ''
+        oname?: string = ''
         /**
          * 过期控制，OSS存储标签，如果不需要过期控制请传入false，否则传入数字表示多少天过期
          */
-        expire: string | number | boolean = ''
+        expire?: string | number | boolean = false
         /**
          * 存储权限，私有或者公有读，默认为私有，私有的情况下没法直接通过URL链接来访问
          */
-        acl: 'private' | 'read' = 'private'
+        acl?: 'private' | 'read' = 'read'
         /**
          * 成功回调，弃用
          */
@@ -142,7 +142,7 @@ namespace Upload {
         let config = {
             headers: { 'Content-Type': 'multipart/form-data' }
         }
-        let d = await Upload.sign(conf.what || '', data, conf.oname, conf.expire || 0, conf.acl || 'private')
+        let d = await Upload.sign(conf.what || '', data, conf.oname || data.name, conf.expire || 0, conf.acl || 'read')
         let name = conf.name || md5(data.name + data.type + data.size + data.lastModified)
         if (name.split('.').length == 1) {
             name = name + '.' + data.type.split('/')[1]
