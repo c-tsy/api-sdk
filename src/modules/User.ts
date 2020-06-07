@@ -410,14 +410,15 @@ export namespace User {
         }
         /**
          * 信息注册
-         * @param Name 姓名
-         * @param Nick 昵称
-         * @param Account 账号
-         * @param PWD 密码
+         * @param {string} Name 姓名
+         * @param {string} Nick 昵称
+         * @param {string} Account 账号
+         * @param {string} PWD 密码
          * @param Sex 性别
-         * @param PUID 推介人的UID
-         * @param MD5PWD 加密后的密码
+         * @param {string} PUID 推介人的UID
+         * @param {string} MD5PWD 加密后的密码
          * @param Contacts 联系信息列表
+         * @param {string} Avatar 头像URL地址
          */
         async regist(Name: string, Nick: string, Account: string, PWD: string, Sex: number = 1, PUID: number = 0, MD5PWD: string = "", Contacts: ClassContact[], Avatar: string = '') {
             if (Name == '' || Nick == '') {
@@ -431,6 +432,9 @@ export namespace User {
             }
             if (!/.{6,}/.test(PWD)) {
                 throw new Error(ErrorType.User.PWD_PARAMS_IS_ERROR)
+            }
+            if (Avatar && Avatar.startsWith('data:')) {
+                throw new Error('头像地址错误')
             }
             return await this._post('regist', { Name, Nick, Sex, Account, PWD: MD5PWD || md5(PWD), PUID, Contacts, Avatar })
         }
