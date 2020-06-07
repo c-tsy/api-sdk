@@ -44,6 +44,11 @@ namespace Dic {
          */
         public Code: string = "";
         /**
+         * 规则，最长255字符
+         * 
+         */
+        public Rule: string = "";
+        /**
          * 状态
          * 
          */
