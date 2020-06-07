@@ -742,7 +742,16 @@ namespace ArtApi {
         list(sw: SearchWhere): Promise<ApiCommon.List<ClassArt>> {
             return this._post('list', sw);
         }
-
+        /**
+         * 读取文章的扩展信息
+         * @param {number[]} ArtIDs 要读取的文章编号的数组
+         * @param {string} Type 读取的扩展字段的类型
+         */
+        read_extend(ArtIDs: number, Type: 'Live' = 'Live'): Promise<{
+            Live: ArtExtendLive[]
+        }> {
+            return this._post('read_extend', { ArtIDs, Type })
+        }
         /**
          * 批量文章类型修改
          * @param {number[]} ArtIDs 文章编号列表
