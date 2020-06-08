@@ -896,6 +896,14 @@ namespace Paper {
         judge(judge: AnswerJudge[]): Promise<boolean> {
             return this._post('judge', judge);
         }
+
+        /**
+         * 重新计算得分
+         * @param d 
+         */
+        recalc(PAIDs: number[]) {
+            return this._post('recalc', { PAIDs })
+        }
         /**
          * 读取已答题的结论概况
          * @param UIDs 用户编号列表
