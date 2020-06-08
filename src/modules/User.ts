@@ -5,8 +5,38 @@ import { ErrorType, SearchResult } from '../lib';
 const get: Function = require("get-value");
 const set: Function = require("set-value");
 const md5: any = require('md5')
+
+
 export namespace User {
     const prefix = "_user"
+    /**
+     * 登陆成功的返回对象
+     */
+    export interface LoginResult {
+        UID: number;
+        Name: string;
+        Birthday: string;
+        Avatar: string;
+        Nick: string;
+        Sex: number;
+        Status: number;
+        Channel: string;
+        PUID: number;
+        TNum: number;
+        UGIDs: number[];
+        Groups: Group[];
+        Account: string;
+        RIDs: number[];
+    }
+
+    export interface Group {
+        UGID: number;
+        Title: string;
+        Sort: number;
+        PUGID: number;
+        Memo: string;
+        EUGID: number;
+    }
     export class AuthObject {
         /**
          * 密码Hash盐
@@ -303,7 +333,7 @@ export namespace User {
          * @param Account 
          * @param PWD 
          */
-        async login(Account: string, PWD: string, MD5PWD: string = '') {
+        async login(Account: string, PWD: string, MD5PWD: string = ''): Promise<LoginResult> {
             if ('string' != typeof Account) {
                 throw new Error(ErrorType.User.ACCOUNT_SHOULD_BE_STRING)
             }
@@ -366,7 +396,7 @@ export namespace User {
         /**
          * 检查并获取当前登录状态，返回内容同登录操作
          */
-        async relogin() {
+        async relogin(): Promise<LoginResult> {
             let rs = await this._get('relogin')
             if (rs.UID) {
                 hook.emit('login', HookWhen.After, '', rs);
