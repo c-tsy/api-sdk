@@ -854,6 +854,18 @@ namespace Paper {
         } = {}
         R: ClassPaperAnalyzeR = new ClassPaperAnalyzeR
     }
+
+    export class AnswerJudge {
+        PID: number = 0
+        PAID: number = 0
+        PADID: number = 0
+        QID: number = 0
+        Score: number = 0
+        Memo: string = ""
+        JType: number = 1
+        JUID: number = 0
+    }
+
     /**
      * 答题情况的接口类
      */
@@ -869,6 +881,20 @@ namespace Paper {
          */
         detail(UIDs?: number[], GIDs?: number[], PIDs?: number[], PAIDs?: number[], Keys?: string[], P?: number, N?: number): Promise<{ L: ClassPaperAnswer }> {
             return this._post('detail', { UIDs, GIDs, PIDs, PAIDs, Keys, P, N });
+        }
+        /**
+         * 主观题阅卷提交
+         * @param judge.PID 试卷编号
+         * @param judge.PAID 答题编号
+         * @param judge.PADID 答题编号
+         * @param judge.QID 试题编号
+         * @param judge.Score 得分
+         * @param judge.Memo 评分备注
+         * @param judge.JType 评分方式，默认为1，手工评分
+         * @param judge.JUID 评分人
+         */
+        judge(judge: AnswerJudge[]): Promise<boolean> {
+            return this._post('judge', judge);
         }
         /**
          * 读取已答题的结论概况
