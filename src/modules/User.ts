@@ -12,30 +12,30 @@ export namespace User {
     /**
      * 登陆成功的返回对象
      */
-    export interface LoginResult {
-        UID: number;
-        Name: string;
-        Birthday: string;
-        Avatar: string;
-        Nick: string;
-        Sex: number;
-        Status: number;
-        Channel: string;
-        PUID: number;
-        TNum: number;
-        UGIDs: number[];
-        Groups: Group[];
-        Account: string;
-        RIDs: number[];
+    export class LoginResult {
+        UID: number = 0;
+        Name: string = "";
+        Birthday: string = "";
+        Avatar: string = "";
+        Nick: string = "";
+        Sex: number = 0;
+        Status: number = 0;
+        Channel: string = '';
+        PUID: number = 0;
+        TNum: number = 0;
+        UGIDs: number[] = [];
+        Groups: LoginGroup[] = [];
+        Account: string = '';
+        RIDs: number[] = [];
     }
 
-    export interface Group {
-        UGID: number;
-        Title: string;
-        Sort: number;
-        PUGID: number;
-        Memo: string;
-        EUGID: number;
+    export class LoginGroup {
+        UGID: number = 0;
+        Title: string = '';
+        Sort: number = 0;
+        PUGID: number = 0;
+        Memo: string = "";
+        EUGID: number = 0;
     }
     export class AuthObject {
         /**
