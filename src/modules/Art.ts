@@ -1096,7 +1096,7 @@ namespace ArtApi {
          * @description 返回的内容为数组，请使用array_tree方法生成想要的树
          */
         tree(CIDs: number[], Deep: number = 3): Promise<ClassClassify[]> {
-            return this._post('tree', { CIDs });
+            return this._post('tree', { CIDs, Deep });
         }
         /**
          * 批量添加文章分类
