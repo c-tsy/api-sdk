@@ -128,13 +128,31 @@ namespace Organ {
         list(data: { P?: number, N?: number, Sort?: string, Keyword?: string, W?: { [index: string]: any } }): Promise<any> {
             return this._post('list', data);
         }
-        adds(data: OrgOrgan[]) {
+        /**
+        * 获取组织树
+        * @param {number[]} UnitIDs 要取得的树的CID列表
+        * @param {number} Deep 循环深度，最大为10，默认为3
+        * @description 返回的内容为数组，请使用array_tree方法生成想要的树
+        */
+        tree(UnitIDs: number[], Deep: number = 3): Promise<OrgOrgan[]> {
+            return this._post('tree', { UnitIDs, Deep });
+        }
+        /**
+         * 批量添加组织机构数据
+         * @param data 
+         */
+        adds(data: OrgOrgan[]): Promise<OrgOrgan[]> {
             if (data.length > 0) {
                 return this._post('adds', data);
             }
             throw new Error(ErrorType.Org.ORGAN_SHOULD_BE_ARRAY)
         }
-        save(UnitIDs: number[], data: any) {
+        /**
+         * 保存组织机构数据
+         * @param UnitIDs 
+         * @param data 
+         */
+        save(UnitIDs: number[], data: any): Promise<OrgOrgan[]> {
             if (UnitIDs.length > 0) {
                 return this._post('save', { UnitIDs, Data: data })
             }
