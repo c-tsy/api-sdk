@@ -70,8 +70,14 @@ req.interceptors.response.use(async (data: any) => {
         let pd: any = base.decode(p.util.newBuffer(data.data))
         let [m, c, f] = data.config.path.split('/');
         if (!protoed[m]) {
-            let pjson = await axios.get(ApiConfig.Host + '/proto/' + m + '.json')
-            protoed[m] = p.Root.fromJSON(pjson.data)
+            try {
+                let pjson = await axios.get(ApiConfig.Host + '/proto/' + m + '.json')
+                protoed[m] = p.Root.fromJSON(pjson.data)
+            } catch (error) {
+
+            } finally {
+                protoed[m] = p.Root.fromJSON({})
+            }
         }
         let msg = protoed[m].lookupType([c, f].join('_'));
         let decoded = msg.decode(pd.d);
@@ -130,10 +136,14 @@ async function request(method: 'post' | 'get', path: string, data: any) {
     let q: any = req[method], conf: any = {};
     if (false === ApiConfig.inited) {
         if (ApiConfig.Debug == false)
-            await axios.get(ApiConfig.Host + '/proto/list.json').then((d) => {
-                ApiConfig.protos = d.data;
-                // debugger
-            })
+            try {
+                await axios.get(ApiConfig.Host + '/proto/list.json').then((d) => {
+                    ApiConfig.protos = d.data;
+                    // debugger
+                })
+            } catch (error) {
+
+            }
         try {
             if (isWindow && uni) {
                 //uniapp 环境
