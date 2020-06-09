@@ -1,6 +1,6 @@
 {
   "name": "@ctsy/api-sdk",
-  "version": "2.0.153",
+  "version": "2.0.154",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
@@ -25,6 +25,7 @@
     "@ctsy/covert": "*",
     "@ctsy/hook": "*",
     "@ctsy/ws-rpc-client": "^1.0.13",
+    "axios": "^0.19.2",
     "castle-function": "*",
     "get-value": "*",
     "md5": "*",
