@@ -1,5 +1,5 @@
 /**
-  * 里程碑进度 MailportProcess
+  * 里程碑进度 MailpostProcess
   * MPID MPID 自增序号(bigint)
   * OType OType 字符20(char(20))
   * OID OID 序号(bigint)
@@ -13,7 +13,7 @@
   * 关联Key Key 字符20(char(20))
   * 来源 From 字符50(char(50))
 */
-export default class ClassTaskMailportProcess {
+export default class ClassTaskMailpostProcess {
 
   /**
    * MPID

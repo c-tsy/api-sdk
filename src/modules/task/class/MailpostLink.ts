@@ -1,5 +1,5 @@
 /**
-  * 里程碑关联 MailportLink
+  * 里程碑关联 MailpostLink
   * MLID MLID 自增序号(bigint)
   * MID MID 序号(bigint)
   * OType OType 字符20(char(20))
@@ -9,7 +9,7 @@
   * 创建人 CUID 序号(bigint)
   * 创建时间 CTime 时间日期(datetime)
 */
-export default class ClassTaskMailportLink {
+export default class ClassTaskMailpostLink {
 
   /**
    * MLID

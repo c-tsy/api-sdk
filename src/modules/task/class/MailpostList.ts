@@ -1,5 +1,5 @@
 /**
-  * 里程碑列表 MailportList
+  * 里程碑列表 MailpostList
   * MLID MLID 自增序号(bigint)
   * MID MID 序号(bigint)
   * 标题 Title 字符250(char(250))
@@ -21,7 +21,7 @@
   * Y Y 高精度金额(double(20,8))
   * X X 高精度金额(double(20,8))
 */
-export default class ClassTaskMailportList {
+export default class ClassTaskMailpostList {
 
   /**
    * MLID
