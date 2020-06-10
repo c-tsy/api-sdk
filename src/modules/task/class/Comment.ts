@@ -1,19 +1,18 @@
 /**
-* 评论 Comment
-* 评论编号 CID 自增序号(bigint)
-* 任务编号 TID 序号(bigint)
-* 标题 Title 字符100(char(100))
-* 描述 Memo 字符250(char(250))
-* 关联文章编号 AID 序号(bigint)
-* 引用评论 FCID 序号(bigint)
-* 创建人 CUID 序号(bigint)
-* 创建时间 CTime 时间日期(datetime)
-* 删除人 DUID 序号(bigint)
-* 删除时间 DTime 时间日期(datetime)
-* 状态 Status 状态值(tinyint(1))
-* 团队编号 UnitID 序号(bigint)
-* GID GID 序号(bigint)
-* 关联Key Key 字符20(char(20))
+  * 评论 Comment
+  * 评论编号 CID 自增序号(bigint)
+  * 任务编号 TID 序号(bigint)
+  * 标题 Title 字符100(char(100))
+  * 描述 Memo 字符250(char(250))
+  * 关联文章编号 AID 序号(bigint)
+  * 引用评论 FCID 序号(bigint)
+  * 创建人 CUID 序号(bigint)
+  * 创建时间 CTime 时间日期(datetime)
+  * 删除人 DUID 序号(bigint)
+  * 删除时间 DTime 时间日期(datetime)
+  * 状态 Status 状态值(tinyint(1))
+  * GID GID 序号(bigint)
+  * 关联Key Key 字符20(char(20))
 */
 export default class ClassTaskComment {
 
@@ -72,11 +71,6 @@ export default class ClassTaskComment {
    * 
    */
   public Status: number = 0;
-  /**
-   * 团队编号
-   * 
-   */
-  public UnitID: number = 0;
   /**
    * GID
    * 

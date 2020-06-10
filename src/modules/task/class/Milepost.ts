@@ -1,14 +1,13 @@
 /**
-  * 任务 Task
-  * 任务编号 TID 自增序号(bigint)
+  * 里程碑 Milepost
+  * MID MID 自增序号(bigint)
   * 标题 Title 字符250(char(250))
-  * Code Code 字符250(char(250))
+  * Code Code 字符20(char(20))
+  * PMID PMID 序号(bigint)
+  * Y Y 高精度金额(double(20,8))
+  * X X 高精度金额(double(20,8))
   * 描述 Memo 字符250(char(250))
-  * 优先级 Priority 整数(int)
-  * 重要等级 Level 整数(int)
-  * 所属任务组 TGID 序号(bigint)
   * URL URL 字符250(char(250))
-  * 项目编号 PID 序号(bigint)
   * 创建人 CUID 序号(bigint)
   * 创建时间 CTime 时间日期(datetime)
   * 删除人 DUID 序号(bigint)
@@ -16,25 +15,21 @@
   * 状态 Status 状态值(tinyint(1))
   * 开始时间 STime 时间日期(datetime)
   * 结束时间 ETime 时间日期(datetime)
-  * 完成时间 FTime 时间日期(datetime)
-  * 父任务 PTID 序号(bigint)
-  * Content编号 ArtID 序号(bigint)
-  * 负责人 MUID 序号(bigint)
-  * 权限 Vis 状态值(tinyint(1))
   * GID GID 序号(bigint)
   * 关联Key Key 字符20(char(20))
   * 类型 Type 字符20(char(20))
   * 关联对象 OType 字符20(char(20))
   * 对象编号 OID 序号(bigint)
-  * 来源 From 字符250(char(250))
+  * 图标 Icon 字符50(char(50))
+  * 排序 Sort 序号(bigint)
 */
-export default class ClassTaskTask {
+export default class ClassTaskMilepost {
 
   /**
-   * 任务编号
+   * MID
    * 
    */
-  public TID: number = 0;
+  public MID: number = 0;
   /**
    * 标题
    * 
@@ -46,35 +41,30 @@ export default class ClassTaskTask {
    */
   public Code: string = "";
   /**
+   * PMID
+   * 
+   */
+  public PMID: number = 0;
+  /**
+   * Y
+   * 
+   */
+  public Y: number = 0;
+  /**
+   * X
+   * 
+   */
+  public X: number = 0;
+  /**
    * 描述
    * 
    */
   public Memo: string = "";
   /**
-   * 优先级
-   * 
-   */
-  public Priority: number = 0;
-  /**
-   * 重要等级
-   * 
-   */
-  public Level: number = 0;
-  /**
-   * 所属任务组
-   * 
-   */
-  public TGID: number = 0;
-  /**
    * URL
    * 
    */
   public URL: string = "";
-  /**
-   * 项目编号
-   * 
-   */
-  public PID: number = 0;
   /**
    * 创建人
    * 
@@ -111,31 +101,6 @@ export default class ClassTaskTask {
    */
   public ETime: Date = new Date(0);
   /**
-   * 完成时间
-   * 
-   */
-  public FTime: Date = new Date(0);
-  /**
-   * 父任务
-   * 
-   */
-  public PTID: number = 0;
-  /**
-   * Content编号
-   * 
-   */
-  public ArtID: number = 0;
-  /**
-   * 负责人
-   * 
-   */
-  public MUID: number = 0;
-  /**
-   * 权限
-   * 0 公开 1团队可见 2项目可见 3个人可见
-   */
-  public Vis: number = 0;
-  /**
    * GID
    * 
    */
@@ -161,8 +126,13 @@ export default class ClassTaskTask {
    */
   public OID: number = 0;
   /**
-   * 来源
-   * 标识任务来源，用户定义
+   * 图标
+   * 
    */
-  public From: string = "";
+  public Icon: string = "";
+  /**
+   * 排序
+   * 
+   */
+  public Sort: number = 0;
 }

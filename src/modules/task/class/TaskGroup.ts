@@ -9,12 +9,14 @@
   * 排序 Sort 序号(bigint)
   * 优先级 Priority 整数(int)
   * 重要等级 Level 整数(int)
-  * 负责人 DirectorUID 序号(bigint)
-  * 团队编号 UnitID 序号(bigint)
+  * 负责人 MUID 序号(bigint)
   * GID GID 序号(bigint)
   * 关联Key Key 字符20(char(20))
+  * 类型 Type 字符20(char(20))
+  * 关联对象 OType 字符20(char(20))
+  * 对象编号 OID 序号(bigint)
 */
-export default class ClassTaskGroup {
+export default class ClassTaskTaskGroup {
 
   /**
    * 组编号
@@ -65,12 +67,7 @@ export default class ClassTaskGroup {
    * 负责人
    * 
    */
-  public DirectorUID: number = 0;
-  /**
-   * 团队编号
-   * 
-   */
-  public UnitID: number = 0;
+  public MUID: number = 0;
   /**
    * GID
    * 
@@ -81,4 +78,19 @@ export default class ClassTaskGroup {
    * 
    */
   public Key: string = "";
+  /**
+   * 类型
+   * 
+   */
+  public Type: string = "";
+  /**
+   * 关联对象
+   * Task，指向某个任务，Comment，指向评论，Project：指向项目
+   */
+  public OType: string = "";
+  /**
+   * 对象编号
+   * 指向对应类型的编号
+   */
+  public OID: number = 0;
 }

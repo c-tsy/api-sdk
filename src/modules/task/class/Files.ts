@@ -9,8 +9,7 @@
   * 创建人 CUID 序号(bigint)
   * 创建时间 CTime 时间日期(datetime)
   * 状态 Status 状态值(tinyint(1))
-  * 团队编号 UnitID 序号(bigint)
-  * 权限 Rule 状态值(tinyint(1))
+  * 可见性 Vis 状态值(tinyint(1))
 */
 export default class ClassTaskFiles {
 
@@ -30,25 +29,10 @@ export default class ClassTaskFiles {
    */
   public OID: number = 0;
   /**
-   * 关联路径，用于目录级别显示
+   * 关联路径
    * 
    */
   public Path: string = "";
-  /**
-   * 文件名称
-   * 
-   */
-  public Name: string = "";
-  /**
-   * 文件访问路径
-   * 
-   */
-  public URL: string = "";
-  /**
-   * 备注信息
-   * 
-   */
-  public Memo: string = "";
   /**
    * 文件类型
    * 
@@ -68,20 +52,15 @@ export default class ClassTaskFiles {
    * 创建时间
    * 
    */
-  public CTime: Date = new Date("1970-01-01 00:00:00");
+  public CTime: Date = new Date(0);
   /**
    * 状态
    * 
    */
   public Status: number = 0;
   /**
-   * 团队编号
-   * 
-   */
-  public UnitID: number = 0;
-  /**
-   * 权限
+   * 可见性
    * 0 公开 1团队可见 2项目可见 3个人可见
    */
-  public Rule: number = 0;
+  public Vis: number = 0;
 }
