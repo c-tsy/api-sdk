@@ -6,6 +6,9 @@ import ClassTaskTag from "./task/class/Tag";
 import ClassTaskFiles from "./task/class/Files";
 import ClassTaskGroup from "./task/class/TaskGroup";
 import ClassProject from "./task/class/Project";
+import ClassTaskMilepost from "./task/class/Milepost";
+import ClassTaskMailpostList from "./task/class/MailpostList";
+import ClassTaskMailpostProcess from "./task/class/MailpostProcess";
 
 namespace TaskApi {
     let prefix = '_task';
@@ -233,6 +236,37 @@ namespace TaskApi {
         PK = "CID"
     }
     export const CommentApi = new comment('Comment', prefix)
+    /**
+     * 里程碑
+     */
+    class mailpost extends ControllerApi<ClassTaskMilepost>{
+        PK = 'MID'
+    }
+    /**
+     * 里程碑节点
+     */
+    class mailpostList extends ControllerApi<ClassTaskMailpostList>{
+        PK = "MLID";
+    }
+    /**
+     * 里程碑进度对象
+     */
+    class mailpostProcess extends ControllerApi<ClassTaskMailpostProcess>{
+        PK = "MPID";
+    }
+    /**
+     * 里程碑对象
+     */
+    export const MailpostApi = new mailpost('Mailpost', prefix);
+    /**
+     * 里程碑节点对象
+     */
+    export const MailpostListApi = new mailpostList('MailpostList', prefix);
+    /**
+     * 里程碑进度对象
+     */
+    export const MailpostProcessApi = new mailpostList('MailpostProcess', prefix);
+
 }
 
 export default TaskApi;
