@@ -188,6 +188,16 @@ namespace ArtApi {
          */
         public Name: string = "";
         /**
+         * 分组编号
+         * 
+         */
+        public GID: number = 0;
+        /**
+         * 分组键
+         * 
+         */
+        public Key: string = "";
+        /**
          * 创建时间
          * 
          */
