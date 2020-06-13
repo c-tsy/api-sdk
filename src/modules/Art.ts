@@ -859,9 +859,10 @@ namespace ArtApi {
          * @param ArtIDs 
          * @param P 
          * @param N 
+         * @param W
          */
-        files(ArtIDs: number[], P: number = 1, N: number = 10) {
-            return this._post('files', { ArtIDs, P, N })
+        files(ArtIDs: number[], P: number = 1, N: number = 10, W: { [index: string]: string | number | { [index: string]: any } }) {
+            return this._post('files', { ArtIDs, P, N, W })
         }
     }
     /**
