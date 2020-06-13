@@ -2,7 +2,102 @@ import { ControllerApi } from "..";
 
 namespace Dic {
     var prefix = "_dic";
+    /**
+      * User关联记录 UserLink
+      * LID LID 自增(bigint(20))
+      * UID UID 序号(bigint(20))
+      * CTime CTime 时间(datetime)
+      * CUID CUID 序号(bigint(20))
+      * Status Status 状态(tinyint(1))
+      * OType OType char(50)(char(50))
+      * OID OID 序号(bigint(20))
+      * Memo Memo char255(char(255))
+      * URL URL char255(char(255))
+      * Icon Icon char255(char(255))
+      * Type Type 序号(bigint(20))
+      * Sort Sort 序号(bigint(20))
+      * AID AID 编号(bigint(20))
+      * GID GID 编号(bigint(20))
+      * Key Key char(50)(char(50))
+    */
+    export class UserLink {
 
+        /**
+         * LID
+         * 
+         */
+        public LID: number = 0;
+        /**
+         * UID
+         * 
+         */
+        public UID: number = 0;
+        /**
+         * CTime
+         * 
+         */
+        public CTime: Date = new Date;
+        /**
+         * CUID
+         * 
+         */
+        public CUID: number = 0;
+        /**
+         * Status
+         * 
+         */
+        public Status: number = 0;
+        /**
+         * OType
+         * 
+         */
+        public OType: string = "";
+        /**
+         * OID
+         * 
+         */
+        public OID: number = 0;
+        /**
+         * Memo
+         * 
+         */
+        public Memo: string = "";
+        /**
+         * URL
+         * 
+         */
+        public URL: string = "";
+        /**
+         * Icon
+         * 
+         */
+        public Icon: string = "";
+        /**
+         * Type
+         * 
+         */
+        public Type: number = 0;
+        /**
+         * Sort
+         * 
+         */
+        public Sort: number = 0;
+        /**
+         * AID
+         * 
+         */
+        public AID: number = 0;
+        /**
+         * GID
+         * 
+         */
+        public GID: number = 0;
+        /**
+         * Key
+         * 
+         */
+        public Key: string = "";
+    }
     /**
      * 字典结构表 Dics
      * 字典编号 DID 自增(bigint(20))
@@ -249,5 +344,12 @@ namespace Dic {
         PK = 'LID';
     }
     export const LinkApi = new dics('Link', prefix);
+    /**
+     * 用户信息关联对象操作接口
+     */
+    export class userLink extends ControllerApi<Link>{
+        PK = 'LID';
+    }
+    export const UserLinkApi = new dics('UserLink', prefix);
 }
 export default Dic;
