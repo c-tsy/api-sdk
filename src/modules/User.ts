@@ -450,7 +450,7 @@ export namespace User {
          * @param Contacts 联系信息列表
          * @param {string} Avatar 头像URL地址
          */
-        async regist(Name: string, Nick: string, Account: string, PWD: string, Sex: number = 1, PUID: number = 0, MD5PWD: string = "", Contacts: ClassContact[], Avatar: string = '') {
+        async regist(Name: string, Nick: string, Account: string, PWD: string, Sex: number = 1, PUID: number = 0, MD5PWD: string = "", Contacts: ClassContact[], Avatar: string = '', Other: { [index: string]: any }) {
             if (Name == '' || Nick == '') {
                 throw new Error(ErrorType.User.NAME_OR_NICK_CANNOT_BE_EMPTY)
             }
@@ -466,7 +466,7 @@ export namespace User {
             if (Avatar && Avatar.startsWith('data:')) {
                 throw new Error('头像地址错误')
             }
-            return await this._post('regist', { Name, Nick, Sex, Account, PWD: MD5PWD || md5(PWD), PUID, Contacts, Avatar })
+            return await this._post('regist', Object.assign(Other || {}, { Name, Nick, Sex, Account, PWD: MD5PWD || md5(PWD), PUID, Contacts, Avatar }))
         }
         /**
          * 忘记密码重设
