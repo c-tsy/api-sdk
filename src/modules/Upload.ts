@@ -33,6 +33,10 @@ namespace Upload {
          * 文件名称，存储的文件名称
          */
         name?: string
+        /**
+         * 上传进度回调
+         */
+        onUploadProgress?: (process: { loaded: number, total: number }) => void
     }
 
     class upload extends ApiController {
@@ -139,8 +143,11 @@ namespace Upload {
         Original: string,
         Auth: string
     }> {
-        let config = {
-            headers: { 'Content-Type': 'multipart/form-data' }
+        let config: any = {
+            headers: { 'Content-Type': 'multipart/form-data' },
+        }
+        if (conf.onUploadProgress) {
+            config.onUploadProgress = conf.onUploadProgress;
         }
         let d = await Upload.sign(conf.what || '', data, conf.oname || data.name, conf.expire || 0, conf.acl || 'read')
         let name = conf.name || md5(data.name + data.type + data.size + data.lastModified)

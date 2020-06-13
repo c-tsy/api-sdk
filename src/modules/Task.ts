@@ -6,7 +6,7 @@ import ClassTaskTag from "./task/class/Tag";
 import ClassTaskFiles from "./task/class/Files";
 import ClassTaskGroup from "./task/class/TaskGroup";
 import ClassProject from "./task/class/Project";
-import ClassTaskMilepost from "./task/class/Milepost";
+import ClassTaskMilepost from "./task/class/Mailpost";
 import ClassTaskMailpostList from "./task/class/MailpostList";
 import ClassTaskMailpostProcess from "./task/class/MailpostProcess";
 
