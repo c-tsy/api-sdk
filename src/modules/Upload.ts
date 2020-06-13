@@ -19,6 +19,8 @@ namespace Upload {
         expire?: string | number | boolean = false
         /**
          * 存储权限，私有或者公有读，默认为私有，私有的情况下没法直接通过URL链接来访问
+         * @example read
+         * @default read
          */
         acl?: 'private' | 'read' = 'read'
         /**
@@ -35,6 +37,11 @@ namespace Upload {
         name?: string
         /**
          * 上传进度回调
+         * @example 
+         * onUploadProgress: progressEvent => {
+         *      let complete = (progressEvent.loaded / progressEvent.total * 100 | 0) + '%'
+         *      self.uploadMessage = '上传 ' + complete
+         *  }
          */
         onUploadProgress?: (process: { loaded: number, total: number }) => void
     }

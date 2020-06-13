@@ -183,6 +183,11 @@ namespace ArtApi {
          */
         public ArtID: number = 0;
         /**
+         * 附件名称
+         * 
+         */
+        public Name: string = "";
+        /**
          * 创建时间
          * 
          */
@@ -847,7 +852,16 @@ namespace ArtApi {
          * @param {ArtRuleOp[]} Rules 关联规则
          */
         file(Type: LinkType, Files: CMSArtFiles[]) {
-            return this._post('rule', { Type, Files });
+            return this._post('file', { Type, Files });
+        }
+        /**
+         * 读取文件列表
+         * @param ArtIDs 
+         * @param P 
+         * @param N 
+         */
+        files(ArtIDs: number[], P: number = 1, N: number = 10) {
+            return this._post('files', { ArtIDs, P, N })
         }
     }
     /**
