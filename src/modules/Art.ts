@@ -841,6 +841,14 @@ namespace ArtApi {
         rule(Type: LinkType, Rules: ArtRuleOp[]) {
             return this._post('rule', { Type, Rules });
         }
+        /**
+         * 附件管理
+         * @param {LinkType} Type 关联方式
+         * @param {ArtRuleOp[]} Rules 关联规则
+         */
+        file(Type: LinkType, Files: CMSArtFiles[]) {
+            return this._post('rule', { Type, Files });
+        }
     }
     /**
      * 文章规则操作对象
