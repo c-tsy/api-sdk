@@ -193,7 +193,9 @@ namespace TaskApi {
         }
     }
     export const ProjectApi = new project('Project', prefix);
-
+    /**
+     * 任务组
+     */
     class taskGroup extends ControllerApi<ClassTaskGroup> {
         PK = "TGID"
     }
