@@ -268,6 +268,9 @@ class ApiConfigClass {
      */
     set Host(v: string) {
         this._host = v.indexOf('http') == 0 ? v : ('https://' + v);
+        if (this._host.endsWith('/')) {
+            this._host = this._host.substr(0, this._host.length - 1);
+        }
     }
     get Host() { return this._host; }
     /**
