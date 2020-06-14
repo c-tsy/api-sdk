@@ -249,6 +249,13 @@ namespace TaskApi {
      */
     class mailpostList extends ControllerApi<ClassTaskMailpostList>{
         PK = "MLID";
+        /**
+         * 批量保存或新增mailList
+         * @param list 
+         */
+        saves(list: ClassTaskMailpostList[]) {
+            return this._post('saves', list);
+        }
     }
     /**
      * 里程碑进度对象
