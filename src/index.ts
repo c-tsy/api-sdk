@@ -76,8 +76,7 @@ req.interceptors.response.use(async (data: any) => {
             } catch (error) {
                 //自动退回到JSON模式
                 ApiConfig.Debug = true;
-                debugger
-            } finally {
+                // debugger
                 protoed[m] = p.Root.fromJSON({})
             }
         }
