@@ -74,7 +74,9 @@ req.interceptors.response.use(async (data: any) => {
                 let pjson = await axios.get(ApiConfig.Host + '/proto/' + m + '.json')
                 protoed[m] = p.Root.fromJSON(pjson.data)
             } catch (error) {
-
+                //自动退回到JSON模式
+                ApiConfig.Debug = true;
+                debugger
             } finally {
                 protoed[m] = p.Root.fromJSON({})
             }
