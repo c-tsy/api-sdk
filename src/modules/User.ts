@@ -542,7 +542,7 @@ export namespace User {
          * @param Sex 
          * @param Status
          */
-        save(UID: number, data: { Nick?: string, Sex?: number, Status?: number }) {
+        save(UID: number, data: { Nick?: string, Sex?: number, Status?: number, Avatar?: number, Head?: string, Contacts?: ClassContact[] }) {
             if (!UID && typeof UID == 'number') {
                 throw new Error('UID')
             }
