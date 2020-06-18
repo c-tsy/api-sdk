@@ -33,6 +33,11 @@ export default class Model {
    */
   public PID: number = 0;
   /**
+   * PMID
+   * 
+   */
+  public PMID: number = 0;
+  /**
    * 产品名称
    * 
    */
