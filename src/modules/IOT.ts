@@ -57,7 +57,7 @@ namespace IOT {
 
     }
 
-    export const Protocol = new protocol('Protocol', prefix);
+    export const ProtocolApi = new protocol('Protocol', prefix);
 }
 
 export default IOT;
