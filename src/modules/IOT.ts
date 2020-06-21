@@ -2,6 +2,7 @@ import { ApiController, ControllerApi } from "..";
 
 import Model from './iot/class/Model'
 import Protocol from './iot/class/Protocol'
+import Device from "./iot/class/Device";
 
 namespace IOT {
     let prefix = '_iot';
@@ -77,6 +78,13 @@ namespace IOT {
 
     }
     export const ModelApi = new model('Model', prefix);
+    /**
+     * 设备管理接口
+     */
+    class device extends ControllerApi<Device> {
+
+    }
+    export const DeviceApi = new device('Device', prefix);
     class protocol extends ControllerApi<Protocol> {
         /**
          * 读取当前支持的驱动信息
