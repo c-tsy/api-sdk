@@ -143,10 +143,10 @@ buffer@^5.2.1:
     base64-js "^1.0.2"
     ieee754 "^1.1.4"
 
-castle-function@*:
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/castle-function/-/castle-function-1.0.3.tgz#8558863c0dbc87d5cae6fdf726b46c5c581acf36"
-  integrity sha512-o5TDeZSKcCRrWtKFL6hydFwVgQKOAxAz4nLDxrA2L44Firum4xvdbLcQjBrh1BjFNrE72QotE63wt75zQ/ergA==
+castle-function@^1.0.4:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/castle-function/-/castle-function-1.0.4.tgz#ada9f7ebc26ff929f807a8e54496fd7dd31e2695"
+  integrity sha512-2YrKfcz24MoGgPYZkTIeutJ296a2d69gqbT5eBcd5w63shpJ+PnoMZ6yNiTd9IlzkEb3ZqC6S8dvqpA2iS7xeA==
   dependencies:
     lodash "^4.17.15"
 

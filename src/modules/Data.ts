@@ -1,4 +1,7 @@
 import { ApiController, jsonp, ApiConfig } from '../index';
+import * as pbjs from 'protobufjs/light';
+import { array_tree } from 'castle-function'
+import { pid } from 'process';
 namespace DataApi {
     const p = '_data'
     class kd extends ApiController {
@@ -23,14 +26,92 @@ namespace DataApi {
             return this._post('info', { PID });
         }
     }
-    var areas: { [index: string]: any } = {};
+    var areas: AreaAll = {
+        province_list: {},
+        county_list: {},
+        city_list: {},
+    }, list: any[] = [];
+    var trees: Area[] = [];
+    export interface Area {
+        label: string;
+        value: string;
+        children: Area[]
+    }
+    export interface AreaAll {
+        province_list: { [index: string]: string },
+        county_list: { [index: string]: string },
+        city_list: { [index: string]: string },
+    }
+    let areaPbJSON = {
+        nested: {
+            Area: {
+                fields: {
+                    value: {
+                        type: "uint32",
+                        id: 1
+                    },
+                    label: {
+                        type: "string",
+                        id: 2
+                    }
+                }
+            },
+            Result: {
+                fields: {
+                    list: {
+                        rule: "repeated",
+                        type: "Area",
+                        id: 1
+                    }
+                }
+            }
+        }
+    };
     class area extends ApiController {
-        async all() {
+        /**
+         * list
+         */
+        async list() {
+            let str = await jsonp('//npm.tansuyun.cn/castle-cdn/area.pb.js', '_area_pb_cb');
+            let buf = Buffer.from(str, 'base64');
+            let pb = pbjs.Root.fromJSON(areaPbJSON);
+            let pbrs = pb.lookupType('Result');
+            list = pbrs.toObject(pbrs.decode(buf)).list;
+
+            for (let x of list) {
+                x.id = x.value.toString().replace(/[0]{2,4}$/, '')
+                x.pid = x.id.substr(0, x.id.length - 2) || 0;
+                if (!x.pid) {
+                    areas.province_list[x.value] = x.label;
+                } else if (x.pid.length == 2) {
+                    areas.county_list[x.value] = x.label;
+                } else {
+                    areas.city_list[x.value] = x.label;
+                }
+            }
+            trees = Object.values(<any>array_tree(list, { pfield: 'pid', ufield: 'id', sub_name: 'children' }))
+            // console.log(areas, trees)
+            return list;
+        }
+        /**
+         * 读取所有区域信息
+         */
+        async all(): Promise<AreaAll> {
             if (areas.province_list) {
                 return areas;
             }
-            areas = await jsonp('//npm.tansuyun.cn/castle-cdn/area.js', '_areacb')
+            await this.list()
             return areas;
+        }
+        /**
+         * 读取省市区信息的树形结构
+         */
+        async tree(): Promise<Area[]> {
+            if (trees) {
+                return trees;
+            }
+            await this.list()
+            return trees;
         }
     }
     class excel extends ApiController {
