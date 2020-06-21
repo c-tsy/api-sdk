@@ -248,6 +248,16 @@ export namespace User {
         del(UGID: number): Promise<boolean> {
             return this._post('del', { UGID });
         }
+
+        /**
+         * 提供基于树形的级联查询
+         * @param W.PUGID 根据PUGID向下查询 
+         * @param W.UGID 根据UGID向上查询 
+         * @param Deep 树形深度
+         */
+        tree(W: { PUGIDs?: number[], UGIDs?: number[] }, Deep: number = 3): Promise<ClassUserGroup[]> {
+            return this._post('tree', Object.assign(W, { Deep }))
+        }
     }
     export const Group = new group();
     export const GroupApi = Group;

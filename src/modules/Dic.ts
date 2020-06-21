@@ -328,6 +328,15 @@ namespace Dic {
      */
     export class dics extends ControllerApi<Dics>{
         PK = 'DID';
+        /**
+         * 树形结构查询
+         * @param W.PDID 以PDID为准，向下查询
+         * @param W.PDID 以DID为准，向上查询
+         * @param Deep 
+         */
+        tree(W: { PDIDs: number[], DIDs: number[] }, Deep: number = 3): Promise<Dics[]> {
+            return this._post('tree', Object.assign(W, { Deep }))
+        }
     }
     export const DicsApi = new dics('Dics', prefix);
     /**
