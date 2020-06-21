@@ -72,15 +72,16 @@ namespace DataApi {
          * list
          */
         async list() {
-            let str = await jsonp('//npm.tansuyun.cn/castle-cdn/area.pb.js', '_area_pb_cb');
-            let buf = Buffer.from(str, 'base64');
-            let pb = pbjs.Root.fromJSON(areaPbJSON);
-            let pbrs = pb.lookupType('Result');
-            list = pbrs.toObject(pbrs.decode(buf)).list;
-
-            for (let x of list) {
-                x.id = x.value.toString().replace(/[0]{2,4}$/, '')
+            if (list.length > 0) {
+                return list;
+            }
+            let plist = await jsonp('//npm.tansuyun.cn/castle-cdn/area.list.js', '_area_list_cb');
+            for (let o of plist) {
+                let x: any = { value: o[0], label: o[1] };
+                x.id = x.value.toString().replace(/0{4}$/, '').replace(/0{2}$/, '')
+                // x.id.padEnd(x.)
                 x.pid = x.id.substr(0, x.id.length - 2) || 0;
+                list.push(x);
                 if (!x.pid) {
                     areas.province_list[x.value] = x.label;
                 } else if (x.pid.length == 2) {
@@ -89,8 +90,7 @@ namespace DataApi {
                     areas.city_list[x.value] = x.label;
                 }
             }
-            trees = Object.values(<any>array_tree(list, { pfield: 'pid', ufield: 'id', sub_name: 'children' }))
-            // console.log(areas, trees)
+            trees = Object.values(<any>array_tree(list, { pfield: 'pid', ufield: 'id', sub_name: 'children', remove_null: true }))
             return list;
         }
         /**
@@ -107,7 +107,7 @@ namespace DataApi {
          * 读取省市区信息的树形结构
          */
         async tree(): Promise<Area[]> {
-            if (trees) {
+            if (trees.length > 0) {
                 return trees;
             }
             await this.list()
