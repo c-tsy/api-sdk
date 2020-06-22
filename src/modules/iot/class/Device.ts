@@ -129,4 +129,8 @@ export default class Device {
    * 
    */
   public Key: string = "";
+  /**
+   * 设备分组关系
+   */
+  DIDs?: number[] = [];
 }
