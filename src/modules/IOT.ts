@@ -6,10 +6,56 @@ import Device from "./iot/class/Device";
 
 namespace IOT {
     let prefix = '_iot';
-    interface DriverInfo {
+    export interface DriverInfo {
         Name: string;
         Versions: Version[];
     }
+
+    interface Driver {
+        Name: string;
+        Versions: DriverVersion[];
+    }
+
+    interface DriverVersion {
+        V: number;
+        CTime: string;
+        Auther: string;
+        Memo: string;
+        Commands: DriverCommand[];
+        Enums: { [index: string]: any };
+    }
+
+    interface DriverCommand {
+        Code: number;
+        Type: string;
+        Name: string;
+        Memo: string;
+        Rule?: Rule[];
+    }
+
+    interface Rule {
+        Name: string;
+        Code: string;
+        Type: string;
+        Len: number;
+        Memo: string;
+        Unit: number;
+        ArrayLen: number;
+        Config: DriverConfig[];
+    }
+
+    interface DriverConfig {
+        Name: string;
+        Code: string;
+        Type: string;
+        Len: number;
+        Memo: string;
+        Unit: number;
+        Offset: number;
+        ArrayLen: number;
+        Map: Map;
+    }
+
 
     interface Version {
         /**
@@ -75,6 +121,7 @@ namespace IOT {
      * 产品型号管理接口
      */
     class model extends ControllerApi<Model> {
+        PK = "MID";
 
     }
     export const ModelApi = new model('Model', prefix);
@@ -82,10 +129,12 @@ namespace IOT {
      * 设备管理接口
      */
     class device extends ControllerApi<Device> {
+        PK = "DID";
 
     }
     export const DeviceApi = new device('Device', prefix);
     class protocol extends ControllerApi<Protocol> {
+
         /**
          * 读取当前支持的驱动信息
          */
