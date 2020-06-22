@@ -1,6 +1,6 @@
 import { ApiController, ApiConfig } from '../';
 import hook, { HookWhen } from '@ctsy/hook';
-import { ErrorType, SearchResult } from '../lib';
+import { ErrorType, SearchResult, LinkType } from '../lib';
 
 const get: Function = require("get-value");
 const set: Function = require("set-value");
@@ -207,8 +207,8 @@ export namespace User {
          * @param UGID 
          * @param UIDs 
          */
-        link(UGID: number, UIDs: number[]) {
-            return this._post('link', { UGID, UIDs });
+        link(rule: { UGID: number, UIDs: number[] } | { UGIDs: number[], UID: number }, Type: LinkType = LinkType.append) {
+            return this._post('link', Object.assign(rule, { Type }));
         }
         /**
          * 移除用户分组关系
