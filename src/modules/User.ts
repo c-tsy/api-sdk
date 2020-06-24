@@ -289,7 +289,23 @@ export namespace User {
             super('MenuGroup', prefix);
         }
     }
-
+    /**
+     * 登陆对象
+     */
+    export class Login {
+        /**
+         * 账号
+         */
+        Account: string = "";
+        /**
+         * 密码
+         */
+        PWD: string = "";
+        /**
+         * MD5加密后的密码，用于导入或二次登陆使用
+         */
+        MD5PWD: string = "";
+    }
     /**
      * 联系人信息
      */
@@ -343,9 +359,14 @@ export namespace User {
          * @param Account 
          * @param PWD 
          */
-        async login(Account: string, PWD: string, MD5PWD: string = ''): Promise<LoginResult> {
+        async login(Account: Login | string, PWD?: string, MD5PWD: string = ''): Promise<LoginResult> {
             if ('string' != typeof Account) {
-                throw new Error(ErrorType.User.ACCOUNT_SHOULD_BE_STRING)
+                if ('string' == typeof Account.Account) {
+                    PWD = Account.PWD;
+                    MD5PWD = Account.MD5PWD;
+                    Account = Account.Account;
+                } else
+                    throw new Error(ErrorType.User.ACCOUNT_SHOULD_BE_STRING)
             }
             if ('string' != typeof PWD) {
                 throw new Error(ErrorType.User.PWD_SHOULD_BE_STRING)
