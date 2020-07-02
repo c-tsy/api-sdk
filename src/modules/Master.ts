@@ -22,6 +22,7 @@ namespace Master {
      * 开户时自动创建账户，
      */
     class Family extends ControllerApi<MasterClassFamily> {
+        PK = 'FID';
         /**
          * 过户
          * 将某个表从某个户上卸载掉，然后挂载到其它户上，需要服务器算法处理
@@ -48,6 +49,7 @@ namespace Master {
      * 计费组的管理操作接口
      */
     class BillingGroup extends ControllerApi<MasterClassBillingGroup>{
+        PK = 'BGID'
         /**
          * 计费组的关联处理
          * @param RGID 
