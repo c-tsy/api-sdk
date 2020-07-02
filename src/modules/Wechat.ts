@@ -1,5 +1,110 @@
 import { ApiController } from '../index';
+import { SearchWhere } from '../lib';
 namespace Wechat {
+    export class ClassWechatUserGroup {
+        /**
+         * 用户组编号
+         */
+        GroupID = 0
+        /**
+         * 组名
+         */
+        Name = ''
+        /**
+         * 状态
+         */
+        Status = 1
+        /**
+         * C时间
+         */
+        CTime = ''
+    }
+
+    export class ClassWechatUserGroupLink {
+        LinkID = 0
+        WUID = 0
+        GroupID = 0
+    }
+    export class ClassWechatUser {
+        /**
+         * 用户编号
+         */
+        WUID = 0
+        /**
+         * 是否关注
+         * 0未关注 1已关注
+         */
+        Subscribe = 1
+        /**
+         * openid
+         */
+        OpenID = ''
+        /**
+         * 昵称
+         */
+        NickName = ''
+        /**
+         * 性别
+         */
+        Sex = 0
+        /**
+         * 语言
+         */
+        Language = ''
+        /**
+         * 城市
+         */
+        City = ''
+        /**
+         * 省
+         */
+        Province = ''
+        /**
+         * 国家
+         */
+        Country = ''
+        /**
+         * 头像
+         */
+        HeadImgUrl = ''
+        /**
+         * 关注时间
+         */
+        SubscribeTime = ''
+        /**
+         * 区域ID
+         */
+        UnionID = ''
+        /**
+         * 备注
+         */
+        Remark = ''
+        /**
+         * 分组ID
+         */
+        GroupID = 0
+        /**
+         * MD5
+         */
+        MD5 = ''
+        /**
+         * 二维码
+         */
+        QrScene = 0
+        /**
+         * 二维码串
+         */
+        QrSceneStr = ''
+        /**
+         * 
+         */
+        SubscribeScene = ''
+        /**
+         * 更新shijian
+         */
+        UTime = ''
+    }
+
     class WechatController extends ApiController {
         protected get_url(method: string) {
             if (!WechatID) {
@@ -8,9 +113,57 @@ namespace Wechat {
             return ['', this.prefix, this.name, method, WechatID].join('/');
         }
     }
-    class auth extends WechatController {
+    class users extends WechatController {
+        sync() {
+            return this._post('sync')
+        }
+        search(w: SearchWhere) {
+            return this._post('search', w)
+        }
+        save(d: Wechat.ClassWechatUser) {
+            return this._post('save', d)
+        }
+        remark(d: Wechat.ClassWechatUser) {
+            return this._post('remark', d)
+        }
     }
-    class admin extends WechatController { }
+    class group extends WechatController {
+        add(Name: string) {
+            return this._post('add', { Name })
+        }
+        search() {
+            return this._post('search')
+        }
+        save(data: ClassWechatUserGroup) {
+            return this._post('update', data)
+        }
+        sync() {
+            return this._post('sync')
+        }
+        del(data: ClassWechatUserGroup) {
+            return this._post('del', data)
+        }
+        link(data: { WUID: number, GroupID: number }) {
+            return this._post('link', data)
+        }
+        unlink(data: { WUID: number, GroupID: number }) {
+            return this._post('unlink', data)
+        }
+    }
+    class auth extends WechatController {
+        user() {
+            return this._post('user')
+        }
+    }
+    class admin extends WechatController {
+        users() {
+            return this._post('users')
+        }
+        batch() {
+            return this._post('batch')
+        }
+
+    }
     class js extends WechatController { }
     class menu extends WechatController { }
     class MsgType {
@@ -60,6 +213,9 @@ namespace Wechat {
         WechatID = id;
         return true;
     }
+
+    export const Users = new users('Users', prefix)
+    export const Group = new group('Group', prefix)
     export const Auth = new auth('Auth', prefix);
     export const Admin = new admin('Admin', prefix);
     export const Js = new js('Js', prefix);
