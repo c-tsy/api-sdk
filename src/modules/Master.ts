@@ -61,6 +61,14 @@ namespace Master {
         }
     }
     export const BillingGroupApi = new BillingGroup('BillingGroup', prefix)
+    /**
+     * 规则对象
+     */
+    class BillingGroupRule extends ControllerApi<MasterClassBillingGroupRule>{
+        PK = 'BGRID'
+    }
+
+    export const BillingGroupRuleApi = new BillingGroupRule('BillingGroupRule', prefix)
 
 
 }

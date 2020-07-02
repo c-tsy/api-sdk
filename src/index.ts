@@ -127,6 +127,7 @@ req.interceptors.request.use(async (conf: any) => {
             let str = JSON.stringify(conf.data);
             // 将请求的内容字符串化后添加到签名字符串中，
             txt += str;
+            conf.data = str;
             // debug('3. 将请求内容追加到签名字符串中:')
             // debug(`\t请求内容:\r\n\t${str}`)
             // debug(`\t追加后:\r\n\t${txt}`)
