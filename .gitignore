@@ -3,3 +3,4 @@ test.*
 proto
 *.log
 dist
+*.txt

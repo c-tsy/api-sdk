@@ -2,6 +2,11 @@
 # yarn lockfile v1
 
 
+"@ctsy/common@^1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@ctsy/common/-/common-1.0.1.tgz#2ed57e6dba03b25f106405113460c6f1a17e3a00"
+  integrity sha512-yVJsMORg6l52b8M8IykFikdm7WJz8sTK1Lhmk1tpyiJ0fLehinvZjDdRhmOOOI4LVCbHSghPUgG1NhqF0AAV/g==
+
 "@ctsy/covert@*":
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/@ctsy/covert/-/covert-1.0.1.tgz#869910f099fda3cc548094c1857730646044f3b8"

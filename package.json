@@ -22,6 +22,7 @@
   "author": "castleiMac <castle@tansuyun.cn>",
   "license": "MIT",
   "dependencies": {
+    "@ctsy/common": "^1.0.1",
     "@ctsy/covert": "*",
     "@ctsy/hook": "*",
     "@ctsy/ws-rpc-client": "^1.0.13",
