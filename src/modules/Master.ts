@@ -41,7 +41,7 @@ namespace Master {
         }
 
     }
-    export const FamilyApi = new Family(prefix, 'Family')
+    export const FamilyApi = new Family('Family', prefix)
 
 
     /**
@@ -58,7 +58,7 @@ namespace Master {
             return this._post('rule', { RGID, Rules, Type });
         }
     }
-    export const BillingGroupApi = new BillingGroup(prefix, 'BillingGroup')
+    export const BillingGroupApi = new BillingGroup('BillingGroup', prefix)
 
 
 }
