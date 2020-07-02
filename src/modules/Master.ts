@@ -3,7 +3,8 @@ import { ControllerApi, ApiController } from "..";
 import MasterClassFamily from "./master/class/Family";
 import MasterClassBillingGroup from "./master/class/BillingGroup";
 import MasterClassBillingGroupRule from "./master/class/BillingGroupRule";
-import { LinkType } from "../lib";
+import { LinkType, SearchWhere, SearchResult } from "../lib";
+import MasterClassFamilyLog from "./master/class/FamilyLog";
 
 namespace Master {
     let prefix = '_master';
@@ -31,16 +32,24 @@ namespace Master {
             return this._post('move', { From, To });
         }
         /**
-         * 缴费,实际调用钱包模块
+         * 缴费
          * @param FID 
-         * @param Money 
-         * @param Memo 
-         * @param Type 
+         * @param Money 金额
+         * @param After 缴费后余额，用于做服务端验证
+         * @param Times 本次缴费是第几次缴费，用于做服务端验证
+         * @param Memo 备注
+         * @param Type 缴费类型
          */
-        pay(FID: number, Money: number, Memo: string, Type: string): Promise<boolean> {
-            return this._post('pay', { FID, Money, Memo, Type });
+        charge(FID: number, Money: number, After: number, Times: number, Memo: string, Type?: string): Promise<boolean> {
+            return this._post('pay', { FID, After, Times, Money, Memo, Type });
         }
-
+        /**
+         * 查询户的操作记录，其中Type=charge表示是充值记录
+         * @param where 
+         */
+        log(where: SearchWhere): Promise<SearchResult<MasterClassFamilyLog>> {
+            return this._post('log', where);
+        }
     }
     export const FamilyApi = new Family('Family', prefix)
 
