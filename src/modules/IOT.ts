@@ -154,7 +154,7 @@ namespace IOT {
     class cmd extends ControllerApi<any>{
 
         adds(d: Cmd[]) {
-            return this._post('Cmd', {})
+            return this._post('Cmd', d)
         }
     }
     export const Cmd = new cmd('Cmd', prefix)
