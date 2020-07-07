@@ -143,7 +143,8 @@ req.interceptors.request.use(async (conf: any) => {
 
     // return;
     conf.path = conf.url.replace('/_', '');
-    conf.url = ApiConfig.Host + conf.url
+    if (!conf.url.includes('http'))
+        conf.url = ApiConfig.Host + conf.url
     // conf.headers['accept'] = 'application/x-protobuf,*/*'
     // await hook.emit(ApiSDKHooks.Request, HookWhen.Before, req, conf)
     await hook.emit(ApiSDKHooks.Request, HookWhen.Before, req, { conf, config: conf, req: conf.data, rep: {}, error: "" });
@@ -162,7 +163,7 @@ async function request(method: 'post' | 'get', path: string, data: any) {
                 await axios.get(ApiConfig.Host + '/proto/list.json').then((d) => {
                     ApiConfig.protos = d.data;
                     // debugger
-                })
+                }).catch((e: any) => { })
             } catch (error) {
 
             }
@@ -311,12 +312,13 @@ export const ApiConfig = new ApiConfigClass
 export class ApiController {
     name: string = "";
     prefix: string = "";
+    host: string = "";
     constructor(name: string, prefix: string) {
         this.name = name;
         this.prefix = prefix;
     }
     protected get_url(method: string) {
-        return ['', this.prefix, this.name, method].join('/');
+        return [this.host, this.prefix, this.name, method].join('/');
     }
     /**
      * 发起请求

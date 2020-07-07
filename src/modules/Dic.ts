@@ -350,7 +350,7 @@ namespace Dic {
     export class dics extends ControllerApi<Dics>{
         PK = 'DID';
 
-        adds() { }
+        // adds() { }
         /**
          * 树形结构查询
          * @param W.PDIDs 以PDID为准，向下查询
