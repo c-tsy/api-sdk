@@ -178,6 +178,27 @@ namespace Dic {
          * 
          */
         public Icon: string = "";
+
+        /**
+         * 类型，自定义填写
+         */
+        Type: string = "";
+        /**
+         * 层级，服务器生成
+         */
+        Level: number = 0;
+        /**
+         * 绑定参数类型
+         */
+        OType: string = ""
+        /**
+         * 绑定参数值
+         */
+        OID: number = 0
+        /**
+         * 批量创建过程中的子集
+         */
+        Subs?: Dics[] = [];
     }
     /**
      * 字典关联 Link
@@ -328,13 +349,16 @@ namespace Dic {
      */
     export class dics extends ControllerApi<Dics>{
         PK = 'DID';
+
+        adds() { }
         /**
          * 树形结构查询
-         * @param W.PDID 以PDID为准，向下查询
-         * @param W.PDID 以DID为准，向上查询
+         * @param W.PDIDs 以PDID为准，向下查询
+         * @param W.DIDs 以DID为准，向上查询
+         * @param W.TID 以DID为准，向上查询
          * @param Deep 
          */
-        tree(W: { PDIDs: number[], DIDs: number[] }, Deep: number = 3): Promise<Dics[]> {
+        tree(W: { PDIDs: number[], DIDs: number[], TID: number }, Deep: number = 3): Promise<Dics[]> {
             return this._post('tree', Object.assign(W, { Deep }))
         }
     }

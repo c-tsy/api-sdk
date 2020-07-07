@@ -41,7 +41,7 @@ namespace Master {
          * @param Type 缴费类型
          */
         charge(FID: number, Money: number, After: number, Times: number, Memo: string, Type?: string): Promise<boolean> {
-            return this._post('pay', { FID, After, Times, Money, Memo, Type });
+            return this._post('charge', { FID, After, Times, Money, Memo, Type });
         }
         /**
          * 查询户的操作记录，其中Type=charge表示是充值记录
