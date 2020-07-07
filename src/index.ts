@@ -143,8 +143,11 @@ req.interceptors.request.use(async (conf: any) => {
 
     // return;
     conf.path = conf.url.replace('/_', '');
-    if (!conf.url.includes('http'))
+    if (!conf.url.includes('http://'))
         conf.url = ApiConfig.Host + conf.url
+    else {
+        conf.url = conf.url.replace(/^\//, '');
+    }
     // conf.headers['accept'] = 'application/x-protobuf,*/*'
     // await hook.emit(ApiSDKHooks.Request, HookWhen.Before, req, conf)
     await hook.emit(ApiSDKHooks.Request, HookWhen.Before, req, { conf, config: conf, req: conf.data, rep: {}, error: "" });
