@@ -123,6 +123,15 @@ namespace IOT {
         Data: { [index: string]: any } = {};
         MID: number = 0
     }
+    export class DeviceReadParams {
+        /**
+         * 要读取的设备ID的范围
+         */
+        DIDs: string[] = [];
+        IMEIs: string[] = [];
+        PID: number = 0;
+        P: number = 0; N: number = 0
+    }
     /**
      * 产品型号管理接口
      */
@@ -136,7 +145,9 @@ namespace IOT {
      */
     class device extends ControllerApi<Device> {
         PK = "DID";
-
+        read(d: DeviceReadParams) {
+            return this._post('read', d)
+        }
     }
     export const DeviceApi = new device('Device', prefix);
     class protocol extends ControllerApi<Protocol> {
