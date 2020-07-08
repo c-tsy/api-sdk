@@ -145,11 +145,19 @@ namespace IOT {
      */
     class device extends ControllerApi<Device> {
         PK = "DID";
+        /**
+         * 读取设备实时数据
+         * @param d 
+         */
         read(d: DeviceReadParams) {
             return this._post('read', d)
         }
-        dels(IDs: number[]) {
-            return this._post('del', { IDs })
+        /**
+         * 删除设备
+         * @param DIDs 
+         */
+        dels(DIDs: number[]) {
+            return this._post('del', { DIDs })
         }
     }
     export const DeviceApi = new device('Device', prefix);
