@@ -116,12 +116,12 @@ namespace IOT {
     interface Key {
         Type: string;
     }
-    interface Cmd {
-        DID: number;
-        Code: number;
-        Memo: string;
-        Data: any;
-        MID: number
+    export class Cmd {
+        DID: number = 0;
+        Code: number = 0;
+        Memo: string = '';
+        Data: { [index: string]: any } = {};
+        MID: number = 0
     }
     /**
      * 产品型号管理接口
@@ -157,7 +157,7 @@ namespace IOT {
             return this._post('adds', d)
         }
     }
-    export const Cmd = new cmd('Cmd', prefix)
+    export const CmdApi = new cmd('Cmd', prefix)
 }
 
 export default IOT;
