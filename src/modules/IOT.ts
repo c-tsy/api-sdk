@@ -148,6 +148,9 @@ namespace IOT {
         read(d: DeviceReadParams) {
             return this._post('read', d)
         }
+        dels(IDs: number[]) {
+            return this._post('del', { IDs })
+        }
     }
     export const DeviceApi = new device('Device', prefix);
     class protocol extends ControllerApi<Protocol> {
