@@ -153,6 +153,14 @@ namespace IOT {
             return this._post('read', d)
         }
         /**
+         * 删除一个
+         * 
+         * @param DID 
+         */
+        del(DID: number) {
+            return this._post('del', { DIDs: [DID] })
+        }
+        /**
          * 删除设备
          * @param DIDs 
          */
