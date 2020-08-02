@@ -1,12 +1,13 @@
 {
   "name": "@ctsy/api-sdk",
-  "version": "2.0.204",
+  "version": "2.0.206",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
     "dist/modules/**/*.js",
     "dist/modules/**/*.d.ts",
     "dist/index.js",
+    "dist/api-sdk.min.js",
     "dist/index.d.ts",
     "dist/lib.js",
     "dist/lib.d.ts",
@@ -16,7 +17,8 @@
     "yarn.lock"
   ],
   "scripts": {
-    "prepublish": "tsc"
+    "prepublish": "tsc && webpack --config webpack.config.js",
+    "build": "webpack --config webpack.config.js"
   },
   "repository": "https://github.com/c-tsy/api-sdk",
   "author": "castleiMac <castle@tansuyun.cn>",
@@ -37,6 +39,8 @@
     "@types/axios": "*",
     "@types/node": "*",
     "@types/store": "*",
+    "ts-loader": "^8.0.2",
+    "typescript": "^3.9.7",
     "webpack-bundle-analyzer": "^3.8.0"
   }
 }
