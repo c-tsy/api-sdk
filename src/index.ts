@@ -3,9 +3,8 @@ import * as store from 'store'
 import * as qs from 'querystring'
 import * as p from 'protobufjs/light';
 import { SearchWhere, SearchResult, ApiSDKHooks as hooks } from './lib';
-import { base_covert } from '@ctsy/covert';
 import hook, { Hook, HookWhen } from '@ctsy/hook';
-import * as rpc from '@ctsy/ws-rpc-client';
+// import * as rpc from '@ctsy/ws-rpc-client';
 
 declare let window: any;
 declare let uni: any;
@@ -170,39 +169,39 @@ async function request(method: 'post' | 'get', path: string, data: any) {
             } catch (error) {
 
             }
-        try {
-            if (isWindow && uni) {
-                //uniapp 环境
-                axios.defaults.adapter = function (config: any) {
-                    return new Promise((resolve, reject) => {
-                        var settle = require('axios/lib/core/settle');
-                        var buildURL = require('axios/lib/helpers/buildURL');
-                        uni.request({
-                            method: config.method.toUpperCase(),
-                            url: buildURL(config.url, config.params, config.paramsSerializer),
-                            header: config.headers,
-                            data: config.data,
-                            dataType: config.dataType,
-                            responseType: config.responseType,
-                            sslVerify: config.sslVerify,
-                            complete: function complete(response: any) {
-                                response = {
-                                    data: response.data,
-                                    status: response.statusCode,
-                                    errMsg: response.errMsg,
-                                    statusText: response.errMsg,
-                                    headers: response.header,
-                                    config: config
-                                };
-                                settle(resolve, reject, response);
-                            }
-                        })
-                    })
-                }
-            }
-        } catch (error) {
+        // try {
+        //     if (isWindow && uni) {
+        //uniapp 环境
+        // axios.defaults.adapter = function (config: any) {
+        //     return new Promise((resolve, reject) => {
+        //         var settle = require('axios/lib/core/settle');
+        //         var buildURL = require('axios/lib/helpers/buildURL');
+        //         uni.request({
+        //             method: config.method.toUpperCase(),
+        //             url: buildURL(config.url, config.params, config.paramsSerializer),
+        //             header: config.headers,
+        //             data: config.data,
+        //             dataType: config.dataType,
+        //             responseType: config.responseType,
+        //             sslVerify: config.sslVerify,
+        //             complete: function complete(response: any) {
+        //                 response = {
+        //                     data: response.data,
+        //                     status: response.statusCode,
+        //                     errMsg: response.errMsg,
+        //                     statusText: response.errMsg,
+        //                     headers: response.header,
+        //                     config: config
+        //                 };
+        //                 settle(resolve, reject, response);
+        //             }
+        //         })
+        //     })
+        // }
+        //     }
+        // } catch (error) {
 
-        }
+        // }
         ApiConfig.inited = true;
     }
     let [m, c, f] = path.replace('/_', '').split('/');
@@ -215,6 +214,16 @@ async function request(method: 'post' | 'get', path: string, data: any) {
     ) {
         conf.responseType = "arraybuffer";
         conf.headers = { accept: 'application/x-protobuf' }
+        if (!protoed[m]) {
+            axios.get(ApiConfig.Host + '/proto/' + m + '.json').then((pjson) => {
+                protoed[m] = p.Root.fromJSON(pjson.data)
+            }).catch((e) => {
+                //自动退回到JSON模式
+                ApiConfig.Debug = true;
+                // debugger
+                protoed[m] = p.Root.fromJSON({})
+            })
+        }
     }
     if (method == 'get') {
         // path += ('?' + query.stringify(data));
@@ -348,7 +357,7 @@ export class ApiController {
 export function jsonp(url: string, cbname: string = '', timeout: number = 1000): Promise<any> {
     return new Promise((s, j) => {
         if ('string' != typeof cbname) {
-            cbname = base_covert(10, 32, Math.random() * 100).toString();
+            cbname = (Math.random() * 100000).toFixed(0)
         }
         url = url.includes('?') ? url + '&cb=' + cbname : url + '?cb=' + cbname
         if (!window[cbname]) {
