@@ -138,4 +138,8 @@ export default class Device {
    * 设备分组关系
    */
   DIDs?: number[] = [];
+
+
+  public CType: number = 0;
+  public PAmount: number = 0;
 }

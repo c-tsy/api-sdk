@@ -4,18 +4,25 @@ const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPl
 module.exports = {
     mode: "production",
     entry: { //入口文件
-        index: './dist/index.js',
+        index: './src/index.ts',
+    },
+    resolve: {
+        extensions: ['.ts', '.tsx', '.js'],
+        alias: {}
     },
     output: { //出口文件
         publicPath: './', //模板、样式、脚本、图片等资源的路径中统一会加上额外的路径
-        path: path.resolve(__dirname, 'cdn'),
+        path: path.resolve(__dirname, 'dist'),
         filename: './api-sdk.min.js'
     },
     node: {
         Buffer: false
     },
     module: {
-        rules: []
+        rules: [{
+            test: /\.tsx?$/,
+            loader: "ts-loader"
+        }]
     },
     externals: {
         vue: 'Vue',
@@ -29,7 +36,7 @@ module.exports = {
         'protobufjs': 'protobuf',
         'protobufjs/light': 'protobuf',
         buffer: 'Buffer',
-        store: 'Store',
+        store: 'store',
         'vue-baidu-map': 'VueBaiduMap.default',
         'element-ui': 'ELEMENT',
         'vue-i18n': 'VueI18n',

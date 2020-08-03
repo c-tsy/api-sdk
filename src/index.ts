@@ -436,3 +436,22 @@ export class ControllerApi<T> extends ApiController {
         return this._post('del', { [this.PK]: PKID });
     }
 }
+
+
+
+if (isWindow) {
+    window.CTsyApiSDK = {
+        ApiSDKHooks,
+        set_token,
+        ApiHooks,
+        ApiConfig,
+        ApiController,
+        jsonp,
+        create,
+        default: create,
+        ApiCommon,
+        ControllerApi,
+        SearchWhere,
+        SearchResult,
+    }
+}
