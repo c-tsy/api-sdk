@@ -217,6 +217,10 @@ namespace Organ {
          * 状态
          */
         public Status?: number = 0;
+        /**
+         * 是否自动创建用户组
+         */
+        public WithGroup?: boolean = false;
     }
     /**
      * 区域操作Api
