@@ -879,8 +879,8 @@ namespace Paper {
          * @param P 分页页码
          * @param N 分页每页数量
          */
-        detail(UIDs?: number[], GIDs?: number[], PIDs?: number[], PAIDs?: number[], Keys?: string[], P?: number, N?: number): Promise<{ L: ClassPaperAnswer }> {
-            return this._post('detail', { UIDs, GIDs, PIDs, PAIDs, Keys, P, N });
+        detail(UIDs?: number[], GIDs?: number[], PIDs?: number[], PAIDs?: number[], Keys?: string[], Times?: number, P?: number, N?: number): Promise<{ L: ClassPaperAnswer }> {
+            return this._post('detail', { UIDs, GIDs, PIDs, PAIDs, Keys, Times, P, N });
         }
         /**
          * 主观题阅卷提交

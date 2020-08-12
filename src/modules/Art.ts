@@ -52,6 +52,16 @@ namespace ArtApi {
          * 
          */
         public PCID: number = 0;
+        /**
+         * 类型
+         * 1评论2点赞3签名
+         */
+        public Type: number = 0;
+        /**
+         * 是否已点赞
+         * 单数已点赞 双数为点赞
+         */
+        public IsLike: number = 0;
     }
     /**
      * 文章阅读统计对象
@@ -1222,6 +1232,13 @@ namespace ArtApi {
          */
         adds(Comments: ClassArtComment[]) {
             return this._post('adds', Comments);
+        }
+        /**
+         * 文章点赞
+         * @param d 
+         */
+        like(d: ClassArtComment) {
+            return this._post('like', d)
         }
         /**
          * 读取评论内容
