@@ -529,6 +529,11 @@ namespace ArtApi {
          */
         public CType: number = 0;
         /**
+         * 二级类型
+         * 根据应用定义
+         */
+        public AType: number = 0;
+        /**
          * 置顶
          * 
          */
