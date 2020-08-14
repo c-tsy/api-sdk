@@ -36,6 +36,10 @@ namespace Upload {
          */
         name?: string
         /**
+         * Memo备注
+         */
+        memo?: string
+        /**
          * 上传进度回调
          * @example 
          * onUploadProgress: progressEvent => {
@@ -67,6 +71,13 @@ namespace Upload {
                 acl,
                 md5: await local_file_md5(file)
             });
+        }
+        /**
+         * 修改资源的额外信息
+         * @param d 
+         */
+        save(d: { FID: number, Memo: string }) {
+            return this._post('save', d);
         }
         /**
          * 列出文件列表
@@ -189,6 +200,12 @@ namespace Upload {
             Auth: d,
             rs,
         };
+        if (conf.memo && conf.memo.length > 0 && rs.data.d.FID > 0) {
+            await Upload.save({
+                FID: rs.data.FID,
+                Memo: conf.memo
+            })
+        }
         if (conf.success instanceof Function) {
             conf.success(drs);
         }
