@@ -178,6 +178,7 @@ namespace ArtApi {
      * 存储驱动 Driver char(50)(char(50))
      * 存储路径 Path char255(char(255))
      * 访问路径 URL char255(char(255))
+     * 图片备注 Memo char255(char(255))
      * 下载次数 TDown 编号(bigint(20))
      * 文件大小 Size 金额(double(20,2))
     */
@@ -252,6 +253,10 @@ namespace ArtApi {
          * 外网访问路径
          */
         public URL: string = "";
+        /**
+         * 图片备注
+         */
+        public Memo: string = "";
         /**
          * 下载次数
          * 累计下载次数
