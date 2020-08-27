@@ -502,6 +502,9 @@ namespace Paper {
          * 
          */
         public Title: string = "";
+
+        public Rate: number = 0;
+        public RUnit: number = 0;
         /**
          * 开始时间
          * 
