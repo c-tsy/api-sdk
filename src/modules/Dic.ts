@@ -383,6 +383,6 @@ namespace Dic {
     export class userLink extends ControllerApi<Link>{
         PK = 'LID';
     }
-    export const UserLinkApi = new dics('UserLink', prefix);
+    export const UserLinkApi = new userLink('UserLink', prefix);
 }
 export default Dic;
