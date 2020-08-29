@@ -59,7 +59,7 @@ namespace Upload {
          * @param expire 
          * @param acl 
          */
-        async sign(what: string, file: File, oname: string = '', expire: string | number | boolean = 0, acl: 'private' | 'read' = 'private') {
+        async sign(what: string, file: File, oname: string = '', expire: string | number | boolean = 0, acl: 'private' | 'read' = 'private', memo: string = "") {
             return await this._post('sign', {
                 what,
                 oname,
@@ -67,6 +67,7 @@ namespace Upload {
                 name: file.name,
                 type: file.type,
                 size: file.size,
+                memo,
                 date: new Date(file.lastModified).getTime(),
                 acl,
                 md5: await local_file_md5(file)

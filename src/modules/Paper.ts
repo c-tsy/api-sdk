@@ -506,6 +506,10 @@ namespace Paper {
         public Rate: number = 0;
         public RUnit: number = 0;
         /**
+         * 试卷类型 bigint 0默认1问卷2考评
+         */
+        public Type: number = 0;
+        /**
          * 开始时间
          * 
          */
@@ -1049,6 +1053,8 @@ namespace Paper {
             QType?: QuestionType,
             //填空或简答的内容
             Desc?: string,
+            //Paper.Type != 0 时可以直接制定分数
+            Score?: string,
             //答题备注
             Memo?: string,
             //答题所涉及到的图片内容，目前仅易安鸟用
