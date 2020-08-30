@@ -42,6 +42,16 @@ export default class MasterClassBillingGroup {
    */
   public AID: number = 0;
   /**
+   * 单价
+   * 
+   */
+  public Price: number = 0;
+  /**
+   * 计价方案类型 0 直接计价，1规则计价
+   * 
+   */
+  public Type: number = 0;
+  /**
    * GID
    * 
    */

@@ -177,4 +177,13 @@ export default class MasterClassFamily {
    * 每一户有个计费组配置
    */
   public BGID: number = 0;
+
+
+  OTime: Date = new Date(0)
+  DTime: Date = new Date(0)
+  STime: Date = new Date(0)
+  ETime: Date = new Date(0)
+  UTime: Date = new Date(0)
+  DType: number = 0
+
 }
