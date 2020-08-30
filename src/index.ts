@@ -421,7 +421,12 @@ export namespace ApiCommon {
 export class ControllerApi<T> extends ApiController {
     PK: string = "ID"
     search(d: SearchWhere): PromiseLike<SearchResult<T>> {
-        return this._post('search', d);
+        return this._post('search', d).then((v) => {
+            if (!v.L) {
+                v.L = [];
+            }
+            return v;
+        });
     }
     add(d: T): Promise<T> {
         return this._post('add', d);
