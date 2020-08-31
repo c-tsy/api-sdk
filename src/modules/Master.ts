@@ -40,8 +40,8 @@ namespace Master {
          * @param Memo 备注
          * @param Type 缴费类型
          */
-        charge(FID: number, Money: number, After: number, Times: number, Memo: string, Type?: string): Promise<boolean> {
-            return this._post('charge', { FID, After, Times, Money, Memo, Type });
+        charge(FID: number, Money: number, After: number, Times: number, Memo: string, OTime: string, DTime: string, STime: string, ETime: string, Type?: string): Promise<boolean> {
+            return this._post('charge', { FID, STime, ETime, DTime, OTime, After, Times, Money, Memo, Type });
         }
         /**
          * 查询户的操作记录，其中Type=charge表示是充值记录

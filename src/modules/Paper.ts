@@ -143,6 +143,31 @@ namespace Paper {
          * 
          */
         public Sign: string = "";
+        /**
+         * 标题
+         */
+        public Title: string = "";
+        /**
+         * 备注
+         */
+        public Memo: string = "";
+        /**
+         * 类型
+         */
+        public Type: number = 0
+        /**
+         * 关联类型
+         */
+        public OType: string = "";
+        public OID: number = 0;
+        /**
+         * 状态
+         */
+        public Status: number = 0;
+        /**
+         * 扩展信息，支持用字符串做额外的数据存储
+         */
+        public Extra: string = "";
     }
     /**
   * 答题情况 PaperAnswer
@@ -877,6 +902,13 @@ namespace Paper {
      * 答题情况的接口类
      */
     class answer extends ApiController {
+        /**
+         * 创建一个答题结论，表示开始答题或用于分享处理
+         * @param d 
+         */
+        create(d: ClassPaperAnswered): Promise<ClassPaperAnswered> {
+            return this._post('create', d);
+        }
         /**
          * 读取答题试卷明细
          * @param UIDs 
