@@ -53,7 +53,10 @@ namespace Master {
     }
     export const FamilyApi = new Family('Family', prefix)
 
-
+    class FamilyLog extends ControllerApi<MasterClassFamilyLog>{
+        PK: string = 'FLID'
+    }
+    export const FamilyLogApi = new FamilyLog('FamilyLog', prefix);
     /**
      * 计费组的管理操作接口
      */
