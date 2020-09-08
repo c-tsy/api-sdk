@@ -69,6 +69,14 @@ namespace DataApi {
     };
     class area extends ApiController {
         /**
+         * 读取区域数据
+         * @param code 
+         */
+        async district(code: string | number): Promise<{ [index: string]: string }> {
+            let rs = await jsonp('//npm.tansuyun.cn/@ctsy/area/jsonp/' + code + '.js', '_area_jsonp_' + code);
+            return rs;
+        }
+        /**
          * list
          */
         async list() {
