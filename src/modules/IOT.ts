@@ -3,6 +3,7 @@ import { ApiController, ControllerApi } from "..";
 import Model from './iot/class/Model'
 import Protocol from './iot/class/Protocol'
 import Device from "./iot/class/Device";
+import { SearchWhere } from "../lib";
 
 namespace IOT {
     let prefix = '_iot';
@@ -166,6 +167,20 @@ namespace IOT {
          */
         dels(DIDs: number[]) {
             return this._post('del', { DIDs })
+        }
+        /**
+         * 读取地图数据
+         * @param d 
+         */
+        map(d?: SearchWhere): Promise<{ DID: number, IMEI: string, ID: string, Name: string, X: number, Y: number, [index: string]: string | number }[]> {
+            return this._post('map', d);
+        }
+        /**
+         * 保存设备的地理信息
+         * @param d 
+         */
+        saveMap(d: { DID: number, X: number, Y: number }[]) {
+            return this._post('map', d);
         }
     }
     export const DeviceApi = new device('Device', prefix);

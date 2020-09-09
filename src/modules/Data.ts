@@ -2,6 +2,8 @@ import { ApiController, jsonp, ApiConfig } from '../index';
 import * as pbjs from 'protobufjs/light';
 import { array_tree } from 'castle-function'
 import { pid } from 'process';
+import * as pb from 'protobufjs/light';
+import Axios from 'axios';
 namespace DataApi {
     const p = '_data'
     class kd extends ApiController {
@@ -67,13 +69,14 @@ namespace DataApi {
             }
         }
     };
+    const base = pb.Root.fromJSON(areaPbJSON);
     class area extends ApiController {
         /**
          * 读取区域数据
          * @param code 
          */
         async district(code: string | number): Promise<{ [index: string]: string }> {
-            let rs = await jsonp('//npm.tansuyun.cn/@ctsy/area/jsonp/' + code + '.js', '_area_jsonp_' + code);
+            let rs = await jsonp('//npm.tansuyun.cn/@ctsy/area/jsonp/' + code + '.js', '_area_jsonp_' + code, 6000);
             return rs;
         }
         /**
@@ -83,6 +86,7 @@ namespace DataApi {
             if (list.length > 0) {
                 return list;
             }
+
             let plist = await jsonp('//npm.tansuyun.cn/castle-cdn/area.list.js', '_area_list_cb');
             for (let o of plist) {
                 let x: any = { value: o[0], label: o[1] };
@@ -100,7 +104,66 @@ namespace DataApi {
             }
             trees = Object.values(<any>array_tree(list, { pfield: 'pid', ufield: 'id', sub_name: 'children', remove_null: true }))
             return list;
+            // let plist: any = await Axios.get('//npm.tansuyun.cn/castle-cdn/area.pb', { responseType: 'arraybuffer' }).then((d) => base.lookupType('Result').decode(pb.util.newBuffer(d.data)))
+
+            // console.time("area")
+            // for (let o of plist.list) {
+            //     let x: any = o;
+            //     x.id = x.value.toString();
+            //     if (x.id.length > 6) {
+
+            //     } else {
+            //         x.id = x.id.replace(/0{4}$/, '').replace(/0{2}$/, '')
+            //     }
+            //     // x.id.padEnd(x.)
+            //     if (x.id.length <= 6) {
+            //         x.pid = x.id.substr(0, x.id.length - 2) || 0;
+            //     } else {
+            //         x.pid = x.id.substr(0, x.id.length - 3) || 0;
+            //     }
+            //     list.push(x);
+            //     if (!x.pid) {
+            //         areas.province_list[x.value] = x.label;
+            //     } else if (x.pid.length == 2) {
+            //         areas.county_list[x.value] = x.label;
+            //     } else {
+            //         areas.city_list[x.value] = x.label;
+            //     }
+            // }
+            // trees = Object.values(<any>array_tree(list, { pfield: 'pid', ufield: 'id', sub_name: 'children', remove_null: true }))
+            // // console.log(trees)
+            // console.timeEnd('area')
+            // return list;
         }
+
+        async loadAll(): Promise<{ pid: string, id: string, label: string, value: number }[]> {
+            let plist: any = await Axios.get('//npm.tansuyun.cn/castle-cdn/area.pb', { responseType: 'arraybuffer' }).then((d) => base.lookupType('Result').decode(pb.util.newBuffer(d.data)))
+            for (let o of plist.list) {
+                let x: any = o;
+                x.id = x.value.toString();
+                if (x.id.length > 6) {
+
+                } else {
+                    x.id = x.id.replace(/0{4}$/, '').replace(/0{2}$/, '')
+                }
+                // x.id.padEnd(x.)
+                if (x.id.length <= 6) {
+                    x.pid = x.id.substr(0, x.id.length - 2) || 0;
+                } else {
+                    x.pid = x.id.substr(0, x.id.length - 3) || 0;
+                }
+                list.push(x);
+                if (!x.pid) {
+                    areas.province_list[x.value] = x.label;
+                } else if (x.pid.length == 2) {
+                    areas.county_list[x.value] = x.label;
+                } else {
+                    areas.city_list[x.value] = x.label;
+                }
+            }
+            return list;
+        }
+
         /**
          * 读取所有区域信息
          */
