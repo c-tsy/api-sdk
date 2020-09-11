@@ -420,6 +420,10 @@ export namespace ApiCommon {
  */
 export class ControllerApi<T> extends ApiController {
     PK: string = "ID"
+    /**
+     * 查询接口
+     * @param d 
+     */
     search(d: SearchWhere): PromiseLike<SearchResult<T>> {
         return this._post('search', d).then((v) => {
             if (!v.L) {
@@ -428,17 +432,41 @@ export class ControllerApi<T> extends ApiController {
             return v;
         });
     }
+    /**
+     * 单个添加数据
+     * @param d 
+     */
     add(d: T): Promise<T> {
         return this._post('add', d);
     }
+    /**
+     * 批量添加数据
+     * @param d 
+     */
     adds(d: T[]): Promise<T[]> {
         return this._post('adds', d);
     }
+    /**
+     * 更新某个数据
+     * @param PKID 
+     * @param Params 
+     */
     save(PKID: number, Params: T) {
         return this._post('save', { [this.PK]: PKID, Params })
     }
+    /**
+     * 删除
+     * @param PKID 
+     */
     del(PKID: number) {
         return this._post('del', { [this.PK]: PKID });
+    }
+    /**
+     * 读取分组统计数据
+     * @param d 
+     */
+    group(d: { Group: string, Sum: string, Count: string, Max: string, Min: string, Avg: string, W: { [index: string]: any } }[]) {
+        return this._post('group', d);
     }
 }
 

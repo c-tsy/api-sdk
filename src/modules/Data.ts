@@ -211,6 +211,25 @@ namespace DataApi {
             window.open([ApiConfig.Host, p, 'Excel', 'down', Token].join('/'))
         }
     }
+    class docx extends ApiController {
+        /**
+         * 生成Word并返回下载链接
+         * @param {string} FileName 下载的Word的名称
+         * @param {string} TemplateURL 要生成的Word的模板网络地址
+         * @param { [index: string]: any } Data 要生成的Word的数据
+         * @param  Downloads Word中要插入的所有图片的集合，用于在生成前先加载图片，否则会渲染失败
+         * @returns {url:string}
+         */
+        template(FileName: string, TemplateURL: string, Data: { [index: string]: any }, Downloads: { URL: string, Size: [number, number] }[]): Promise<{ url: string }> {
+            return this._post('template', {
+                FileName,
+                Template: TemplateURL,
+                Data,
+                Downloads
+            })
+        }
+    }
+    export const DocxApi = new docx('Docx', p);
     export const Excel = new excel('Excel', p);
     export const AreaApi = new area('Area', p);
     export const Company = new company('Company', p)
