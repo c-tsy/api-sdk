@@ -134,9 +134,21 @@ namespace Pay {
         public Push: string = "";
     }
     class pay extends ApiController {
+        /**
+         * 创建支付订单
+         * @param d 
+         */
+        create(d: ClassPayOrders): Promise<ClassPayOrders> {
+            return this._post('create', d).then((p) => {
+                if (p && 'string' == typeof p.Param && p.Param.length > 0) {
+                    try {
+                        p.Param = JSON.parse(p.Param);
+                    } catch (error) {
 
-        create(d: ClassPayOrders) {
-            return this._post('create', d);
+                    }
+                }
+                return p;
+            });
         }
         /**
          * 发起支付订单查询
@@ -153,11 +165,11 @@ namespace Pay {
             return this._post('get', { OID })
         }
         /**
-         * 调用微信支付
+         * 自动创建调用微信支付
          * @param d 
          * @param waitForConfirm 
          */
-        callWxPay(d: ClassPayOrders, waitForConfirm: boolean = true) {
+        callWxPay(d: ClassPayOrders, waitForConfirm: boolean = true): Promise<boolean> {
             return new Promise(async (s, j) => {
                 if ((<any>window).WeixinJSBridge) {
                     if (!d.OID) {
