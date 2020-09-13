@@ -1,7 +1,7 @@
 import { namespace } from "store";
 import { ApiController } from "..";
 import { timeout } from "@ctsy/common";
-import { SearchWhere } from "../lib";
+import { SearchWhere, SearchResult } from "../lib";
 
 namespace Pay {
     let prefix = '_pay';
@@ -142,8 +142,8 @@ namespace Pay {
          * 发起支付订单查询
          * @param d 
          */
-        search(d: SearchWhere) {
-            return this._post('search', d);
+        search(d: SearchWhere): SearchResult<ClassPayOrders> {
+            return <any>this._post('search', d);
         }
         /**
          * 读取单个支付订单记录
@@ -152,22 +152,30 @@ namespace Pay {
         get(OID: number): Promise<ClassPayOrders> {
             return this._post('get', { OID })
         }
+        /**
+         * 调用微信支付
+         * @param d 
+         * @param waitForConfirm 
+         */
         callWxPay(d: ClassPayOrders, waitForConfirm: boolean = true) {
             return new Promise(async (s, j) => {
                 if ((<any>window).WeixinJSBridge) {
                     if (!d.OID) {
                         d = await this.create(d);
                     }
+                    if (!d.Param) {
+                        throw new Error('支付订单创建失败')
+                    }
                     (<any>window).WeixinJSBridge.invoke("getBrandWCPayRequest", d.Param, async (res: any) => {
                         if (res.err_msg == "get_brand_wcpay_request:ok") {
                             //支付成功，等待服务器确认
                             if (waitForConfirm) {
-                                for (let i = 0; i < 30; i++) {
+                                for (let i = 0; i < 10; i++) {
                                     let pcheck = await this.get(d.OID)
                                     if (pcheck.Status == 1) {
                                         s(true);
                                     }
-                                    await timeout(1000);
+                                    await timeout(2000);
                                 }
                                 j('查询支付结果超时');
                             } else {
