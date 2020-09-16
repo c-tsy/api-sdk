@@ -330,7 +330,13 @@ export class ApiController {
         this.prefix = prefix;
     }
     protected get_url(method: string) {
-        return [this.host, this.prefix, this.name, method].join('/');
+        let p = [this.host];
+        if (this.prefix) {
+            p.push(this.prefix);
+        }
+        p.push(this.name); p.push(method)
+        return p.join('/')
+        // return [this.host, this.prefix, this.name, method].join('/');
     }
     /**
      * 发起请求
