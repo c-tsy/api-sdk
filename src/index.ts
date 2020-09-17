@@ -142,7 +142,7 @@ req.interceptors.request.use(async (conf: any) => {
 
     // return;
     conf.path = conf.url.replace('/_', '');
-    if (!conf.url.includes('http://'))
+    if (!conf.url.startsWith('http'))
         conf.url = ApiConfig.Host + conf.url
     else {
         conf.url = conf.url.replace(/^\//, '');
