@@ -178,6 +178,9 @@ namespace Pay {
                     if (!d.Param) {
                         throw new Error('支付订单创建失败')
                     }
+                    if ('string' == typeof d.Param) {
+                        d.Param = JSON.parse(d.Param)
+                    }
                     (<any>window).WeixinJSBridge.invoke("getBrandWCPayRequest", d.Param, async (res: any) => {
                         if (res.err_msg == "get_brand_wcpay_request:ok") {
                             //支付成功，等待服务器确认
