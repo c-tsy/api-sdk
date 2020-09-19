@@ -142,4 +142,12 @@ export default class Device {
 
   public CType: number = 0;
   public PAmount: number = 0;
+  /**
+   * 设备缓存数据中的Current字段，JSON对象
+   */
+  Data?: { [index: string]: any };
+  /**
+   * 设备缓存数据中的全部字段，JSON对象
+   */
+  $Data?: { [index: string]: any };
 }

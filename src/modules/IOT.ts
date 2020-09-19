@@ -4,6 +4,7 @@ import Model from './iot/class/Model'
 import Protocol from './iot/class/Protocol'
 import Device from "./iot/class/Device";
 import { SearchWhere } from "../lib";
+import { array_columns, array_key_set } from "castle-function";
 
 namespace IOT {
     let prefix = '_iot';
@@ -130,8 +131,38 @@ namespace IOT {
          */
         DIDs: string[] = [];
         IMEIs: string[] = [];
-        PID: number = 0;
+        PID?: number = 0;
         P: number = 0; N: number = 0
+    }
+
+    /**
+     * 读取数据响应
+     */
+    export class DeviceReadReturn {
+        /**
+         * 设备ID号
+         */
+        DeviceID: string = "";
+        /**
+         * 数据创建时间
+         */
+        CTime: Date = new Date;
+        /**
+         * 数据完成时间
+         */
+        WTime: Date = new Date;
+        /**
+         * 状态，1为解码成功
+         */
+        Status: number = 1;
+        /**
+         * 数据名称
+         */
+        Name: string = "";
+        /**
+         * JSON内容的解码结果
+         */
+        Data: any = {}
     }
     /**
      * 产品型号管理接口
@@ -150,8 +181,30 @@ namespace IOT {
          * 读取设备实时数据
          * @param d 
          */
-        read(d: DeviceReadParams) {
+        read(d: DeviceReadParams): Promise<{ P: number, N: number, L: DeviceReadReturn[] }> {
             return this._post('read', d)
+        }
+        /**
+         * 发起查询
+         * @param w 
+         * @param withData 
+         */
+        async search(w: SearchWhere, withData: boolean = false) {
+            let rs = await super.search(w);
+            if (withData && rs.L.length > 0) {
+                let DIDs = array_columns(rs.L, 'DID');
+                if (DIDs.length > 0) {
+                    let datas = await this.read(<any>{
+                        DIDs, P: 1, N: DIDs.length, IMEIs: []
+                    })
+                    let map = array_key_set(datas.L, 'DID');
+                    for (let x of rs.L) {
+                        x.Data = (map[x.DID]?.Current) || {}
+                        x.$Data = map[x.DID] || {}
+                    }
+                }
+            }
+            return rs;
         }
         /**
          * 删除一个
