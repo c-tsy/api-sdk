@@ -150,6 +150,7 @@ req.interceptors.request.use(async (conf: any) => {
     // conf.headers['accept'] = 'application/x-protobuf,*/*'
     // await hook.emit(ApiSDKHooks.Request, HookWhen.Before, req, conf)
     await hook.emit(ApiSDKHooks.Request, HookWhen.Before, req, { conf, config: conf, req: conf.data, rep: {}, error: "" });
+    await hook.emit(ApiSDKHooks.Request + conf.path, HookWhen.Before, req, { conf, config: conf, req: conf.data, rep: {}, error: "" });
     return conf;
 })
 
@@ -239,6 +240,7 @@ async function request(method: 'post' | 'get', path: string, data: any) {
         }
         log(path, method, e.config.headers['rand'], Date.now() - e.config.headers['rand'], e.data.c || e.status, e.config.data.length, e.headers['content-length'], e.data.e ? e.data.e.m : '')
         await hook.emit(ApiSDKHooks.Request, HookWhen.After, req, { conf, config: conf, req: data, rep: e.data, error: "" });
+        await hook.emit(ApiSDKHooks.Request + conf.path, HookWhen.After, req, { conf, config: conf, req: conf.data, rep: {}, error: "" });
         return e.data.d;
     }).catch(async (e: any) => {
         let err = e.message;
@@ -247,6 +249,7 @@ async function request(method: 'post' | 'get', path: string, data: any) {
             err = e.response.data.e.m;
         }
         await hook.emit(ApiSDKHooks.Request, HookWhen.Error, req, { conf, config: conf, req: data, rep: e.data, error: err });
+        await hook.emit(ApiSDKHooks.Request + conf.path, HookWhen.Error, req, { conf, config: conf, req: conf.data, rep: {}, error: "" });
         throw new Error(err);
     });
 }
