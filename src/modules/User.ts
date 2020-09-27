@@ -184,6 +184,13 @@ export namespace User {
             return this._post('save', { UGID, Data });
         }
         /**
+         * 查询企业需要审核的用户
+         * @param EID 
+         */
+        linksearch(EID: number) {
+            return this._post('linksearch', { EID })
+        }
+        /**
          * 获取分组用户
          * @param UGID 
          * @param P 
@@ -207,8 +214,8 @@ export namespace User {
          * @param UGID 
          * @param UIDs 
          */
-        link(rule: { UGID: number, UIDs: number[] } | { UGIDs: number[], UID: number }, Type: LinkType = LinkType.append) {
-            return this._post('link', Object.assign(rule, { Type }));
+        link(rule: { UGID: number, UIDs: number[] } | { UGIDs: number[], UID: number }, Type: LinkType = LinkType.append, Status?: number, DID?: number) {
+            return this._post('link', Object.assign(rule, { Type, Status, DID }));
         }
         /**
          * 移除用户分组关系
