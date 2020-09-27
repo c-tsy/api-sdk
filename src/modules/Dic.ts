@@ -376,7 +376,7 @@ namespace Dic {
     export class link extends ControllerApi<Link>{
         PK = 'LID';
     }
-    export const LinkApi = new dics('Link', prefix);
+    export const LinkApi = new link('Link', prefix);
     /**
      * 用户信息关联对象操作接口
      */
