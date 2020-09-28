@@ -897,6 +897,7 @@ namespace Paper {
         JType: number = 1
         JUID: number = 0
         Status: number = 1
+        Extra: string = ""
     }
 
     /**
