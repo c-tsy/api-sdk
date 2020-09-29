@@ -214,8 +214,8 @@ export namespace User {
          * @param UGID 
          * @param UIDs 
          */
-        link(rule: { UGID: number, UIDs: number[] } | { UGIDs: number[], UID: number }, Type: LinkType = LinkType.append, Status?: number, DID?: number) {
-            return this._post('link', Object.assign(rule, { Type, Status, DID }));
+        link(rule: { UGID: number, UIDs: number[] } | { UGIDs: number[], UID: number }, Type: LinkType = LinkType.append, Status?: number, DID?: number, EID?: number) {
+            return this._post('link', Object.assign(rule, { Type, Status, DID, EID }));
         }
         /**
          * 移除用户分组关系
