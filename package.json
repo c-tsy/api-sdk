@@ -1,6 +1,6 @@
 {
   "name": "@ctsy/api-sdk",
-  "version": "2.0.233",
+  "version": "2.0.234",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
@@ -24,7 +24,7 @@
   "author": "castleiMac <castle@tansuyun.cn>",
   "license": "MIT",
   "dependencies": {
-    "@ctsy/common": "^1.0.1",
+    "@ctsy/common": "*",
     "@ctsy/hook": "*",
     "axios": "^0.19.2",
     "babel-loader": "^8.1.0",
@@ -33,9 +33,7 @@
     "md5": "*",
     "protobufjs": "^6.9.0",
     "set-value": "*",
-    "store": "*",
-    "webpack": "^4.44.1",
-    "webpack-cli": "^3.3.12"
+    "store": "*"
   },
   "devDependencies": {
     "@types/axios": "*",
@@ -43,6 +41,8 @@
     "@types/store": "*",
     "ts-loader": "^8.0.2",
     "typescript": "^3.9.7",
-    "webpack-bundle-analyzer": "^3.8.0"
+    "webpack": "^4.44.1",
+    "webpack-bundle-analyzer": "^3.8.0",
+    "webpack-cli": "^3.3.12"
   }
 }

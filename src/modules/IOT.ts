@@ -185,6 +185,13 @@ namespace IOT {
             return this._post('read', d)
         }
         /**
+         * 读取KV数据
+         * @param DIDs 
+         */
+        kv(DIDs: number[]) {
+            return this._post('kv', { DIDs })
+        }
+        /**
          * 发起查询
          * @param w 
          * @param withData 

@@ -1,6 +1,7 @@
 import { ApiController, ApiConfig } from '../';
 import hook, { HookWhen } from '@ctsy/hook';
-import { ErrorType, SearchResult, LinkType } from '../lib';
+import { ErrorType, SearchResult, LinkType, SearchWhere } from '../lib';
+import { array_columns } from 'castle-function';
 
 const get: Function = require("get-value");
 const set: Function = require("set-value");
@@ -231,6 +232,12 @@ export namespace User {
          */
         rules(UGIDs: number[]) {
             return this._post('rules', { UGIDs })
+        }
+        /**
+         * 重新更新session信息
+         */
+        renewSession(): Promise<LoginResult> {
+            return this._post('rsession')
         }
         /**
          * 权限分配
@@ -551,20 +558,53 @@ export namespace User {
          * @param W 
          * @param conf 
          */
-        search(W: any, conf: { Keyword?: string, N?: number, P?: number, Sort?: string }) {
-            if (W === void 0) { W = {}; }
-            if (undefined === conf) { conf = { N: 10, P: 1, Keyword: '' }; }
-            if (W.P != void 0 && W.N != void 0 && W.Keyword != void 0) {
-                conf = W;
-                W = W.W;
+        async search(W: { [index: string]: any } | SearchWhere, conf?: { With?: ['Contact'], Keyword?: string, N?: number, P?: number, Sort?: string }): Promise<SearchResult<any>> {
+            if (W.W && W.P > 0 && W.N > 0) {
+                let rs = await this._post('search', W);
+                if (conf?.With) {
+                    if (conf.With instanceof Array) {
+
+                    } else if ('string' == typeof conf.With) {
+                        conf.With = (<any>conf.With).split(',')
+                    }
+
+                    let UIDs: any[] = array_columns(rs.L, 'UID');
+                    if (UIDs.length == 0) {
+                        return rs;
+                    }
+                    let Ps = []
+
+                    if (conf.With?.includes('Contact')) {
+                        Ps.push(ContactApi.read(UIDs))
+                    } else {
+                        Ps.push([])
+                    }
+
+                    let Prs = await Promise.all(Ps);
+
+                    for (let p of Prs) {
+                        for (let x of rs.L) {
+
+                        }
+                    }
+
+                }
+                return rs;
+            } else {
+                if (W === void 0) { W = {}; }
+                if (undefined === conf) { conf = { N: 10, P: 1, Keyword: '' }; }
+                if (W.P != void 0 && W.N != void 0 && W.Keyword != void 0) {
+                    conf = W;
+                    W = W.W;
+                }
+                return this._post('search', {
+                    W: W,
+                    Keyword: conf.Keyword || "",
+                    N: conf.N || 10,
+                    P: conf.P || 1,
+                    Sort: conf.Sort || ''
+                });
             }
-            return this._post('search', {
-                W: W,
-                Keyword: conf.Keyword || "",
-                N: conf.N || 10,
-                P: conf.P || 1,
-                Sort: conf.Sort || ''
-            });
         }
     }
     export const Users = new users();
