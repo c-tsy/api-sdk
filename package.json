@@ -26,17 +26,17 @@
   "dependencies": {
     "@ctsy/common": "*",
     "@ctsy/hook": "*",
-    "axios": "^0.19.2",
-    "babel-loader": "^8.1.0",
+    "axios": "*",
     "castle-function": "^1.0.5",
-    "get-value": "*",
+    "lodash": "*",
     "md5": "*",
     "protobufjs": "^6.9.0",
-    "set-value": "*",
     "store": "*"
   },
   "devDependencies": {
+    "babel-loader": "^8.1.0",
     "@types/axios": "*",
+    "@types/lodash": "^4.14.161",
     "@types/node": "*",
     "@types/store": "*",
     "ts-loader": "^8.0.2",

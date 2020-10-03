@@ -239,8 +239,8 @@ async function request(method: 'post' | 'get', path: string, data: any) {
             throw new Error(err);
         }
         log(path, method, e.config.headers['rand'], Date.now() - e.config.headers['rand'], e.data.c || e.status, e.config.data.length, e.headers['content-length'], e.data.e ? e.data.e.m : '')
-        await hook.emit(ApiSDKHooks.Request, HookWhen.After, data, { conf, config: conf, req: data, rep: e.data, error: "" });
-        await hook.emit(ApiSDKHooks.Request + conf.path, HookWhen.After, data, { conf, config: conf, req: e.data, rep: {}, error: "" });
+        await hook.emit(ApiSDKHooks.Request, HookWhen.After, e.data, { conf, config: conf, req: data, rep: e.data, error: "" });
+        await hook.emit(ApiSDKHooks.Request + conf.path, HookWhen.After, e.data, { conf, config: conf, req: e.data, rep: {}, error: "" });
         return e.data.d;
     }).catch(async (e: any) => {
         let err = e.message;
@@ -460,8 +460,18 @@ export class ControllerApi<T> extends ApiController {
      * @param PKID 
      * @param Params 
      */
-    save(PKID: number, Params: T) {
+    save(PKID: number | T, Params?: T) {
+        if ('object' == typeof PKID) {
+            return this._post('save', { [this.PK]: (<any>PKID)[this.PK], Params: PKID })
+        }
         return this._post('save', { [this.PK]: PKID, Params })
+    }
+    /**
+     * 读取单个
+     * @param PKID 
+     */
+    get(PKID: number) {
+        return this._post('get', { [this.PK]: PKID })
     }
     /**
      * 删除
