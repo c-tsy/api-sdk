@@ -1,6 +1,6 @@
 {
   "name": "@ctsy/api-sdk",
-  "version": "2.0.235",
+  "version": "2.0.236",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
@@ -34,11 +34,11 @@
     "store": "*"
   },
   "devDependencies": {
-    "babel-loader": "^8.1.0",
     "@types/axios": "*",
     "@types/lodash": "^4.14.161",
     "@types/node": "*",
     "@types/store": "*",
+    "babel-loader": "^8.1.0",
     "ts-loader": "^8.0.2",
     "typescript": "^3.9.7",
     "webpack": "^4.44.1",
