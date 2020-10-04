@@ -4,7 +4,7 @@ import { set } from 'lodash'
 import { SearchWhere } from "../lib";
 
 namespace DicApi {
-    var prefix = "_dic";
+    var prefix = "_form";
     class form extends ControllerApi<ClassFormForm>{
         protected _format(data: ClassFormForm) {
             if (data.Values) {
