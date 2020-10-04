@@ -69,6 +69,11 @@ export default class ClassFormForm {
    */
   public GID: number = 0;
   /**
+   * OID
+   * 
+   */
+  public OID: number = 0;
+  /**
    * Key
    * 
    */
