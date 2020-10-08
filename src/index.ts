@@ -468,6 +468,7 @@ export class ControllerApi<T> extends ApiController {
     }
     /**
      * 属性结构读取
+     * 返回结构默认为数组，若需要组合成树形结构请使用array_tree方法
      * @param W 
      * @param Deep 
      */
