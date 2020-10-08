@@ -1067,8 +1067,8 @@ namespace Paper {
          * 搜索查询试卷
          * @param w 查询条件
          */
-        search(w: SearchWhere): Promise<SearchResult<ClassPaper>> {
-            return this._post('search', w);
+        search(w: SearchWhere, Ext: { [index: string]: any } = {}): Promise<SearchResult<ClassPaper>> {
+            return this._post('search', Object.assign(w, Ext));
         }
         /**
          * 答题结果提交

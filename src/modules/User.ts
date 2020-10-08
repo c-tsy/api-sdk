@@ -1,10 +1,9 @@
-import { ApiController, ApiConfig } from '../';
+import { ApiController, ApiConfig, ControllerApi } from '../';
 import hook, { HookWhen } from '@ctsy/hook';
 import { ErrorType, SearchResult, LinkType, SearchWhere } from '../lib';
 import { array_columns } from 'castle-function';
-
-const get: Function = require("get-value");
-const set: Function = require("set-value");
+import * as _ from 'lodash'
+const get: Function = _.get;
 const md5: any = require('md5')
 
 
@@ -683,7 +682,10 @@ export namespace User {
         public Rules: RuleClass[] = [];
         public Subs: RuleGroupClass[] = [];
     }
-    class rule extends ApiController {
+    /**
+     * 
+     */
+    class rule extends ControllerApi<RuleClass> {
         /**
          * 获取我的权限列表
          */
@@ -739,6 +741,13 @@ export namespace User {
             return rs;
         }
     }
+    /**
+     * 权限组
+     */
+    class ruleGroup extends ControllerApi<RuleGroupClass>{
+
+    }
+    export const RuleGroup = new ruleGroup('RuleGroup', prefix);
     export const Rule = new rule('Rule', prefix);
     export const RuleApi = Rule;
     class contact extends ApiController {

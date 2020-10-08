@@ -467,6 +467,14 @@ export class ControllerApi<T> extends ApiController {
         return this._post('save', { [this.PK]: PKID, Params })
     }
     /**
+     * 属性结构读取
+     * @param W 
+     * @param Deep 
+     */
+    async tree(W: { [index: string]: number[] | number }, Deep: number = 3) {
+        return this._post('tree', Object.assign(W, { Deep }))
+    }
+    /**
      * 读取单个
      * @param PKID 
      */
