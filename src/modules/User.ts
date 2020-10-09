@@ -747,7 +747,7 @@ export namespace User {
     class ruleGroup extends ControllerApi<RuleGroupClass>{
 
     }
-    export const RuleGroup = new ruleGroup('RuleGroup', prefix);
+    export const RuleGroupApi = new ruleGroup('RuleGroup', prefix);
     export const Rule = new rule('Rule', prefix);
     export const RuleApi = Rule;
     class contact extends ApiController {
