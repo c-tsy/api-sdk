@@ -1,10 +1,11 @@
 import { ControllerApi } from "..";
 import ClassFormForm from "./form/class/Form";
 import { set } from 'lodash'
-import { SearchWhere } from "../lib";
+import { SearchResult, SearchWhere } from "../lib";
 import ClassFormColumn from "./form/class/Column";
 import ClassFormField from "./form/class/Field";
 import ClassFormTemplate from "./form/class/Template";
+import ClassFormJson from "./form/class/Json";
 
 namespace DicApi {
     var prefix = "_form";
@@ -27,6 +28,20 @@ namespace DicApi {
         }
         async add(d: any) {
             return await super.save(0, d);
+        }
+        /**
+         * JSON数据的新增和保存，FID为0或空表示新增，否则表示保存
+         * @param d 
+         */
+        async jsonSave(d: ClassFormJson): Promise<ClassFormJson> {
+            return await this._post('jsonSave', d);
+        }
+        /**
+         * JSON 数据查询
+         * @param w 
+         */
+        async jsonSearch(w: SearchWhere): Promise<SearchResult<ClassFormJson>> {
+            return await this._post('jsonSearch', w)
         }
     }
     export const FormApi = new form('Form', prefix)

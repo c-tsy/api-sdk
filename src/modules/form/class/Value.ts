@@ -45,6 +45,11 @@ export default class ClassFormValue {
    */
   public S: string = "";
   /**
+   * 键名称
+   * 存储字符串类型的不需要统计的数据
+   */
+  public K: string = "";
+  /**
    * 属性值
    * 存储数字型需要涉及到统计运算的数据
    */
@@ -69,5 +74,4 @@ export default class ClassFormValue {
    * 
    */
   public Key: string = "";
-  public K: string = "";
 }

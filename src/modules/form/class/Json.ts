@@ -5,6 +5,7 @@ import ClassFormValue from "./Value";
   * 清单编号 FID 自增序号(bigint)
   * 清单模板编号 FTID 序号(bigint)
   * 名称 Name 字符50(char(50))
+  * Code Code 字符50(char(50))
   * 类型 Type 状态值(tinyint(1))
   * 描述 Memo 字符250(char(250))
   * 状态 Status 状态值(tinyint(1))
@@ -15,8 +16,9 @@ import ClassFormValue from "./Value";
   * Key Key 字符50(char(50))
   * 当前版本 Ver 整数(int)
   * 允许修改 Edit 状态值(tinyint(1))
+  * 数据 Data JSON(json)
 */
-export default class ClassFormForm {
+export default class ClassFormJson {
 
   /**
    * 清单编号
@@ -34,6 +36,16 @@ export default class ClassFormForm {
    */
   public Name: string = "";
   /**
+   * 为了避免重复请根据规则生成Uniq值，禁止为空且禁止重复
+   * 
+   */
+  public Uniq: string = "";
+  /**
+   * 代码-指向Template
+   * 
+   */
+  public Code: string = "";
+  /**
    * 类型
    * 
    */
@@ -43,11 +55,6 @@ export default class ClassFormForm {
    * 
    */
   public Memo: string = "";
-  /**
-   * 代码-指向Template
-   * 
-   */
-  public Code: string = "";
   /**
    * 状态
    * -1已删除0暂存1生效
@@ -89,6 +96,6 @@ export default class ClassFormForm {
    */
   public Edit: number = 0;
 
-  public Values?: ClassFormValue[] = [];
+
   public Data?: { [index: string]: any }
 }
