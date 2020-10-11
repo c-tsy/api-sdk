@@ -37,6 +37,13 @@ namespace DicApi {
             return await this._post('jsonSave', d);
         }
         /**
+         * 删除JSON数据
+         * @param FIDs 
+         */
+        async jsonDel(FIDs: number[]) {
+            return this._post('jsonDel', { FIDs });
+        }
+        /**
          * JSON 数据查询
          * @param w 
          */
