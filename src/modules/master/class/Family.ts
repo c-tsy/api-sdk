@@ -19,7 +19,6 @@
   * 合同号 Contract char(20)(char(20))
   * 缴费模式 Mode 状态(tinyint)
   * 状态 Status 状态(tinyint)
-  * 充值次数 Times 序号(bigint)
   * 性质 Type 状态(tinyint)
   * AID AID 序号(bigint)
   * GID GID 序号(bigint)
@@ -30,7 +29,7 @@
   * GPS_Y Y gps(double(20,13))
   * 计费组 BGID 序号(bigint)
 */
-export default class MasterClassFamily {
+export default class ClassMasterFamily {
 
   /**
    * 户编号
@@ -57,11 +56,6 @@ export default class MasterClassFamily {
    * 
    */
   public UID: number = 0;
-  /**
-   * 充值次数
-   * 
-   */
-  public Times: number = 0;
   /**
    * 联系人
    * 
@@ -129,9 +123,9 @@ export default class MasterClassFamily {
   public Mode: number = 0;
   /**
    * 状态
-   * 未开户/正常=开户/报停/欠费/欠停/销户
+   * 未开户/正常/报停/欠费/欠停/销户
    */
-  public Status: number = 1;
+  public Status: number = 0;
   /**
    * 性质
    * 居民,商业,政府,军事
@@ -178,12 +172,52 @@ export default class MasterClassFamily {
    */
   public BGID: number = 0;
 
+  IsCard: boolean = false;
+  IsNet: boolean = false;
+  DNo: string = "";
+  OTime: Date = new Date(0);
+  DTime: Date = new Date(0);
+  STime: Date = new Date(0);
+  ETime: Date = new Date(0);
+  UTime: Date = new Date(0);
+  DType: number = 0;
+  Amount: number = 0;
+  DFID: number = 0;
+  Times: number = 0;
+  TMoney: number = 0;
+  UMoney: number = 0;
 
-  OTime: Date = new Date(0)
-  DTime: Date = new Date(0)
-  STime: Date = new Date(0)
-  ETime: Date = new Date(0)
-  UTime: Date = new Date(0)
-  DType: number = 0
+  IMEI?: string = '';
+  PIMEI?: string = '';
+  /**
+   * 楼层
+   */
+  Floor: number = 0;
+  /**
+   * 房号
+   */
+  FNo: number = 0;
+  /**
+   * 小区
+   */
+  Community: string = "";
+  /**
+   * 楼栋
+   */
+  Building: string = "";
+  /**
+   * 几单元
+   */
+  Unit: string = "";
 
+  /**
+   * 设备中的产品
+   */
+  PID: number = 0;
+  PName?: string = "";
+  /**
+   * 设备中中的型号
+   */
+  MID: number = 0;
+  MName?: string = "";
 }

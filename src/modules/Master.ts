@@ -50,6 +50,15 @@ namespace Master {
         log(where: SearchWhere): Promise<SearchResult<MasterClassFamilyLog>> {
             return this._post('log', where);
         }
+        /**
+         * 搜索
+         * @param w 
+         */
+        async search(w: SearchWhere) {
+            let rs = await super.search(w);
+            return rs;
+        }
+
     }
     export const FamilyApi = new Family('Family', prefix)
 
