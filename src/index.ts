@@ -360,6 +360,12 @@ export class ApiController {
     }
 }
 /**
+ * 使用d.api.tansuyun.cn域名的访问
+ */
+export class DApiController extends ApiController {
+    host: string = "https://d.api.tansuyun.cn";
+}
+/**
  * 
  * @param url 
  */

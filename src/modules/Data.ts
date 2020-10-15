@@ -1,4 +1,4 @@
-import { ApiController, jsonp, ApiConfig } from '../index';
+import { ApiController, jsonp, ApiConfig, DApiController } from '../index';
 import * as pbjs from 'protobufjs/light';
 import { array_tree } from 'castle-function'
 import { pid } from 'process';
@@ -6,13 +6,13 @@ import * as pb from 'protobufjs/light';
 import Axios from 'axios';
 namespace DataApi {
     const p = '_data'
-    class kd extends ApiController {
+    class kd extends DApiController {
         query(No: string) {
             return this._get('query', { No });
         }
     }
     export const Kd = new kd('Kd', p);
-    class company extends ApiController {
+    class company extends DApiController {
         /**
          * 查询企业列表
          * @param Keyword 
@@ -185,7 +185,7 @@ namespace DataApi {
             return trees;
         }
     }
-    class excel extends ApiController {
+    class excel extends DApiController {
         /**
          * 通过数据结构来生成数据
          * @param File 
@@ -211,7 +211,7 @@ namespace DataApi {
             window.open([ApiConfig.Host, p, 'Excel', 'down', Token].join('/'))
         }
     }
-    class docx extends ApiController {
+    class docx extends DApiController {
         /**
          * 生成Word并返回下载链接
          * @param {string} FileName 下载的Word的名称
