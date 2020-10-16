@@ -620,22 +620,22 @@ export namespace User {
          * @param Status
          */
         save(UID: number, data: { Nick?: string, Sex?: number, Status?: number, Avatar?: number, Head?: string, Contacts?: ClassContact[] }) {
-            if (!UID && typeof UID == 'number') {
-                throw new Error('UID')
-            }
-            let d: { [index: string]: string | number } = {}
-            if ('string' == typeof data.Nick && data.Nick.length > 0) {
-                d.Nick = data.Nick
-            }
-            if (undefined !== data.Sex && [0, 1, 2].includes(data.Sex)) {
-                d.Sex = data.Sex
-            }
-            if (undefined !== data.Status && [-1, 0, 1].includes(data.Status)) {
-                d.Status = data.Status
-            }
-            if (Object.keys(d).length == 0) {
-                throw new Error('缺少修改参数')
-            }
+            // if (!UID && typeof UID == 'number') {
+            //     throw new Error('UID')
+            // }
+            // let d: { [index: string]: string | number } = {}
+            // if ('string' == typeof data.Nick && data.Nick.length > 0) {
+            //     d.Nick = data.Nick
+            // }
+            // if (undefined !== data.Sex && [0, 1, 2].includes(data.Sex)) {
+            //     d.Sex = data.Sex
+            // }
+            // if (undefined !== data.Status && [-1, 0, 1].includes(data.Status)) {
+            //     d.Status = data.Status
+            // }
+            // if (Object.keys(d).length == 0) {
+            //     throw new Error('缺少修改参数')
+            // }
             return this._post('save', Object.assign({ UID }, data))
         }
 
