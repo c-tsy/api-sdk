@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import * as store from 'store'
 import * as qs from 'querystring'
 import * as p from 'protobufjs/light';
@@ -230,7 +230,7 @@ async function request(method: 'post' | 'get', path: string, data: any) {
         // path += ('?' + query.stringify(data));
     }
 
-    return await q(path, method == 'get' ? conf : data, conf).then(async (e: any) => {
+    return await q(path, method == 'get' ? conf : data, conf).then(async (e: AxiosResponse) => {
         conf = e.config;
         if (e.data.c != 200) {
             let err = e.data.e || {};
@@ -239,8 +239,14 @@ async function request(method: 'post' | 'get', path: string, data: any) {
             throw new Error(err);
         }
         log(path, method, e.config.headers['rand'], Date.now() - e.config.headers['rand'], e.data.c || e.status, e.config.data.length, e.headers['content-length'], e.data.e ? e.data.e.m : '')
-        await hook.emit(ApiSDKHooks.Request, HookWhen.After, e.data, { conf, config: conf, req: data, rep: e.data, error: "" });
-        await hook.emit(ApiSDKHooks.Request + conf.path, HookWhen.After, e.data, { conf, config: conf, req: e.data, rep: {}, error: "" });
+        let d = await hook.emit(ApiSDKHooks.Request, HookWhen.After, e.data, { conf, config: conf, req: data, rep: e.data, error: "" });
+        if (d !== undefined) {
+            e.data = d;
+        }
+        d = await hook.emit(ApiSDKHooks.Request + conf.path, HookWhen.After, e.data, { conf, config: conf, req: e.data, rep: {}, error: "" });
+        if (d !== undefined) {
+            e.data = d;
+        }
         return e.data.d;
     }).catch(async (e: any) => {
         let err = e.message;
@@ -363,7 +369,7 @@ export class ApiController {
  * 使用d.api.tansuyun.cn域名的访问
  */
 export class DApiController extends ApiController {
-    host: string = "https://d.api.tansuyun.cn";
+    // host: string = "https://d.api.tansuyun.cn";
 }
 /**
  * 
