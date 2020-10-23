@@ -240,13 +240,13 @@ async function request(method: 'post' | 'get', path: string, data: any) {
         }
         log(path, method, e.config.headers['rand'], Date.now() - e.config.headers['rand'], e.data.c || e.status, e.config.data.length, e.headers['content-length'], e.data.e ? e.data.e.m : '')
         let d = await hook.emit(ApiSDKHooks.Request, HookWhen.After, e.data, { conf, config: conf, req: data, rep: e.data, error: "" });
-        if (d !== undefined) {
-            e.data = d;
-        }
+        // if (d !== undefined) {
+        //     e.data = d;
+        // }
         d = await hook.emit(ApiSDKHooks.Request + conf.path, HookWhen.After, e.data, { conf, config: conf, req: e.data, rep: {}, error: "" });
-        if (d !== undefined) {
-            e.data = d;
-        }
+        // if (d !== undefined) {
+        //     e.data = d;
+        // }
         return e.data.d;
     }).catch(async (e: any) => {
         let err = e.message;

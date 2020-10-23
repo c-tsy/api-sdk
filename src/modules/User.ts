@@ -372,7 +372,7 @@ export namespace User {
          * @param Account 
          * @param PWD 
          */
-        async login(Account: Login | string, PWD?: string, MD5PWD: string = ''): Promise<LoginResult> {
+        async login(Account: Login | string, PWD?: string, MD5PWD: string = '', WithRules: boolean = false): Promise<LoginResult> {
             if ('string' != typeof Account) {
                 if ('string' == typeof Account.Account) {
                     PWD = Account.PWD;
@@ -391,6 +391,10 @@ export namespace User {
             }
             if (!rs.RIDs) { rs.RIDs = [] }
             if (!rs.UGIDs) { rs.UGIDs = [] }
+            if (WithRules) {
+                let rules = await RuleApi.search({ W: { RID: { in: rs.RIDs } }, N: 999 })
+                rs.Rules = rules.L;
+            }
             return rs;
         }
         /**
@@ -440,11 +444,20 @@ export namespace User {
         /**
          * 检查并获取当前登录状态，返回内容同登录操作
          */
-        async relogin(): Promise<LoginResult> {
+        async relogin(WithRules: boolean = false): Promise<LoginResult> {
             let rs = await this._get('relogin')
             if (rs.UID) {
                 hook.emit('login', HookWhen.After, '', rs);
                 ApiConfig.UID = rs.UID
+                // append rules
+                if (WithRules) {
+                    if (rs.RIDs.length > 0) {
+                        let rules = await RuleApi.search({ W: { RID: { in: rs.RIDs } }, N: 999 })
+                        rs.Rules = rules.L;
+                    } else {
+                        rs.Rules = [];
+                    }
+                }
             }
             return rs;
         }
@@ -560,7 +573,7 @@ export namespace User {
         async search(W: { [index: string]: any } | SearchWhere, conf?: { With?: ['Contact'], Keyword?: string, N?: number, P?: number, Sort?: string }): Promise<SearchResult<any>> {
             if (W.W && W.P > 0 && W.N > 0) {
                 let rs = await this._post('search', W);
-                if (conf?.With) {
+                if (conf && conf.With) {
                     if (conf.With instanceof Array) {
 
                     } else if ('string' == typeof conf.With) {
@@ -573,7 +586,7 @@ export namespace User {
                     }
                     let Ps = []
 
-                    if (conf.With?.includes('Contact')) {
+                    if (conf.With && conf.With.includes('Contact')) {
                         Ps.push(ContactApi.read(UIDs))
                     } else {
                         Ps.push([])

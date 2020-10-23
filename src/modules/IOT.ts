@@ -206,7 +206,7 @@ namespace IOT {
                     })
                     let map = array_key_set(datas.L, 'DID');
                     for (let x of rs.L) {
-                        x.Data = (map[x.DID]?.Current) || {}
+                        x.Data = map[x.DID] ? map[x.DID].Current : {}
                         x.$Data = map[x.DID] || {}
                     }
                 }
