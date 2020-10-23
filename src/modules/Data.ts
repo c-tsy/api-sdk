@@ -1,6 +1,6 @@
 import { ApiController, jsonp, ApiConfig, DApiController } from '../index';
 import * as pbjs from 'protobufjs/light';
-import { array_tree } from 'castle-function'
+import { array_tree } from '@ctsy/common'
 import { pid } from 'process';
 import * as pb from 'protobufjs/light';
 import Axios from 'axios';

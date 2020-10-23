@@ -1,5 +1,5 @@
 import { ApiController } from '../index';
-import { ErrorType } from '../lib';
+import { ErrorType, SearchWhere } from '../lib';
 namespace Organ {
     export class OrgOrgan {
 
@@ -126,7 +126,15 @@ namespace Organ {
     }
     class organ extends ApiController {
         list(data: { P?: number, N?: number, Sort?: string, Keyword?: string, W?: { [index: string]: any } }): Promise<any> {
-            return this._post('list', data);
+            return this.search(<any>data);
+        }
+        search(w: SearchWhere) {
+            return this._post('list', w).then((v) => {
+                if (!v.L) {
+                    v.L = [];
+                }
+                return v;
+            });
         }
         /**
         * 获取组织树
@@ -231,7 +239,15 @@ namespace Organ {
          * @param data 
          */
         list(data: { P?: number, N?: number, Sort?: string, Keyword?: string, W?: { [index: string]: any } }) {
-            return this._post('list', data);
+            return this.search(<any>data)
+        }
+        search(w: SearchWhere) {
+            return this._post('list', w).then((v) => {
+                if (!v.L) {
+                    v.L = [];
+                }
+                return v;
+            });
         }
         /**
          * 批量添加区域信息

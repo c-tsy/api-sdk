@@ -1,7 +1,7 @@
 import { ApiController, ApiConfig, ControllerApi } from '../';
 import hook, { HookWhen } from '@ctsy/hook';
 import { ErrorType, SearchResult, LinkType, SearchWhere } from '../lib';
-import { array_columns } from 'castle-function';
+import { array_columns } from '@ctsy/common';
 import * as _ from 'lodash'
 const get: Function = _.get;
 const md5: any = require('md5')
@@ -173,7 +173,12 @@ export namespace User {
          * 按数据返回用户组数据结构
          */
         list(W: { PUGID?: number } = {}, P: number = 1, N: number = 999): Promise<SearchResult<ClassUserGroup>> {
-            return this._post('list', { P, N, W })
+            return this._post('list', { P, N, W }).then((v) => {
+                if (!v.L) {
+                    v.L = [];
+                }
+                return v;
+            })
         }
         /**
          * 更新分组信息
@@ -615,6 +620,11 @@ export namespace User {
                     N: conf.N || 10,
                     P: conf.P || 1,
                     Sort: conf.Sort || ''
+                }).then((v) => {
+                    if (!v.L) {
+                        v.L = [];
+                    }
+                    return v;
                 });
             }
         }

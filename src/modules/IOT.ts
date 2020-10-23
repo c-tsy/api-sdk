@@ -4,7 +4,7 @@ import Model from './iot/class/Model'
 import Protocol from './iot/class/Protocol'
 import Device from "./iot/class/Device";
 import { SearchWhere } from "../lib";
-import { array_columns, array_key_set } from "castle-function";
+import { array_columns, array_key_set } from "@ctsy/common";
 
 namespace IOT {
     let prefix = '_iot';
