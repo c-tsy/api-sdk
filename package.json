@@ -1,6 +1,6 @@
 {
   "name": "@ctsy/api-sdk",
-  "version": "2.0.253",
+  "version": "2.0.255",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
@@ -27,7 +27,6 @@
     "@ctsy/common": "*",
     "@ctsy/hook": "*",
     "axios": "*",
-    "castle-function": "^1.0.5",
     "lodash": "*",
     "md5": "*",
     "protobufjs": "^6.9.0",
