@@ -11,6 +11,7 @@ declare let uni: any;
 let blocked: { [index: string]: string[] } = {
 
 }
+
 setInterval(() => {
     if (Object.keys(blocked).length > 1) {
         for (let x in blocked) {
@@ -20,6 +21,7 @@ setInterval(() => {
         }
     }
 }, 10000);
+
 export const ApiSDKHooks = hooks;
 
 const rate = {
@@ -109,6 +111,9 @@ req.interceptors.response.use(async (data: any) => {
     } else if (ctype.includes('json') && (data.data instanceof ArrayBuffer || data.data instanceof Buffer)) {
         data.data = JSON.parse(Buffer.from(data.data).toString());
     }
+    // if (data.md5content) {
+    //     cached[data.md5content] = data.data;
+    // }
     return data;
 })
 req.interceptors.request.use(async (conf: any) => {
@@ -119,7 +124,7 @@ req.interceptors.request.use(async (conf: any) => {
         conf.headers['token'] = Token;
     }
     // 取得当前13位毫秒时间戳
-    let rand = Date.now()
+    let rand = conf.start = Date.now()
     // debug('1.取得当前毫秒级时间戳，若是秒级时间戳请在末尾添加3个0:' + rand)
     // 准备一个字符串，用于存储签名内容，分别用 时间戳，请求路径，密钥 组合
     let txt = [rand, conf.url, ApiConfig.Secret].join('');
@@ -145,10 +150,11 @@ req.interceptors.request.use(async (conf: any) => {
 
             let md5content = md5(str);
             if (blocked[Math.ceil(Date.now() / 3000)].includes(md5content)) {
-                throw new Error('重复请求');
+                console.trace('重复请求,请求地址:' + conf.url, conf.data);
             } else {
                 blocked[Math.ceil(Date.now() / 3000)].push(md5content);
             }
+            conf.md5content = md5content;
             // debug('3. 将请求内容追加到签名字符串中:')
             // debug(`\t请求内容:\r\n\t${str}`)
             // debug(`\t追加后:\r\n\t${txt}`)
@@ -252,7 +258,7 @@ async function request(method: 'post' | 'get', path: string, data: any) {
         // path += ('?' + query.stringify(data));
     }
 
-    return await q(path, method == 'get' ? conf : data, conf).then(async (e: AxiosResponse) => {
+    return await q(path, method == 'get' ? conf : data, conf).then(async (e: AxiosResponse | any) => {
         conf = e.config;
         if (e.data.c != 200) {
             let err = e.data.e || {};
@@ -260,7 +266,7 @@ async function request(method: 'post' | 'get', path: string, data: any) {
             // await hook.emit(ApiSDKHooks.Request, HookWhen.Error, req, { conf, req: data, rep: e, error: err });
             throw new Error(err);
         }
-        log(path, method, e.config.headers['rand'], Date.now() - e.config.headers['rand'], e.data.c || e.status, e.config.data.length, e.headers['content-length'], e.data.e ? e.data.e.m : '')
+        log(path, method, e.config.headers['rand'], Date.now() - e.config.headers['rand'], e.data.c || e.status, e.config.data.length, e.headers['content-length'], e.data.e ? e.data.e.m : '', e.config.md5content)
         let d = await hook.emit(ApiSDKHooks.Request, HookWhen.After, e.data, { conf, config: conf, req: data, rep: e.data, error: "" });
         // if (d !== undefined) {
         //     e.data = d;
@@ -273,7 +279,7 @@ async function request(method: 'post' | 'get', path: string, data: any) {
     }).catch(async (e: any) => {
         let err = e.message;
         if (e.response && e.response.data) {
-            log(path, method, e.config.headers['rand'], Date.now() - e.config.headers['rand'], e.response.status, e.config.data.length, e.response.headers['content-length'], e.response.data.e.m)
+            log(path, method, e.config.headers['rand'], Date.now() - e.config.headers['rand'], e.response.status, e.config.data.length, e.response.headers['content-length'], e.response.data.e.m, e.config.md5content)
             err = e.response.data.e.m;
         }
         await hook.emit(ApiSDKHooks.Request, HookWhen.Error, e.data, { conf, config: conf, req: data, rep: e.data, error: err });
@@ -292,8 +298,8 @@ async function request(method: 'post' | 'get', path: string, data: any) {
  * @param replen 
  * @param err 
  */
-function log(path: string, method: string, time: number, t: number, status: number, reqlen: number, replen: number, err: string = '') {
-    // axios.get('https://tsy-app.cn-hangzhou.log.aliyuncs.com/logstores/tsy-web-api/track_ua.gif?APIVersion=0.6.0&__topic__=api&' + ['appid=' + ApiConfig.AppID, 'uid=' + ApiConfig.UID, 'token=' + Token, 'time=' + time, 'path=' + encodeURI(path), 'reqlen=' + reqlen, 'replen=' + replen, 'method=' + method, 'key=' + ApiConfig.Key, 't=' + t, 'status=' + status, 'e=' + err].join('&'))
+function log(path: string, method: string, time: number, t: number, status: number, reqlen: number, replen: number, err: string = '', md5: string) {
+    axios.get('https://tsyapi.cn-hangzhou.log.aliyuncs.com/logstores/web/track_ua.gif?APIVersion=0.6.0&__topic__=api&' + ['md5=' + md5, 'appid=' + ApiConfig.AppID, 'uid=' + ApiConfig.UID, 'token=' + Token, 'time=' + time, 'path=' + encodeURI(path), 'reqlen=' + reqlen, 'replen=' + replen, 'method=' + method, 'key=' + ApiConfig.Key, 't=' + t, 'status=' + status, 'e=' + err].join('&'))
 }
 
 export class ApiHooks {
