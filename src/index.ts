@@ -266,7 +266,7 @@ async function request(method: 'post' | 'get', path: string, data: any) {
             // await hook.emit(ApiSDKHooks.Request, HookWhen.Error, req, { conf, req: data, rep: e, error: err });
             throw new Error(err);
         }
-        log(path, method, e.config.headers['rand'], Date.now() - e.config.headers['rand'], e.data.c || e.status, e.config.data.length, e.headers['content-length'], e.data.e ? e.data.e.m : '', e.config.md5content)
+        log(path, method, e.config.start, Date.now() - e.config.start, e.data.c || e.status, e.config.data.length, e.headers['content-length'], e.data.e ? e.data.e.m : '', e.config.md5content)
         let d = await hook.emit(ApiSDKHooks.Request, HookWhen.After, e.data, { conf, config: conf, req: data, rep: e.data, error: "" });
         // if (d !== undefined) {
         //     e.data = d;
@@ -279,7 +279,7 @@ async function request(method: 'post' | 'get', path: string, data: any) {
     }).catch(async (e: any) => {
         let err = e.message;
         if (e.response && e.response.data) {
-            log(path, method, e.config.headers['rand'], Date.now() - e.config.headers['rand'], e.response.status, e.config.data.length, e.response.headers['content-length'], e.response.data.e.m, e.config.md5content)
+            log(path, method, e.config.start, Date.now() - e.config.start, e.response.status, e.config.data.length, e.response.headers['content-length'], e.response.data.e.m, e.config.md5content)
             err = e.response.data.e.m;
         }
         await hook.emit(ApiSDKHooks.Request, HookWhen.Error, e.data, { conf, config: conf, req: data, rep: e.data, error: err });
@@ -299,7 +299,7 @@ async function request(method: 'post' | 'get', path: string, data: any) {
  * @param err 
  */
 function log(path: string, method: string, time: number, t: number, status: number, reqlen: number, replen: number, err: string = '', md5: string) {
-    axios.get('https://tsyapi.cn-hangzhou.log.aliyuncs.com/logstores/web/track_ua.gif?APIVersion=0.6.0&__topic__=api&' + ['md5=' + md5, 'appid=' + ApiConfig.AppID, 'uid=' + ApiConfig.UID, 'token=' + Token, 'time=' + time, 'path=' + encodeURI(path), 'reqlen=' + reqlen, 'replen=' + replen, 'method=' + method, 'key=' + ApiConfig.Key, 't=' + t, 'status=' + status, 'e=' + err].join('&'))
+    axios.get('https://tsyapi.cn-hangzhou.log.aliyuncs.com/logstores/web/track_ua.gif?APIVersion=0.6.0&__topic__=api&' + ['md5=' + md5, 'appid=' + ApiConfig.AppID, 'uid=' + ApiConfig.UID, 'token=' + Token, 'time=' + time, 'path=' + encodeURI(path), 'reqlen=' + reqlen, 'replen=' + replen, 'method=' + method, 'key=' + ApiConfig.Key, 't=' + t, 'status=' + status, 'e=' + err, 'hash=' + (window ? window.location.hash : ''),].join('&'))
 }
 
 export class ApiHooks {
