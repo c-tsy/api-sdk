@@ -8,7 +8,18 @@ import hook, { Hook, HookWhen } from '@ctsy/hook';
 
 declare let window: any;
 declare let uni: any;
+let blocked: { [index: string]: string[] } = {
 
+}
+setInterval(() => {
+    if (Object.keys(blocked).length > 1) {
+        for (let x in blocked) {
+            if (Number(x) < Math.ceil(Date.now() / 1000 - 6)) {
+                delete blocked[x];
+            }
+        }
+    }
+}, 10000);
 export const ApiSDKHooks = hooks;
 
 const rate = {
@@ -127,6 +138,17 @@ req.interceptors.request.use(async (conf: any) => {
             // 将请求的内容字符串化后添加到签名字符串中，
             txt += str;
             conf.data = str;
+
+            if (!blocked[Math.ceil(Date.now() / 3000)]) {
+                blocked[Math.ceil(Date.now() / 3000)] = [];
+            }
+
+            let md5content = md5(str);
+            if (blocked[Math.ceil(Date.now() / 3000)].includes(md5content)) {
+                throw new Error('重复请求');
+            } else {
+                blocked[Math.ceil(Date.now() / 3000)].push(md5content);
+            }
             // debug('3. 将请求内容追加到签名字符串中:')
             // debug(`\t请求内容:\r\n\t${str}`)
             // debug(`\t追加后:\r\n\t${txt}`)
