@@ -51,6 +51,12 @@ namespace Master {
             return this._post('log', where);
         }
         /**
+         * 读取区域树
+         */
+        async areaTree(): Promise<{ Name: string, ID: number, PID: number }[]> {
+            return this._post('areaTree', {});
+        }
+        /**
          * 搜索
          * @param w 
          */
