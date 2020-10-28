@@ -1,7 +1,7 @@
 import { ApiController, ApiConfig, ControllerApi } from '../';
 import hook, { HookWhen } from '@ctsy/hook';
 import { ErrorType, SearchResult, LinkType, SearchWhere } from '../lib';
-import { array_columns } from '@ctsy/common';
+import { array_columns, array_key_set } from '@ctsy/common';
 import * as _ from 'lodash'
 const get: Function = _.get;
 const md5: any = require('md5')
@@ -576,37 +576,9 @@ export namespace User {
          * @param conf 
          */
         async search(W: { [index: string]: any } | SearchWhere, conf?: { With?: ['Contact'], Keyword?: string, N?: number, P?: number, Sort?: string }): Promise<SearchResult<any>> {
+            let rs: SearchResult<any> = new SearchResult;
             if (W.W && W.P > 0 && W.N > 0) {
-                let rs = await this._post('search', W);
-                if (conf && conf.With) {
-                    if (conf.With instanceof Array) {
-
-                    } else if ('string' == typeof conf.With) {
-                        conf.With = (<any>conf.With).split(',')
-                    }
-
-                    let UIDs: any[] = array_columns(rs.L, 'UID');
-                    if (UIDs.length == 0) {
-                        return rs;
-                    }
-                    let Ps = []
-
-                    if (conf.With && conf.With.includes('Contact')) {
-                        Ps.push(ContactApi.read(UIDs))
-                    } else {
-                        Ps.push([])
-                    }
-
-                    let Prs = await Promise.all(Ps);
-
-                    for (let p of Prs) {
-                        for (let x of rs.L) {
-
-                        }
-                    }
-
-                }
-                return rs;
+                rs = await this._post('search', W);
             } else {
                 if (W === void 0) { W = {}; }
                 if (undefined === conf) { conf = { N: 10, P: 1, Keyword: '' }; }
@@ -614,7 +586,7 @@ export namespace User {
                     conf = W;
                     W = W.W;
                 }
-                return this._post('search', {
+                rs = await this._post('search', {
                     W: W,
                     Keyword: conf.Keyword || "",
                     N: conf.N || 10,
@@ -627,6 +599,38 @@ export namespace User {
                     return v;
                 });
             }
+
+            if (conf && conf.With) {
+                if (conf.With instanceof Array) {
+
+                } else if ('string' == typeof conf.With) {
+                    conf.With = (<any>conf.With).split(',')
+                }
+
+                let UIDs: any[] = array_columns(rs.L, 'UID');
+                if (UIDs.length == 0) {
+                    return rs;
+                }
+                let Ps = []
+
+                if (conf.With && conf.With.includes('Contact')) {
+                    Ps.push(ContactApi.read(UIDs))
+                } else {
+                    Ps.push([])
+                }
+
+                let Prs = await Promise.all(Ps);
+                let ContactsMap = array_key_set(Prs[0], 'UID', true);
+                for (let x of rs.L) {
+                    if (ContactsMap[x.UID]) {
+                        x.Contacts = ContactsMap[x.UID];
+                        for (let c of ContactsMap[x.UID]) {
+                            x[c.T] = c.V;
+                        }
+                    }
+                }
+            }
+            return rs;
         }
     }
     export const Users = new users();
