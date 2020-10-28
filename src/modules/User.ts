@@ -784,7 +784,11 @@ export namespace User {
          * @param Contact 
          */
         save(UID: number, Contact: { T: string, V: string, C: string }[]) {
-            return this._post('save', { UID, Contact })
+            return this._post('save', {
+                UID, Contact: Contact.filter((o) => {
+                    return o.T.length > 0
+                })
+            })
         }
         /**
          * 批量读取联系信息
