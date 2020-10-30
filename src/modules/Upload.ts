@@ -94,8 +94,8 @@ namespace Upload {
      * 选择文件方法，用于触发文件选择弹窗
      * @param accept 
      */
-    export function select_file(accept = "*", autoWechat: boolean | number = false): Promise<FileList | string[]> {
-        if (autoWechat) {
+    export function select_file(accept = "*", autoWechat: boolean | number = true): Promise<FileList | string[]> {
+        if (autoWechat && Wechat.isWeixinBrowser) {
             return Wechat.chooseImage(1)
         }
         return new Promise((s, j) => {
