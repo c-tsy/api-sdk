@@ -1,7 +1,8 @@
-import { ApiController } from '../index';
+import { ApiController, ApiConfig } from '../index';
 import Hook, { HookWhen } from '@ctsy/hook';
 import * as qs from 'querystring'
 import axios from 'axios';
+import Wechat from './Wechat';
 const md5: any = require('md5')
 namespace Upload {
     export class ClassUploadFileConfig {
@@ -93,7 +94,10 @@ namespace Upload {
      * 选择文件方法，用于触发文件选择弹窗
      * @param accept 
      */
-    export function select_file(accept = "*"): Promise<FileList> {
+    export function select_file(accept = "*", autoWechat: boolean | number = false): Promise<FileList | string[]> {
+        if (autoWechat) {
+            return Wechat.chooseImage(1)
+        }
         return new Promise((s, j) => {
             let i = document.createElement('input');
             i.type = 'file';
@@ -116,19 +120,23 @@ namespace Upload {
      * 本地图片预览
      * @param file 文件
      */
-    export function local_img_preview(file: File): Promise<string> {
-        return new Promise((s, j) => {
-            var reader = new FileReader();
-            reader.onload = () => {
-                if ('string' == typeof reader.result)
-                    s(reader.result);
-                else {
-                    j('读取失败')
-                }
+    export function local_img_preview(file: File | string[]): Promise<string> {
+        if (file instanceof Array) {
+            Wechat.previewImage(file[0], file)
+            return new Promise((s) => s(''));
+        } else
+            return new Promise((s, j) => {
+                var reader = new FileReader();
+                reader.onload = () => {
+                    if ('string' == typeof reader.result)
+                        s(reader.result);
+                    else {
+                        j('读取失败')
+                    }
 
-            };
-            reader.readAsDataURL(file);
-        })
+                };
+                reader.readAsDataURL(file);
+            })
     }
     /**
      * 计算本地文件的md5值
@@ -157,60 +165,70 @@ namespace Upload {
         Auth: string
     }}
      */
-    export async function upload_file(data: File, conf: ClassUploadFileConfig): Promise<{
+    export async function upload_file(data: File | string, conf: ClassUploadFileConfig): Promise<{
         URL: string,
         Original: string,
         Auth: string
     }> {
-        let config: any = {
-            headers: { 'Content-Type': 'multipart/form-data' },
+        if ('string' == typeof data) {
+            let u = '//f.tansuyun.cn/api/' + ApiConfig.AppID + '/wx/' + data + '.wx';
+            return {
+                URL: u,
+                Original: u,
+                Auth: ''
+            }
+        } else {
+            let config: any = {
+                headers: { 'Content-Type': 'multipart/form-data' },
+            }
+            if (conf.onUploadProgress) {
+                config.onUploadProgress = conf.onUploadProgress;
+            }
+            let d = await Upload.sign(conf.what || '', data, conf.oname || data.name, conf.expire || 0, conf.acl || 'read')
+            let name = conf.name || md5(data.name + data.type + data.size + data.lastModified)
+            if (name.split('.').length == 1) {
+                name = name + '.' + data.type.split('/')[1]
+            }
+            let form = new FormData()
+            form.append('policy', d.policy);
+            form.append('key', d.file);
+            form.append('OSSAccessKeyId', d.id);
+            form.append('success_action_status', '200');
+            form.append('callback', d.cb);
+            form.append('signature', d.sign);
+            let tag: { [index: string]: string } = {};
+            if (conf.what) {
+                tag.what = conf.what
+            }
+            if (false !== conf.expire) {
+                tag.expire = "1"
+            }
+            form.append('x‑oss‑tagging', qs.stringify(tag));
+            form.append('x-oss-meta-name', data.name);
+            form.append('x-oss-object-acl', conf.acl == 'read' ? 'public-read' : 'private');
+            form.append('file', data);
+            let rs = await axios.post(d.host, form, config)
+            let drs = {
+                url: d.host + '/' + d.file,
+                URL: d.host + '/' + d.file,
+                original: data.name,
+                Original: data.name,
+                auth: d,
+                Auth: d,
+                rs,
+            };
+            if (conf.memo && conf.memo.length > 0 && rs.data.d.FID > 0) {
+                await Upload.save({
+                    FID: rs.data.FID,
+                    Memo: conf.memo
+                })
+            }
+            if (conf.success instanceof Function) {
+                conf.success(drs);
+            }
+            return drs;
+
         }
-        if (conf.onUploadProgress) {
-            config.onUploadProgress = conf.onUploadProgress;
-        }
-        let d = await Upload.sign(conf.what || '', data, conf.oname || data.name, conf.expire || 0, conf.acl || 'read')
-        let name = conf.name || md5(data.name + data.type + data.size + data.lastModified)
-        if (name.split('.').length == 1) {
-            name = name + '.' + data.type.split('/')[1]
-        }
-        let form = new FormData()
-        form.append('policy', d.policy);
-        form.append('key', d.file);
-        form.append('OSSAccessKeyId', d.id);
-        form.append('success_action_status', '200');
-        form.append('callback', d.cb);
-        form.append('signature', d.sign);
-        let tag: { [index: string]: string } = {};
-        if (conf.what) {
-            tag.what = conf.what
-        }
-        if (false !== conf.expire) {
-            tag.expire = "1"
-        }
-        form.append('x‑oss‑tagging', qs.stringify(tag));
-        form.append('x-oss-meta-name', data.name);
-        form.append('x-oss-object-acl', conf.acl == 'read' ? 'public-read' : 'private');
-        form.append('file', data);
-        let rs = await axios.post(d.host, form, config)
-        let drs = {
-            url: d.host + '/' + d.file,
-            URL: d.host + '/' + d.file,
-            original: data.name,
-            Original: data.name,
-            auth: d,
-            Auth: d,
-            rs,
-        };
-        if (conf.memo && conf.memo.length > 0 && rs.data.d.FID > 0) {
-            await Upload.save({
-                FID: rs.data.FID,
-                Memo: conf.memo
-            })
-        }
-        if (conf.success instanceof Function) {
-            conf.success(drs);
-        }
-        return drs;
     }
 }
 export default Upload;
