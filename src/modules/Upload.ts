@@ -120,10 +120,12 @@ namespace Upload {
      * 本地图片预览
      * @param file 文件
      */
-    export function local_img_preview(file: File | string[]): Promise<string> {
+    export function local_img_preview(file: File | string[] | string): string | Promise<string> {
         if (file instanceof Array) {
-            Wechat.previewImage(file[0], file)
-            return new Promise((s) => s(''));
+            // Wechat.previewImage(file[0], file)
+            return file[0];
+        } else if ('string' == typeof file) {
+            return file;
         } else
             return new Promise((s, j) => {
                 var reader = new FileReader();
@@ -171,7 +173,11 @@ namespace Upload {
         Auth: string
     }> {
         if ('string' == typeof data) {
-            let u = '//f.tansuyun.cn/api/' + ApiConfig.AppID + '/wx/' + data + '.wx';
+            let rs = [data];
+            if (data.startsWith('wx')) {
+                rs = await Wechat.uploadImage([data]);
+            }
+            let u = 'https://f.tansuyun.cn/api/' + ApiConfig.AppID + '/wx/' + rs[0] + '.wx';
             return {
                 URL: u,
                 Original: u,

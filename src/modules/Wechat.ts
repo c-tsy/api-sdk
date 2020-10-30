@@ -255,17 +255,20 @@ namespace Wechat {
      * @param success 
      */
     export function uploadImage(localIds: string[]): Promise<string[]> {
-        return new Promise((s, j) => {
-            wx.uploadImage({
-                localId: localIds, // 需要上传的图片的本地ID，由chooseImage接口获得
-                isShowProgressTips: 1, // 默认为1，显示进度提示
-                success: (res: any) => {
-                    s(res.serverId)
-                    // success(res.serverId)
-                }
-            });
-        })
+        return Promise.all(localIds.map((o) => {
+            return <any>new Promise((s, j) => {
+                wx.uploadImage({
+                    localId: o, // 需要上传的图片的本地ID，由chooseImage接口获得
+                    isShowProgressTips: 1, // 默认为1，显示进度提示
+                    success: (res: { serverId: string }) => {
+                        s(res.serverId)
+                        // success(res.serverId)
+                    }
+                });
+            })
+        }))
     }
+
     /**
      * 预览图片
      * @param current 当前显示图片的http链接
@@ -528,8 +531,9 @@ namespace Wechat {
 export default Wechat;
 
 
-if (window) {
+if (window && !window.ctsywechat) {
     window.ctsywechat = {
         install: Wechat.install,
+        WechatID: Wechat.WechatID
     }
 }
