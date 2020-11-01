@@ -1127,7 +1127,8 @@ namespace ArtApi {
     /**
      * 文章分类管理类
      */
-    class classify extends ApiController {
+    class classify extends ControllerApi<ClassClassify> {
+        PK = 'CID';
         /**
          * 获取我的所有分类
          * 按Sort和CID排序后返回
@@ -1148,7 +1149,7 @@ namespace ArtApi {
          * @param {number} Deep 循环深度，最大为10，默认为3
          * @description 返回的内容为数组，请使用array_tree方法生成想要的树
          */
-        tree(CIDs: number[], Deep: number = 3): Promise<ClassClassify[]> {
+        tree(CIDs: number[] | any, Deep: number = 3): Promise<ClassClassify[]> {
             return this._post('tree', { CIDs, Deep });
         }
         /**

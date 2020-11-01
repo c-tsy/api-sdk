@@ -95,7 +95,7 @@ namespace Upload {
      * @param accept 
      */
     export function select_file(accept = "*", autoWechat: boolean | number = true): Promise<FileList | string[]> {
-        if (autoWechat && Wechat.isWeixinBrowser) {
+        if (autoWechat && Wechat.IsWechatBrower) {
             return Wechat.chooseImage(1)
         }
         return new Promise((s, j) => {
