@@ -765,6 +765,19 @@ namespace ArtApi {
      */
     class art extends ApiController {
         /**
+         * 删除文章处理
+         * @param ArtID 
+         */
+        del(ArtID: number | number[]) {
+            let d: any = {}
+            if ('number' == typeof ArtID) {
+                d.ArtID = ArtID;
+            } else if (ArtID instanceof Array) {
+                d.ArtIDs = ArtID
+            }
+            return this._post('del', d);
+        }
+        /**
          * 读取文章列表
          * @param {number} W.CID 文章章节号，支持数组或数字，不支持in
          * @param {number} W.CIDs 文章分类号，支持数组或数字，不支持in
