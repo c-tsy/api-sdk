@@ -562,8 +562,8 @@ export namespace User {
          * 下次用户relogin时更新用户的session信息，基于redis的集合做的逻辑
          * @param UID 
          */
-        nextRsession(UID: number) {
-            return this._post('nextRsession', { UID })
+        nextRsession(UIDs: number[]) {
+            return this._post('nextRsession', { UIDs })
 
         }
     }
