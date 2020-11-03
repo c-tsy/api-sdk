@@ -555,8 +555,16 @@ export namespace User {
          * 重写session
          * @param UID 
          */
-        rsession(UID: any) {
+        rsession(UID: number) {
             return this._post('rsession', { UID })
+        }
+        /**
+         * 下次用户relogin时更新用户的session信息，基于redis的集合做的逻辑
+         * @param UID 
+         */
+        nextRsession(UID: number) {
+            return this._post('nextRsession', { UID })
+
         }
     }
     export const Auth = new auth();
