@@ -174,7 +174,7 @@ namespace Upload {
     }> {
         if ('string' == typeof data) {
             let rs = [data];
-            if (data.startsWith('wx')) {
+            if (data.startsWith('wx') || data.startsWith('weixin')) {
                 rs = await Wechat.uploadImage([data]);
             }
             let u = 'https://f.tansuyun.cn/api/' + ApiConfig.AppID + '/wx/' + rs[0] + '.wx';
