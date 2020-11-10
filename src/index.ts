@@ -4,6 +4,7 @@ import * as qs from 'querystring'
 import * as p from 'protobufjs/light';
 import { SearchWhere, SearchResult, ApiSDKHooks as hooks } from './lib';
 import hook, { Hook, HookWhen } from '@ctsy/hook';
+import { debug } from 'console';
 // import * as rpc from '@ctsy/ws-rpc-client';
 
 declare let window: any;
@@ -37,7 +38,7 @@ try {
 
 }
 // var debugs: string[] = []
-// function debug(txt: string, end: boolean = false) {
+// function //debug(txt: string, end: boolean = false) {
 //     debugs.push(txt);
 //     if (end) {
 //         console.log(debugs.join('\r\n'))
@@ -125,11 +126,11 @@ req.interceptors.request.use(async (conf: any) => {
     }
     // 取得当前13位毫秒时间戳
     let rand = conf.start = Date.now()
-    // debug('1.取得当前毫秒级时间戳，若是秒级时间戳请在末尾添加3个0:' + rand)
+    //debug('1.取得当前毫秒级时间戳，若是秒级时间戳请在末尾添加3个0:' + rand)
     // 准备一个字符串，用于存储签名内容，分别用 时间戳，请求路径，密钥 组合
     let txt = [rand, conf.url, ApiConfig.Secret].join('');
-    // debug('2.组合 时间戳,请求路径,密钥 直接按字符串链接:')
-    // debug(`\t"${rand}" + "${conf.url}" + "${ApiConfig.Secret}" = ${txt}`)
+    //debug('2.组合 时间戳,请求路径,密钥 直接按字符串链接:')
+    //debug(`\t"${rand}" + "${conf.url}" + "${ApiConfig.Secret}" = "${txt}"`)
     if ('string' != typeof conf.data) {
         if (conf.method == 'get') {
             conf.data = qs.stringify(conf.data);
@@ -155,18 +156,19 @@ req.interceptors.request.use(async (conf: any) => {
                 blocked[Math.ceil(Date.now() / 3000)].push(md5content);
             }
             conf.md5content = md5content;
-            // debug('3. 将请求内容追加到签名字符串中:')
-            // debug(`\t请求内容:\r\n\t${str}`)
-            // debug(`\t追加后:\r\n\t${txt}`)
+            //debug('3. 将请求内容追加到签名字符串中:')
+            //debug(`\t请求内容:\r\n\t${str}`)
+            //debug(`\t追加后:\r\n\t${txt}`)
         }
     }
     // 生成签名内容 分别是 AppID，Key，随机数，md5后的签名用下划线链接
     let sign = md5(txt);
-    // debug(`4. 将签名内容进行MD5运算得到:${sign}`)
+    //debug(`4. 将签名内容进行MD5运算得到:${sign}`)
     conf.headers['auth'] = [ApiConfig.AppID, ApiConfig.Key, rand, sign].join('_');
-    // debug(`5. 组合参数形成header中的auth信息：\r\n\t分别将：AppID,Key,时间戳,签名 按 _ 进行组合：`)
-    // debug(`\t"${ApiConfig.AppID}", "${ApiConfig.Key}", "${rand}", "${sign}"`)
-    // debug(`\t发送的header中的auth参数为:${conf.headers['auth']}`, true)
+    //debug(`5. 组合参数形成header中的auth信息：\r\n\t分别将：AppID,Key,时间戳,签名 按 _ 进行组合：`)
+    //debug(`\t"${ApiConfig.AppID}", "${ApiConfig.Key}", "${rand}", "${sign}"`)
+    //debug(`\t发送的header中的auth参数为:${conf.headers['auth']}`)
+    //debug(`\t发送的header中的token参数为:${conf.headers['token']}`)
 
     // return;
     conf.path = conf.url.replace('/_', '');
@@ -397,7 +399,7 @@ export class ApiController {
  * 使用d.api.tansuyun.cn域名的访问
  */
 export class DApiController extends ApiController {
-    // host: string = "https://d.api.tansuyun.cn";
+    host: string = "https://d.api.tansuyun.cn";
 }
 /**
  * 
