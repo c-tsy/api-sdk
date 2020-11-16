@@ -201,7 +201,7 @@ export namespace User {
          * @param P 
          * @param N 
          */
-        members(UGID: number | number[], P: number = 1, N: number = 10) {
+        members(UGID: number | number[], P: number = 1, N: number = 10): Promise<SearchResult<Login>> {
             return this._post('members', { UGID, P, N });
         }
         /**
