@@ -2,7 +2,7 @@ import { namespace } from "store";
 import { ApiController } from "..";
 import { timeout } from "@ctsy/common";
 import { SearchWhere, SearchResult } from "../lib";
-
+declare let window: any;
 namespace Pay {
     let prefix = '_pay';
     export enum PayStatus {
@@ -169,53 +169,65 @@ namespace Pay {
          * @param d 
          * @param waitForConfirm 
          */
-        async callWxPay(d: ClassPayOrders, waitForConfirm: boolean = true): Promise<boolean> {
+        async callWxPay(d: ClassPayOrders | any, waitForConfirm: boolean = true): Promise<boolean> {
+            if (!window.WeixinJSBridge) {
+                throw new Error('非微信环境');
+            }
+            if (!d.OID) {
+                d = await this.create(d);
+                if (!d.Param) {
+                    d.Param = d.Wechat.Param;
+                }
+            } else {
+                let pcheck = await this.get(d.OID);
+                if (pcheck.Status == 1) {
+                    return true;
+                    // return;
+                }
+            }
+            if (!d.Param) {
+                throw new Error('支付订单创建失败');
+            }
+            if ('string' == typeof d.Param) {
+                d.Param = JSON.parse(d.Param);
+            }
             for (let i = 0; i < 3; i++) {
                 try {
                     return await new Promise(async (s, j) => {
-                        if ((<any>window).WeixinJSBridge) {
-                            if (!d.OID) {
-                                d = await this.create(d);
-                            }
-                            if (!d.Param) {
-                                throw new Error('支付订单创建失败')
-                            }
-                            if ('string' == typeof d.Param) {
-                                d.Param = JSON.parse(d.Param)
-                            }
-                            (<any>window).WeixinJSBridge.invoke("getBrandWCPayRequest", d.Param, async (res: any) => {
-                                if (res.err_msg == "get_brand_wcpay_request:ok") {
-                                    //支付成功，等待服务器确认
-                                    if (waitForConfirm) {
-                                        for (let i = 0; i < 10; i++) {
-                                            let pcheck = await this.get(d.OID)
-                                            if (pcheck.Status == 1) {
-                                                s(true);
-                                            }
-                                            await timeout(2000);
+                        window.WeixinJSBridge.invoke("getBrandWCPayRequest", d.Param, async (res: any) => {
+                            console.error(res);
+                            if (res.err_msg == "get_brand_wcpay_request:ok") {
+                                //支付成功，等待服务器确认
+                                if (waitForConfirm) {
+                                    for (let i = 0; i < 10; i++) {
+                                        let pcheck = await this.get(d.OID);
+                                        if (pcheck.Status == 1) {
+                                            s(true);
+                                            return;
                                         }
-                                        j('查询支付结果超时');
-                                    } else {
-                                        s(true);
+                                        await timeout(2000);
                                     }
-                                } else if (res.err_msg == 'get_brand_wcpay_request:cancel') {
-                                    j('取消支付')
+                                    j('查询支付结果超时');
                                 } else {
-                                    j('取消支付或支付失败');
+                                    s(true);
                                 }
-                            })
-                        } else {
-                            throw new Error('非微信环境');
-                        }
-                    })
+                            } else if (res.err_msg == 'get_brand_wcpay_request:cancel') {
+                                j('取消支付');
+                            } else {
+                                console.error(res.err_msg);
+                                j('取消支付或支付失败');
+                            }
+                        });
+                    });
                 } catch (error) {
-                    if (error.message == '取消支付') {
-                        throw new Error('支付失败，调用失败')
+                    if (error == '取消支付') {
+                        throw new Error('支付失败，客户取消');
+                    } else {
+                        await timeout(10);
                     }
-                    await timeout(10);
                 }
             }
-            throw new Error('支付失败，调用失败')
+            throw new Error('支付失败，调用失败');
         }
     }
     export const PayApi = new pay('Pay', prefix);
