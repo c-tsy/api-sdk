@@ -263,6 +263,13 @@ namespace IOT {
         }
     }
     export const CmdApi = new cmd('Cmd', prefix)
+
+
+    class platform extends ControllerApi<any>{
+
+    }
+
+    export const PlatformApi = new platform('Platform', prefix);
 }
 
 export default IOT;
