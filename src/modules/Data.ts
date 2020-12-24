@@ -220,7 +220,7 @@ namespace DataApi {
          * @param  Downloads Word中要插入的所有图片的集合，用于在生成前先加载图片，否则会渲染失败
          * @returns {url:string}
          */
-        template(FileName: string, TemplateURL: string, Data: { [index: string]: any }, Downloads: { URL: string, Size: [number, number] }[]): Promise<{ url: string }> {
+        template(FileName: string, TemplateURL: string, Data: { [index: string]: any }, Downloads: { URL: string, Size: [number, number], Rotate?: number }[]): Promise<{ url: string }> {
             return this._post('template', {
                 FileName,
                 Template: TemplateURL,
