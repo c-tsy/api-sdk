@@ -229,6 +229,19 @@ namespace DataApi {
             })
         }
     }
+    class svg extends DApiController {
+        toJPG(
+            Width: number,
+            Height: number,
+            SVG: string,
+            Title?: string): Promise<{ URL: string }> {
+            return this._post('toJPG', { Width, Height, Title, SVG }).then((p: any) => {
+                return { URL: this.host + p.URL }
+            })
+        }
+        // down()
+    }
+    export const SVGApi = new svg('SVG', p);
     export const DocxApi = new docx('Docx', p);
     export const Excel = new excel('Excel', p);
     export const AreaApi = new area('Area', p);
