@@ -5,8 +5,8 @@ import { config } from 'process';
 declare const window: any;
 declare const wx: any;
 declare const setTimeout: any;
-export var WechatID: string = '';
-export var BaiduMapAK = '';
+// export var WechatID: string = '';
+// export var BaiduMapAK = '';
 export var jsConfiged = false;
 export var UserInfo: any = false;
 export const Api = {
@@ -55,12 +55,27 @@ const request = axios.create({
 request.interceptors.response.use((response) => {
     return response.data;
 })
+/**
+ * 发起post请求
+ * @param Where 
+ * @param What 
+ * @param data 
+ */
 async function post(Where: string, What: string, data?: any): Promise<any> {
-    return await request.post([ApiConfig.Host, '_wechat', Where, What, WechatID, Token].join('/').replace('//_wechat', '/_wechat'), data);
+    if (!Wechat.WechatID) {
+        throw new Error('错误的微信ID，请配置微信ID')
+    }
+    return await request.post([ApiConfig.Host, '_wechat', Where, What, Wechat.WechatID, Token].join('/').replace('//_wechat', '/_wechat'), data).then((d: any) => {
+        if (d.d && !d.e) {
+            return d.d;
+        } else {
+            throw new Error(d.e.m || d.e)
+        }
+    });
 }
-async function get(url: string) {
-    return await request.get(url)
-}
+/**
+ * 微信操作
+ */
 namespace Wechat {
 
     // const AuthApi = new ApiController('Auth', '_wechat');
@@ -95,7 +110,7 @@ namespace Wechat {
         let url = [ApiConfig.Host, '_wechat', 'Auth', 'user', WechatID, Token].join('/').replace('//_wechat', '/_wechat') + `?r=${encodeURIComponent(window.location.href)}`
         try {
             let UserInfo: any = await post('Auth', 'getLogined', {})
-            if (UserInfo.d.openid) {
+            if (UserInfo.openid) {
                 return UserInfo;
             } else {
                 window.location.href = url;
@@ -113,8 +128,8 @@ namespace Wechat {
         }
         if (jsConfiged) { return true; }
         let config = await post('Js', 'jsConfig', { URL: window.location.href })
-        if (config.d) {
-            wx.config(config.d)
+        if (config) {
+            wx.config(config)
             return jsConfiged = true;
         }
     }
@@ -156,6 +171,10 @@ namespace Wechat {
             })
         })
     }
+    /**
+     * 调用扫码
+     * @param NeedResult 
+     */
     export function scan(NeedResult: boolean = false): Promise<string> {
         if (!IsWechatBrower) {
             throw new Error('NOT_WECHAT_BROWER');
@@ -531,9 +550,9 @@ namespace Wechat {
 export default Wechat;
 
 
-if (window && !window.ctsywechat) {
-    window.ctsywechat = {
-        install: Wechat.install,
-        WechatID: Wechat.WechatID
-    }
-}
+// if (window && !window.ctsywechat) {
+//     window.ctsywechat = {
+//         install: Wechat.install,
+//         WechatID: Wechat.WechatID
+//     }
+// }

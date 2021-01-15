@@ -5,6 +5,7 @@ import Protocol from './iot/class/Protocol'
 import Device from "./iot/class/Device";
 import { SearchWhere } from "../lib";
 import { array_columns, array_key_set } from "@ctsy/common";
+import IOTModelConf from "./iot/class/ModelConf";
 
 namespace IOT {
     let prefix = '_iot';
@@ -268,7 +269,13 @@ namespace IOT {
     class platform extends ControllerApi<any>{
 
     }
+    class modelConf extends ControllerApi<IOTModelConf>{
 
+    }
+    /**
+     * 模型配置
+     */
+    export const ModelConf = new modelConf('ModelConf', prefix)
     export const PlatformApi = new platform('Platform', prefix);
 }
 
