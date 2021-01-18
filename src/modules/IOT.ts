@@ -174,6 +174,87 @@ namespace IOT {
     }
     export const ModelApi = new model('Model', prefix);
     /**
+     * 设备统计信息
+     */
+    export class DeviceCount {
+        [index: string]: any;
+        /**
+         * 设备总数
+         */
+        Total: number = 0;
+        /**
+         * 告警数量
+         */
+        Alert: number = 0
+        /**
+         * 正常状态设备数
+         */
+        Status: number = 0;
+        /**
+         * 注册成功数量
+         */
+        PStatus4 = 0;
+        /**
+         * 24小时更新的设备量
+         */
+        Online24 = 0;
+        /**
+         * 48小时更新的设备量
+         */
+        Online48 = 0;
+        /**
+         * 168小时更新的设备量
+         */
+        Online168 = 0;
+    }
+    /**
+     * 统计分析中的周期
+     */
+    export enum StatisticsCycle {
+        Day,
+        Week,
+        Month,
+        Quarter,
+        Year
+    }
+
+
+    export class CountLog {
+        /**
+         * 周期
+         */
+        Cycle: StatisticsCycle = StatisticsCycle.Day
+
+        /**
+         * 设备型号
+         */
+        MID: number = 0;
+        /**
+         * 统计类型
+         */
+        Type: string = ""
+        /**
+         * 统计键
+         */
+        K: string = ""
+        /**
+         * 统计值
+         */
+        V: number = 0;
+        /**
+         * 统计时间
+         */
+        CTime: string | Date = ""
+        /**
+         * 统计的具体天数
+         */
+        Day: string | Date = ""
+
+        AID: number = 0;
+        GID: number = 0;
+        Key: number = 0;
+    }
+    /**
      * 设备管理接口
      */
     class device extends ControllerApi<Device> {
@@ -184,6 +265,28 @@ namespace IOT {
          */
         read(d: DeviceReadParams): Promise<{ P: number, N: number, L: DeviceReadReturn[] }> {
             return this._post('read', d)
+        }
+        /**
+         * 读取设备的基础统计信息
+         * @param MID 设备型号ID
+         */
+        count(w: { [index: string]: any }): Promise<DeviceCount> {
+            return this._post('count', w)
+        }
+        /**
+         * 日统计数据
+         * @param MIDs 设备型号的数组或单个型号
+         * @param K 要读取的统计数据的键名称，
+         * @param Options 其它的参数
+         */
+        statistics(MIDs: number | number[], K: string | string[], Options: {
+            STime?: Date | string,
+            ETime?: Date | string,
+            Cycle?: StatisticsCycle,
+            GID?: number,
+            Key?: string
+        } = {}): Promise<CountLog[]> {
+            return this._post('statistics', Object.assign(Options, { MIDs, K }))
         }
         /**
          * 读取KV数据
@@ -233,7 +336,9 @@ namespace IOT {
          * 读取地图数据
          * @param d 
          */
-        map(d?: SearchWhere): Promise<{ DID: number, IMEI: string, ID: string, Name: string, X: number, Y: number, [index: string]: string | number }[]> {
+        map(d?: SearchWhere): Promise<{
+            DID: number, IMEI: string, ID: string, Name: string, X: number, Y: number, [index: string]: string | number
+        }[]> {
             return this._post('map', d);
         }
         /**
