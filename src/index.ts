@@ -144,16 +144,16 @@ req.interceptors.request.use(async (conf: any) => {
             // 将请求的内容字符串化后添加到签名字符串中，
             txt += str;
             conf.data = str;
-
-            if (!blocked[Math.ceil(Date.now() / 3000)]) {
-                blocked[Math.ceil(Date.now() / 3000)] = [];
+            let tm = Math.ceil(Date.now() / 3000);
+            if (!blocked[tm]) {
+                blocked[tm] = [];
             }
 
             let md5content = md5(str);
-            if (blocked[Math.ceil(Date.now() / 3000)].includes(md5content)) {
+            if (blocked[tm] && blocked[tm].includes(md5content)) {
                 console.trace('重复请求,请求地址:' + conf.url, conf.data);
             } else {
-                blocked[Math.ceil(Date.now() / 3000)].push(md5content);
+                blocked[tm].push(md5content);
             }
             conf.md5content = md5content;
             //debug('3. 将请求内容追加到签名字符串中:')
@@ -282,7 +282,7 @@ async function request(method: 'post' | 'get', path: string, data: any) {
         let err = e.message;
         if (e.response && e.response.data) {
             log(path, method, e.config.start, Date.now() - e.config.start, e.response.status, e.config.data.length, e.response.headers['content-length'], e.response.data.e.m, e.config.md5content)
-            err = e.response.data.e.m;
+            err = e.response.data.e ? e.response.data.e.m : e.response.data;
         }
         await hook.emit(ApiSDKHooks.Request, HookWhen.Error, e.data, { conf, config: conf, req: data, rep: e.data, error: err });
         await hook.emit(ApiSDKHooks.Request + conf.path, HookWhen.Error, e.data, { conf, config: conf, req: e.data, rep: {}, error: "" });
