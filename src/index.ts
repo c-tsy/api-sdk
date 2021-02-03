@@ -149,7 +149,7 @@ req.interceptors.request.use(async (conf: any) => {
                 blocked[tm] = [];
             }
 
-            let md5content = md5(str);
+            let md5content = md5(conf.url + str);
             if (blocked[tm] && blocked[tm].includes(md5content)) {
                 console.trace('重复请求,请求地址:' + conf.url, conf.data);
             } else {
