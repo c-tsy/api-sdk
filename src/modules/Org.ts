@@ -124,10 +124,28 @@ namespace Organ {
          */
         public WithAdmin?: boolean = false;
     }
+    /**
+     * 组织结构管理类
+     */
     class organ extends ApiController {
+        /**
+         * 列出组织结构
+         * @param data 
+         */
         list(data: { P?: number, N?: number, Sort?: string, Keyword?: string, W?: { [index: string]: any } }): Promise<any> {
             return this.search(<any>data);
         }
+
+        /**
+         * 读取我的根节点
+         */
+        mine(): Promise<{ UnitID: number, Title: string, Memo: string, Icon: string }[]> {
+            return this._post('mine', {})
+        }
+        /**
+         * 查询接口
+         * @param w 
+         */
         search(w: SearchWhere) {
             return this._post('list', w).then((v) => {
                 if (!v.L) {

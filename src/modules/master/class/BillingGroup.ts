@@ -61,4 +61,8 @@ export default class MasterClassBillingGroup {
    * 
    */
   public Key: string = "";
+  /**
+   * 设备中中的型号
+   */
+  MID: number = 0;
 }

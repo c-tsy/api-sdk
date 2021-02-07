@@ -18,6 +18,36 @@ namespace Master {
          */
         DID: number = 0;
     }
+    export class FamilyCount {
+        /**
+         * 总户数
+         */
+        Total = 0;
+        /**
+         * 重点户数
+         */
+        Warn = 0
+        /**
+         * 已绑定设备户数
+         */
+        Binded = 0
+        /**
+         * 欠费户数
+         */
+        NBanance = 0
+        /**
+         * 预付费户数
+         */
+        PrePay = 0
+        /**
+         * 已设置计费方案数
+         */
+        BGID = 0
+        /**
+         * 状态分布数
+         */
+        Status: { Status: number, Amount: number }[] = []
+    }
     /**
      * 户的基础操作
      * 开户时自动创建账户，
@@ -30,6 +60,13 @@ namespace Master {
          */
         move(From: MoveParam, To: MoveParam): Promise<boolean> {
             return this._post('move', { From, To });
+        }
+        /**
+         * 基础数据统计
+         * @param d 
+         */
+        count(d: { MID?: number, GID?: number, Key?: string }): Promise<FamilyCount> {
+            return this._post('count', d)
         }
         /**
          * 缴费
