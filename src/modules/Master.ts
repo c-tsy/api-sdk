@@ -90,8 +90,8 @@ namespace Master {
         /**
          * 读取区域树
          */
-        async areaTree(): Promise<{ Name: string, ID: number, PID: number }[]> {
-            return this._post('areaTree', {});
+        async areaTree(conf: { GID?: number } = {}): Promise<{ Name: string, ID: number, PID: number }[]> {
+            return this._post('areaTree', conf);
         }
         /**
          * 搜索
