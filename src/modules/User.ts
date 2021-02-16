@@ -373,6 +373,13 @@ export namespace User {
             return this._post('vcode', { data, expire })
         }
         /**
+         * 设置GID参数
+         * @param GID 
+         */
+        async gid(GID: number) {
+            return this._post('gid', { GID })
+        }
+        /**
          * 账号密码登陆
          * @param Account 
          * @param PWD 
