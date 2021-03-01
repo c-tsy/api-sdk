@@ -495,8 +495,60 @@ namespace Wechat {
         value: string = ''
         color: string = ''
     }
+    /**
+     * 推送消息模板
+     */
+    export class MsgOption {
+        /**
+         * 用户OpenID
+         */
+        OpenID?: string = '';
+        /**
+         * 用户编号，支持绑定用户微信的信息下通过UID来推送
+         */
+        UID?: number = 0;
+        /**
+         * 用户组
+         */
+        UGID?: number = 0;
+        /**
+         * 暂未生效的PID，
+         */
+        PID?: number = 0;
+        /**
+         * 跳转链接
+         */
+        URL?: string = "";
+        /**
+         * 小程序链接
+         */
+        MiniURL?: string = "";
+        /**
+         * 推送数据
+         */
+        Data: {
+            [index: string]: string | {
+                /**
+                 * 内容
+                 */
+                value: string,
+                /**
+                 * 颜色
+                 */
+                color: string
+            }
+        } = {}
+    }
+    /**
+     * 微信消息处理
+     */
     class msg extends WechatController {
-        send(TemplateID: string, Data: { OpenID?: string, UID?: number | string, Data: { first: MsgType | string, remark: MsgType | string, [index: string]: MsgType | string } }[]) {
+        /**
+         * 发送模板推送消息
+         * @param TemplateID 
+         * @param Data 
+         */
+        send(TemplateID: string, Data: MsgOption[]) {
             if (Data instanceof Array && Data.length > 0) {
                 for (let x of Data) {
                     if (x.OpenID && x.OpenID.length > 10 || x.UID) {
