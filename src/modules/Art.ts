@@ -1,5 +1,5 @@
 import { ApiController, ApiCommon, ControllerApi } from '../index';
-import { ErrorType, SearchWhere, LinkType } from '../lib';
+import { ErrorType, SearchWhere, LinkType, SearchResult } from '../lib';
 namespace ArtApi {
     const prefix = "_art"
     /**
@@ -787,8 +787,27 @@ namespace ArtApi {
          * @param {number} N 分页页内条数，默认为10
          * @param {number} Keyword 关键词查询
          */
-        list(sw: SearchWhere): Promise<ApiCommon.List<ClassArt>> {
-            return this._post('list', sw);
+        async list(sw: SearchWhere): Promise<SearchResult<ClassArt>> {
+            let rs = await this._post('list', sw);
+            if (rs.L instanceof Array) {
+
+            } else {
+                rs.L = [];
+            }
+            return rs;
+        }
+        /**
+         * 读取文章列表
+         * @param {number} W.CID 文章章节号，支持数组或数字，不支持in
+         * @param {number} W.CIDs 文章分类号，支持数组或数字，不支持in
+         * @param {number} W.Status 文章状态 支持in操作
+         * @param {number} W.Type 文章类型 支持in操作
+         * @param {number} P 分页页码，从1开始
+         * @param {number} N 分页页内条数，默认为10
+         * @param {number} Keyword 关键词查询
+         */
+        async search(sw: SearchWhere) {
+            return this.list(sw)
         }
         /**
          * 读取文章的扩展信息
