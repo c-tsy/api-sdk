@@ -9,7 +9,15 @@ import { debug } from 'console';
 
 declare let window: any;
 declare let uni: any;
-let blocked: { [index: string]: string[] } = {
+let BlockTime = 3000
+let blocked: {
+    [index: string]: {
+        [index: string]: {
+            p: Function[],
+            r: any
+        }
+    }
+} = {
 
 }
 
@@ -21,7 +29,7 @@ setInterval(() => {
             }
         }
     }
-}, 10000);
+}, BlockTime);
 
 export const ApiSDKHooks = hooks;
 
@@ -144,18 +152,26 @@ req.interceptors.request.use(async (conf: any) => {
             // 将请求的内容字符串化后添加到签名字符串中，
             txt += str;
             conf.data = str;
-            let tm = Math.ceil(Date.now() / 3000);
+            let tm = Math.ceil(Date.now() / BlockTime);
             if (!blocked[tm]) {
-                blocked[tm] = [];
+                blocked[tm] = {};
             }
 
             let md5content = md5(conf.url + str);
-            if (blocked[tm] && blocked[tm].includes(md5content)) {
-                console.trace('重复请求,请求地址:' + conf.url, conf.data);
+            conf.tm = tm;
+            if (blocked[tm] && blocked[tm][md5content]) {
+                let e: any = new Error('Duplex')
+                e.md5 = md5content
+                e.tm = tm;
+                throw e;
+                // console.trace('重复请求,请求地址:' + conf.url, conf.data);
             } else {
-                blocked[tm].push(md5content);
+                blocked[tm][md5content] = {
+                    p: [],
+                    r: null
+                };
             }
-            conf.md5content = md5content;
+            conf.md5 = md5content;
             //debug('3. 将请求内容追加到签名字符串中:')
             //debug(`\t请求内容:\r\n\t${str}`)
             //debug(`\t追加后:\r\n\t${txt}`)
@@ -268,7 +284,7 @@ async function request(method: 'post' | 'get', path: string, data: any) {
             // await hook.emit(ApiSDKHooks.Request, HookWhen.Error, req, { conf, req: data, rep: e, error: err });
             throw new Error(err);
         }
-        log(path, method, e.config.start, Date.now() - e.config.start, e.data.c || e.status, e.config.data.length, e.headers['content-length'], e.data.e ? e.data.e.m : '', e.config.md5content)
+        log(path, method, e.config.start, Date.now() - e.config.start, e.data.c || e.status, e.config.data.length, e.headers['content-length'], e.data.e ? e.data.e.m : '', e.config.md5)
         let d = await hook.emit(ApiSDKHooks.Request, HookWhen.After, e.data, { conf, config: conf, req: data, rep: e.data, error: "" });
         // if (d !== undefined) {
         //     e.data = d;
@@ -277,9 +293,24 @@ async function request(method: 'post' | 'get', path: string, data: any) {
         // if (d !== undefined) {
         //     e.data = d;
         // }
+        blocked[e.config.tm][e.config.md5].r = e.data.d
+        if (blocked[e.config.tm][e.config.md5].p.length > 0) {
+            for (let x of blocked[e.config.tm][e.config.md5].p) {
+                x(e.data.d)
+            }
+            blocked[e.config.tm][e.config.md5].p = []
+        }
         return e.data.d;
     }).catch(async (e: any) => {
         let err = e.message;
+        if (e.message == 'Duplex') {
+            if (blocked[e.tm][e.md5].r) {
+                return blocked[e.tm][e.md5].r
+            }
+            return new Promise((s, j) => {
+                blocked[e.tm][e.md5].p.push(s)
+            });
+        }
         if (e.response && e.response.data) {
             log(path, method, e.config.start, Date.now() - e.config.start, e.response.status, e.config.data.length, e.response.headers['content-length'], e.response.data.e.m, e.config.md5content)
             err = e.response.data.e ? e.response.data.e.m : e.response.data;
