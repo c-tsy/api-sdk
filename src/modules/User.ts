@@ -457,7 +457,7 @@ export namespace User {
          * 检查并获取当前登录状态，返回内容同登录操作
          */
         async relogin(WithRules: boolean = false): Promise<LoginResult> {
-            let rs = await this._get('relogin')
+            let rs = await this._post('relogin')
             if (rs.UID) {
                 hook.emit('login', HookWhen.After, '', rs);
                 ApiConfig.UID = rs.UID
@@ -637,6 +637,7 @@ export namespace User {
                 let Prs = await Promise.all(Ps);
                 let ContactsMap = array_key_set(Prs[0], 'UID', true);
                 for (let x of rs.L) {
+                    x.Contacts = []
                     if (ContactsMap[x.UID]) {
                         x.Contacts = ContactsMap[x.UID];
                         for (let c of ContactsMap[x.UID]) {
