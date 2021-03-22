@@ -49,7 +49,7 @@ export const Api = {
 
 export const defaultApis = Object.keys(Api)
 
-const request = axios.create({
+export const request = axios.create({
     withCredentials: true,
 })
 request.interceptors.response.use((response) => {

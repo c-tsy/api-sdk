@@ -1,7 +1,7 @@
 import { ApiController, ApiConfig, ControllerApi } from '../';
 import hook, { HookWhen } from '@ctsy/hook';
 import { ErrorType, SearchResult, LinkType, SearchWhere } from '../lib';
-import { array_columns, array_key_set } from '@ctsy/common';
+import { array_columns, array_key_set, timeout } from '@ctsy/common';
 import * as _ from 'lodash'
 const get: Function = _.get;
 const md5: any = require('md5')
@@ -352,6 +352,24 @@ export namespace User {
     class auth extends ApiController {
         constructor() {
             super('Auth', prefix);
+        }
+        /**
+         * 发起登陆请求，获取登录的二维码地址
+         */
+        qrLogin(WechatID: string, Title: string, Select: string[] = []): Promise<{ Token: string, URL: string }> {
+            return this._post('qrLogin', { WechatID, Title, Select })
+        }
+        /**
+         * 等待登陆结果返回
+         */
+        async qrLoginCheck(Wait: boolean = false) {
+            if (Wait) {
+                while (true) {
+                    return await this._post('qrLoginCheck')
+                    // await timeout(500)
+                }
+            }
+            return await this._post('qrLoginCheck')
         }
         /**
          * 验证账号验证码
