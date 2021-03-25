@@ -1,5 +1,5 @@
 
-import * as p from 'protobufjs';
+import * as p from 'protobufjs/light';
 import Axios from 'axios';
 import { ApiConfig } from '..';
 export class Req {
@@ -33,7 +33,7 @@ export const Protobuf = new class Protobuf {
         }
         return protoed[module];
     }
-    async encode(module: string, ) { }
+    async encode(module: string,) { }
     async decode(module: string) {
         return
     }

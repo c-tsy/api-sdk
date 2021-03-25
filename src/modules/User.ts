@@ -1,12 +1,42 @@
-import { ApiController, ApiConfig } from '../';
+import { ApiController, ApiConfig, ControllerApi } from '../';
 import hook, { HookWhen } from '@ctsy/hook';
-import { ErrorType, SearchResult } from '../lib';
-
-const get: Function = require("get-value");
-const set: Function = require("set-value");
+import { ErrorType, SearchResult, LinkType, SearchWhere } from '../lib';
+import { array_columns, array_key_set, timeout } from '@ctsy/common';
+import * as _ from 'lodash'
+const get: Function = _.get;
 const md5: any = require('md5')
+
+
 export namespace User {
     const prefix = "_user"
+    /**
+     * 登陆成功的返回对象
+     */
+    export class LoginResult {
+        UID: number = 0;
+        Name: string = "";
+        Birthday: string = "";
+        Avatar: string = "";
+        Nick: string = "";
+        Sex: number = 0;
+        Status: number = 0;
+        Channel: string = '';
+        PUID: number = 0;
+        TNum: number = 0;
+        UGIDs: number[] = [];
+        Groups: LoginGroup[] = [];
+        Account: string = '';
+        RIDs: number[] = [];
+    }
+
+    export class LoginGroup {
+        UGID: number = 0;
+        Title: string = '';
+        Sort: number = 0;
+        PUGID: number = 0;
+        Memo: string = "";
+        EUGID: number = 0;
+    }
     export class AuthObject {
         /**
          * 密码Hash盐
@@ -102,8 +132,9 @@ export namespace User {
         constructor() {
             super('Admin', prefix);
         }
-        tokenLogin(Token: string, UID: string) {
-            return this._post('tokenLogin', { Token, UID })
+        tokenLogin(Token: string, UID: string, Referer: string, IP: string) {
+            //  添加登陆的referer用做校验信息
+            return this._post('tokenLogin', { Token, UID, Referer, IP })
         }
     }
     /**
@@ -142,7 +173,12 @@ export namespace User {
          * 按数据返回用户组数据结构
          */
         list(W: { PUGID?: number } = {}, P: number = 1, N: number = 999): Promise<SearchResult<ClassUserGroup>> {
-            return this._post('list', { P, N, W })
+            return this._post('list', { P, N, W }).then((v) => {
+                if (!v.L) {
+                    v.L = [];
+                }
+                return v;
+            })
         }
         /**
          * 更新分组信息
@@ -153,12 +189,19 @@ export namespace User {
             return this._post('save', { UGID, Data });
         }
         /**
+         * 查询企业需要审核的用户
+         * @param EID 
+         */
+        linksearch(EID: number) {
+            return this._post('linksearch', { EID })
+        }
+        /**
          * 获取分组用户
          * @param UGID 
          * @param P 
          * @param N 
          */
-        members(UGID: number, P: number = 1, N: number = 10) {
+        members(UGID: number | number[], P: number = 1, N: number = 10): Promise<SearchResult<Login>> {
             return this._post('members', { UGID, P, N });
         }
         /**
@@ -176,8 +219,8 @@ export namespace User {
          * @param UGID 
          * @param UIDs 
          */
-        link(UGID: number, UIDs: number[]) {
-            return this._post('link', { UGID, UIDs });
+        link(rule: { UGID: number, UIDs: number[] } | { UGIDs: number[], UID: number }, Type: LinkType = LinkType.append, Status?: number, DID?: number) {
+            return this._post('link', Object.assign(rule, { Type, Status, DID }));
         }
         /**
          * 移除用户分组关系
@@ -193,6 +236,12 @@ export namespace User {
          */
         rules(UGIDs: number[]) {
             return this._post('rules', { UGIDs })
+        }
+        /**
+         * 重新更新session信息
+         */
+        renewSession(): Promise<LoginResult> {
+            return this._post('rsession')
         }
         /**
          * 权限分配
@@ -216,6 +265,16 @@ export namespace User {
          */
         del(UGID: number): Promise<boolean> {
             return this._post('del', { UGID });
+        }
+
+        /**
+         * 提供基于树形的级联查询
+         * @param W.PUGID 根据PUGID向下查询 
+         * @param W.UGID 根据UGID向上查询 
+         * @param Deep 树形深度
+         */
+        tree(W: { PUGIDs?: number[], UGIDs?: number[] }, Deep: number = 3): Promise<ClassUserGroup[]> {
+            return this._post('tree', Object.assign(W, { Deep }))
         }
     }
     export const Group = new group();
@@ -248,9 +307,69 @@ export namespace User {
             super('MenuGroup', prefix);
         }
     }
+    /**
+     * 登陆对象
+     */
+    export class Login {
+        /**
+         * 账号
+         */
+        Account: string = "";
+        /**
+         * 密码
+         */
+        PWD: string = "";
+        /**
+         * MD5加密后的密码，用于导入或二次登陆使用
+         */
+        MD5PWD: string = "";
+    }
+    /**
+     * 联系人信息
+     */
+    export class ClassContact {
+        /**
+         * 用户编号
+         */
+        public UID: number = 0;
+        /**
+         * 联系名称
+         */
+        public T: string = "";
+        /**
+         * 联系值
+         */
+        public V: string = "";
+        /**
+         * 配置信息，支持不超过250个字节的字符串
+         */
+        public C: string = "";
+    }
+
+    /**
+     * 认证
+     */
     class auth extends ApiController {
         constructor() {
             super('Auth', prefix);
+        }
+        /**
+         * 发起登陆请求，获取登录的二维码地址
+         */
+        qrLogin(WechatID: string, Title: string, Select: string[] = []): Promise<{ Token: string, URL: string }> {
+            return this._post('qrLogin', { WechatID, Title, Select })
+        }
+        /**
+         * 等待登陆结果返回
+         */
+        async qrLoginCheck(Wait: boolean = false) {
+            if (Wait) {
+                while (true) {
+                    return await this._post('qrLoginCheck')
+                    // await timeout(500)
+                }
+            }
+            return await this._post('qrLoginCheck')
         }
         /**
          * 验证账号验证码
@@ -260,6 +379,11 @@ export namespace User {
         vcheck(data: any, remove: boolean = true) {
             return this._post('vcheck', { data, remove })
         }
+        /**
+         * 发送验证码内容
+         * @param data 
+         * @param expire 
+         */
         vcode(data: any, expire: number | any = 0) {
             if (expire.appid) {
                 return ''
@@ -267,24 +391,40 @@ export namespace User {
             return this._post('vcode', { data, expire })
         }
         /**
+         * 设置GID参数
+         * @param GID 
+         */
+        async gid(GID: number) {
+            return this._post('gid', { GID })
+        }
+        /**
          * 账号密码登陆
          * @param Account 
          * @param PWD 
          */
-        async login(Account: string, PWD: string) {
+        async login(Account: Login | string, PWD?: string, MD5PWD: string = '', WithRules: boolean = false): Promise<LoginResult> {
             if ('string' != typeof Account) {
-                throw new Error(ErrorType.User.ACCOUNT_SHOULD_BE_STRING)
+                if ('string' == typeof Account.Account) {
+                    PWD = Account.PWD;
+                    MD5PWD = Account.MD5PWD;
+                    Account = Account.Account;
+                } else
+                    throw new Error(ErrorType.User.ACCOUNT_SHOULD_BE_STRING)
             }
             if ('string' != typeof PWD) {
                 throw new Error(ErrorType.User.PWD_SHOULD_BE_STRING)
             }
-            let rs = await this._post('login', { Account, PWD: md5(PWD) })
+            let rs = await this._post('login', { Account, PWD: MD5PWD || md5(PWD) })
             if (rs.UID) {
                 hook.emit('logined', HookWhen.After, '', rs);
                 ApiConfig.UID = rs.UID
             }
             if (!rs.RIDs) { rs.RIDs = [] }
             if (!rs.UGIDs) { rs.UGIDs = [] }
+            if (WithRules) {
+                let rules = await RuleApi.search({ W: { RID: { in: rs.RIDs } }, N: 999 })
+                rs.Rules = rules.L;
+            }
             return rs;
         }
         /**
@@ -334,11 +474,20 @@ export namespace User {
         /**
          * 检查并获取当前登录状态，返回内容同登录操作
          */
-        async relogin() {
-            let rs = await this._get('relogin')
+        async relogin(WithRules: boolean = false): Promise<LoginResult> {
+            let rs = await this._post('relogin')
             if (rs.UID) {
                 hook.emit('login', HookWhen.After, '', rs);
                 ApiConfig.UID = rs.UID
+                // append rules
+                if (WithRules) {
+                    if (rs.RIDs.length > 0) {
+                        let rules = await RuleApi.search({ W: { RID: { in: rs.RIDs } }, N: 999 })
+                        rs.Rules = rules.L;
+                    } else {
+                        rs.Rules = [];
+                    }
+                }
             }
             return rs;
         }
@@ -363,12 +512,32 @@ export namespace User {
             return this._post('reset', { OldPWD: md5(OldPWD), PWD: md5(PWD) })
         }
         /**
-         * 账号注册
-         * @param Account 
-         * @param PWD 
-         * @param PUID 
+         * 管理员重置密码
+         * @param {number} UID 用户编号
+         * @param {string} PWD 要设置的密码，
          */
-        async regist(Name: string, Nick: string, Account: string, PWD: string, Sex: number = 1, PUID: number = 0) {
+        areset(UID: number, PWD: string) {
+            if ('string' != typeof PWD) {
+                throw new Error(ErrorType.User.PWD_SHOULD_BE_STRING)
+            }
+            if (!/.{6,}/.test(PWD)) {
+                throw new Error(ErrorType.User.PWD_PARAMS_IS_ERROR)
+            }
+            return this._post('areset', { UID, PWD: md5(PWD) })
+        }
+        /**
+         * 信息注册
+         * @param {string} Name 姓名
+         * @param {string} Nick 昵称
+         * @param {string} Account 账号
+         * @param {string} PWD 密码
+         * @param Sex 性别
+         * @param {string} PUID 推介人的UID
+         * @param {string} MD5PWD 加密后的密码
+         * @param Contacts 联系信息列表
+         * @param {string} Avatar 头像URL地址
+         */
+        async regist(Name: string, Nick: string, Account: string, PWD: string, Sex: number = 1, PUID: number = 0, MD5PWD: string = "", Contacts: ClassContact[], Avatar: string = '', Other: { [index: string]: any }) {
             if (Name == '' || Nick == '') {
                 throw new Error(ErrorType.User.NAME_OR_NICK_CANNOT_BE_EMPTY)
             }
@@ -381,7 +550,10 @@ export namespace User {
             if (!/.{6,}/.test(PWD)) {
                 throw new Error(ErrorType.User.PWD_PARAMS_IS_ERROR)
             }
-            return await this._post('regist', { Name, Nick, Sex, Account, PWD: md5(PWD), PUID })
+            if (Avatar && Avatar.startsWith('data:')) {
+                throw new Error('头像地址错误')
+            }
+            return await this._post('regist', Object.assign(Other || {}, { Name, Nick, Sex, Account, PWD: MD5PWD || md5(PWD), PUID, Contacts, Avatar }))
         }
         /**
          * 忘记密码重设
@@ -389,7 +561,7 @@ export namespace User {
          * @param PWD 
          * @param VCode 
          */
-        forget(Account: string, PWD: string, VCode: string) {
+        forget(Account: string, PWD: string, VCode: string, MD5PWD: string = "") {
             if ('string' != typeof PWD) {
                 throw new Error(ErrorType.User.PWD_SHOULD_BE_STRING)
             }
@@ -402,14 +574,22 @@ export namespace User {
             if (!/^[\w\b_-]{5,}$/.test(Account)) {
                 throw new Error(ErrorType.User.ACCOUNT_PARAMS_IS_ERROR)
             }
-            return this._post('forget', { Account, PWD, VCode });
+            return this._post('forget', { Account, PWD: MD5PWD || md5(PWD), VCode });
         }
         /**
          * 重写session
          * @param UID 
          */
-        rsession(UID: any) {
+        rsession(UID: number) {
             return this._post('rsession', { UID })
+        }
+        /**
+         * 下次用户relogin时更新用户的session信息，基于redis的集合做的逻辑
+         * @param UID 
+         */
+        nextRsession(UIDs: number[]) {
+            return this._post('nextRsession', { UIDs })
+
         }
     }
     export const Auth = new auth();
@@ -428,20 +608,63 @@ export namespace User {
          * @param W 
          * @param conf 
          */
-        search(W: any, conf: { Keyword?: string, N?: number, P?: number, Sort?: string }) {
-            if (W === void 0) { W = {}; }
-            if (undefined === conf) { conf = { N: 10, P: 1, Keyword: '' }; }
-            if (W.P != void 0 && W.N != void 0 && W.Keyword != void 0) {
-                conf = W;
-                W = W.W;
+        async search(W: { [index: string]: any } | SearchWhere, conf?: { With?: ['Contact'], Keyword?: string, N?: number, P?: number, Sort?: string }): Promise<SearchResult<any>> {
+            let rs: SearchResult<any> = new SearchResult;
+            if (W.W && W.P > 0 && W.N > 0) {
+                rs = await this._post('search', W);
+            } else {
+                if (W === void 0) { W = {}; }
+                if (undefined === conf) { conf = { N: 10, P: 1, Keyword: '' }; }
+                if (W.P != void 0 && W.N != void 0 && W.Keyword != void 0) {
+                    conf = W;
+                    W = W.W;
+                }
+                rs = await this._post('search', {
+                    W: W,
+                    Keyword: conf.Keyword || "",
+                    N: conf.N || 10,
+                    P: conf.P || 1,
+                    Sort: conf.Sort || ''
+                }).then((v) => {
+                    if (!v.L) {
+                        v.L = [];
+                    }
+                    return v;
+                });
             }
-            return this._post('search', {
-                W: W,
-                Keyword: conf.Keyword || "",
-                N: conf.N || 10,
-                P: conf.P || 1,
-                Sort: conf.Sort || ''
-            });
+
+            if (conf && conf.With) {
+                if (conf.With instanceof Array) {
+
+                } else if ('string' == typeof conf.With) {
+                    conf.With = (<any>conf.With).split(',')
+                }
+
+                let UIDs: any[] = array_columns(rs.L, 'UID');
+                if (UIDs.length == 0) {
+                    return rs;
+                }
+                let Ps = []
+
+                if (conf.With && conf.With.includes('Contact')) {
+                    Ps.push(ContactApi.read(UIDs))
+                } else {
+                    Ps.push([])
+                }
+
+                let Prs = await Promise.all(Ps);
+                let ContactsMap = array_key_set(Prs[0], 'UID', true);
+                for (let x of rs.L) {
+                    x.Contacts = []
+                    if (ContactsMap[x.UID]) {
+                        x.Contacts = ContactsMap[x.UID];
+                        for (let c of ContactsMap[x.UID]) {
+                            x[c.T] = c.V;
+                        }
+                    }
+                }
+            }
+            return rs;
         }
     }
     export const Users = new users();
@@ -457,23 +680,23 @@ export namespace User {
          * @param Sex 
          * @param Status
          */
-        save(UID: number, data: { Nick?: string, Sex?: number, Status?: number }) {
-            if (!UID && typeof UID == 'number') {
-                throw new Error('UID')
-            }
-            let d: { [index: string]: string | number } = {}
-            if ('string' == typeof data.Nick && data.Nick.length > 0) {
-                d.Nick = data.Nick
-            }
-            if (undefined !== data.Sex && [0, 1, 2].includes(data.Sex)) {
-                d.Sex = data.Sex
-            }
-            if (undefined !== data.Status && [-1, 0, 1].includes(data.Status)) {
-                d.Status = data.Status
-            }
-            if (Object.keys(d).length == 0) {
-                throw new Error('缺少修改参数')
-            }
+        save(UID: number, data: { Nick?: string, Sex?: number, Status?: number, Avatar?: number, Head?: string, Contacts?: ClassContact[] }) {
+            // if (!UID && typeof UID == 'number') {
+            //     throw new Error('UID')
+            // }
+            // let d: { [index: string]: string | number } = {}
+            // if ('string' == typeof data.Nick && data.Nick.length > 0) {
+            //     d.Nick = data.Nick
+            // }
+            // if (undefined !== data.Sex && [0, 1, 2].includes(data.Sex)) {
+            //     d.Sex = data.Sex
+            // }
+            // if (undefined !== data.Status && [-1, 0, 1].includes(data.Status)) {
+            //     d.Status = data.Status
+            // }
+            // if (Object.keys(d).length == 0) {
+            //     throw new Error('缺少修改参数')
+            // }
             return this._post('save', Object.assign({ UID }, data))
         }
 
@@ -520,7 +743,10 @@ export namespace User {
         public Rules: RuleClass[] = [];
         public Subs: RuleGroupClass[] = [];
     }
-    class rule extends ApiController {
+    /**
+     * 
+     */
+    class rule extends ControllerApi<RuleClass> {
         /**
          * 获取我的权限列表
          */
@@ -576,6 +802,13 @@ export namespace User {
             return rs;
         }
     }
+    /**
+     * 权限组
+     */
+    class ruleGroup extends ControllerApi<RuleGroupClass>{
+
+    }
+    export const RuleGroupApi = new ruleGroup('RuleGroup', prefix);
     export const Rule = new rule('Rule', prefix);
     export const RuleApi = Rule;
     class contact extends ApiController {
@@ -585,7 +818,11 @@ export namespace User {
          * @param Contact 
          */
         save(UID: number, Contact: { T: string, V: string, C: string }[]) {
-            return this._post('save', { UID, Contact })
+            return this._post('save', {
+                UID, Contact: Contact.filter((o) => {
+                    return o.T.length > 0
+                })
+            })
         }
         /**
          * 批量读取联系信息

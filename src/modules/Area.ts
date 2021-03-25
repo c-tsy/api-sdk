@@ -157,15 +157,15 @@ namespace AreaApi {
      * 区域接口
      */
     export const AreaApi = new area('Area', prefix)
-    class building extends ControllerApi {
+    class building extends ControllerApi<Building> {
 
     }
     export const BuildingApi = new building('Building', prefix)
-    class community extends ControllerApi {
+    class community extends ControllerApi<Community> {
 
     }
     export const CommunityApi = new community('Community', prefix)
-    class family extends ControllerApi {
+    class family extends ControllerApi<Family> {
         check(CID: number, Type: number, Name: string, Phone: string, BuildingNo: string, UnitNo: string, Floor: string, No: string) {
             return this._post('check', {
                 CID, Type, Name, Phone, BuildingNo, UnitNo, Floor, No,

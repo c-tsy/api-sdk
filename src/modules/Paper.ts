@@ -1,6 +1,7 @@
 import { ApiController, ControllerApi } from '..';
 import { SearchWhere, LinkType } from '../lib';
 import { SearchResult } from '../lib';
+import { ParamsError } from '../errors';
 /**
  * 答题部分模块
  */
@@ -142,6 +143,31 @@ namespace Paper {
          * 
          */
         public Sign: string = "";
+        /**
+         * 标题
+         */
+        public Title: string = "";
+        /**
+         * 备注
+         */
+        public Memo: string = "";
+        /**
+         * 类型
+         */
+        public Type: number = 0
+        /**
+         * 关联类型
+         */
+        public OType: string = "";
+        public OID: number = 0;
+        /**
+         * 状态
+         */
+        public Status: number = 0;
+        /**
+         * 扩展信息，支持用字符串做额外的数据存储
+         */
+        public Extra: string = "";
     }
     /**
   * 答题情况 PaperAnswer
@@ -250,6 +276,11 @@ namespace Paper {
          * 
          */
         public JUID: number = 0;
+        /**
+         * 结论编号
+         * 
+         */
+        public PADID: number = 0;
     }
     /**
      * 试卷生成规则 Config
@@ -496,6 +527,13 @@ namespace Paper {
          * 
          */
         public Title: string = "";
+
+        public Rate: number = 0;
+        public RUnit: number = 0;
+        /**
+         * 试卷类型 bigint 0默认1问卷2考评
+         */
+        public Type: number = 0;
         /**
          * 开始时间
          * 
@@ -595,6 +633,38 @@ namespace Paper {
         public Art?: { ArtID: number, Title: string, Memo: string, Head: string } = { ArtID: 0, Title: '', Memo: '', Head: '' }
     }
     /**
+     * 题目附件类型
+     */
+    export enum QuestionFType {
+        /**
+         * 附件
+         */
+        Image,
+        /**
+         * 视频
+         */
+        Video,
+        /**
+         * 音频
+         */
+        Audio,
+    }
+    /**
+     * 题目类型
+     */
+    export enum QuestionType {
+        // 单选
+        Single,
+        // 多选
+        Duplex,
+        // 判断
+        Judge,
+        // 简答
+        Answer,
+        // 填空
+        Input,
+    }
+    /**
       * 题目 Question
       * 题目编号 QID 自增(bigint(20))
       * 题型 QType 状态(tinyint(1))
@@ -687,6 +757,18 @@ namespace Paper {
          * 组号
          */
         public QGID: number = 0;
+        /**
+         * 难易成都
+         */
+        public Diffcult: number = 0;
+        /**
+         * 附件类型
+         */
+        public FType: QuestionFType = QuestionFType.Image;
+        /**
+         * 链接地址
+         */
+        public URL: string = '';
         /**
          * 选项内容
          */
@@ -804,6 +886,79 @@ namespace Paper {
         } = {}
         R: ClassPaperAnalyzeR = new ClassPaperAnalyzeR
     }
+
+    export class AnswerJudge {
+        PID: number = 0
+        PAID: number = 0
+        PADID: number = 0
+        QID: number = 0
+        Score: number = 0
+        Memo: string = ""
+        JType: number = 1
+        JUID: number = 0
+        Status: number = 1
+        Extra: string = ""
+    }
+
+    /**
+     * 答题情况的接口类
+     */
+    class answer extends ApiController {
+        /**
+         * 创建一个答题结论，表示开始答题或用于分享处理
+         * @param d 
+         */
+        create(d: ClassPaperAnswered): Promise<ClassPaperAnswered> {
+            return this._post('create', d);
+        }
+        /**
+         * 读取答题试卷明细
+         * @param UIDs 
+         * @param GIDs 
+         * @param PIDs 
+         * @param PAIDs 某次答题的记录编号
+         * @param P 分页页码
+         * @param N 分页每页数量
+         */
+        detail(UIDs?: number[], GIDs?: number[], PIDs?: number[], PAIDs?: number[], Keys?: string[], Times?: number, P?: number, N?: number): Promise<{ L: ClassPaperAnswer }> {
+            return this._post('detail', { UIDs, GIDs, PIDs, PAIDs, Keys, Times, P, N });
+        }
+        /**
+         * 主观题阅卷提交
+         * @param judge.PID 试卷编号
+         * @param judge.PAID 答题编号
+         * @param judge.PADID 答题编号
+         * @param judge.QID 试题编号
+         * @param judge.Score 得分
+         * @param judge.Memo 评分备注
+         * @param judge.JType 评分方式，默认为1，手工评分
+         * @param judge.JUID 评分人
+         */
+        judge(judge: AnswerJudge[]): Promise<boolean> {
+            return this._post('judge', judge);
+        }
+
+        /**
+         * 重新计算得分
+         * @param d 
+         */
+        recalc(PAIDs: number[]) {
+            return this._post('recalc', { PAIDs })
+        }
+        /**
+         * 读取已答题的结论概况
+         * @param UIDs 用户编号列表
+         * @param GID 分组键
+         * @param PIDs 可选 试卷编号列表，
+         */
+        answered(UIDs: number[], GID: number, PIDs: number[] = []) {
+            return this._post('answered', { UIDs, PIDs, GID })
+        }
+    }
+    /**
+     * 答题情况接口
+     */
+    export const AnswerApi = new answer('Answer', prefix);
     /**
      * 试卷处理类
      */
@@ -813,10 +968,10 @@ namespace Paper {
         }
         /**
          * 统计分析
-         * @param GID 
-         * @param PID 
+         * @param {number} GID 
+         * @param {number} PID 
          * @param Conf 
-         * @param Fields 
+         * @param {string[]} Fields 
          */
         analyze(GID: number, PID: number, Conf: {
             UIDs?: number[],
@@ -826,60 +981,166 @@ namespace Paper {
             return this._post('analyze', { GID, PID, GIDs: Conf.GIDs, UIDs: Conf.UIDs, UGIDs: Conf.UGIDs, Fields: Fields });
         }
         /**
-         * 读取试卷内容测试
-         * @param PID 试卷编号
+         * 读取试卷内容
+         * @param {number} PID 试卷编号
+         * @param {boolean} _Ext.AllQuestion 是否读取该试卷的所有题目，用于判卷使用，可能会因为权限问题而被拒绝
          */
-        get(PID: number) {
-            return this._post('get', { PID });
+        get(PID: number, _Ext?: {
+            AllQuestion: boolean
+        }) {
+            return this._post('get', { PID, _Ext });
         }
         /**
          * 添加题目，支持题项的自动处理并要求题项内容不能为空
-         * @param Papers 试题
+         * @param  {ClassPaper[]} Papers 试题
          */
         adds(Papers: ClassPaper[]): Promise<ClassPaper[]> {
+
+            if (Papers instanceof Array && Papers.length > 0) {
+                let QIDs: number[] = [], QGIDs: number[] = [], ArtIDs: number[] = [];
+                for (let x of Papers) {
+                    if ('string' != typeof x.Title || x.Title.length < 1) {
+                        throw new ParamsError('标题错误')
+                    }
+                    if (x.Total <= 0) {
+                        throw new ParamsError('总分不得小于1')
+                    }
+                    if (x.Configs instanceof Array && x.Configs.length > 0) {
+
+                    } else {
+                        throw new ParamsError('试卷配置为空')
+                    }
+
+                    if (x.ArtID > 0) {
+                        ArtIDs.push(x.ArtID)
+                    }
+
+                    let eQGIDs: number[] = [];
+                    for (let ci in x.Configs) {
+                        let c = x.Configs[ci];
+                        if (eQGIDs.includes(c.QGID)) {
+                            throw new ParamsError('题组重复')
+                        }
+                        eQGIDs.push(c.QGID);
+                        QGIDs.push(c.QGID);
+                        if (c.Score <= 0) {
+                            throw new ParamsError('单项分数低于1')
+                        }
+                        if (c.Use < 1) {
+                            throw new ParamsError('抽取题数小于1')
+                        }
+                        if (c.Title.length < 1) {
+                            throw new ParamsError('题组标题长度小于1')
+                        }
+                        if (c.QGID < 1) {
+                            throw new ParamsError('未选择题组');
+                        }
+                        if (false === c.Rand) {
+                            if (c.Source instanceof Array) {
+                                if (c.Source.length < 1) {
+                                    throw new ParamsError('没有正确设置题目信息');
+                                }
+                                for (let s of c.Source) {
+                                    if ('number' != typeof s) {
+                                        throw new ParamsError('题目信息类型错误')
+                                    }
+                                }
+                                QIDs.push(...c.Source)
+                            } else {
+                                throw new ParamsError('题目源数据不存在');
+                            }
+                        }
+                    }
+                }
+            }
             return this._post('adds', Papers)
         }
         /**
          * 修改后保存题干信息，不支持题项的自动处理
-         * @param QID 
-         * @param Params 
+         * @param {number} QID 题目编号 
+         * @param {ClassPaper} Params 修改的题目参数
          */
         save(PID: number, Params: ClassPaper): Promise<ClassPaper | boolean> {
             return this._post('save', { PID, Params })
         }
         /**
          * 搜索查询试卷
-         * @param w 
+         * @param w 查询条件
          */
-        search(w: SearchWhere): Promise<SearchResult<ClassPaper>> {
-            return this._post('search', w);
+        search(w: SearchWhere, Ext: { [index: string]: any } = {}): Promise<SearchResult<ClassPaper>> {
+            return this._post('search', Object.assign(w, Ext));
         }
         /**
          * 答题结果提交
-         * @param PID 试卷编号
-         * @param UID 用户编号
-         * @param STime 开始时间
-         * @param ETime 结束时间
-         * @param GID 分组编号
-         * @param Key 分组键
+         * @param {number} PID 试卷编号
+         * @param {number} UID 用户编号
+         * @param {Date} STime 开始时间
+         * @param {Date} ETime 结束时间
+         * @param {number} GID 分组编号
+         * @param {string} Key 分组键
          * @param Answers 答案选项内容
+         * @param {boolean} Cheat 作弊与否 false 表示不作弊
          */
-        answer(PID: number, UID: number, STime: Date, ETime: Date, GID: number = 0, Key: string = "", Answers: { QID: number, SelectedQIIDs: number[] }[]): Promise<{
-            /**正确答案 {QID:[QIID]} QID为键，QIID为数组，正确选项的数组*/
-            Right: { [index: string]: number[] },
-            //当前答题得分
-            Score: number,
-            //当前答题次数
-            Times: number,
-            //消耗时间
-            Seconds: number
-        }> {
+        answer(PID: number, UID: number, STime: Date, ETime: Date, GID: number = 0, Key: string = "", Answers: {
+            QID: number,
+            SelectedQIIDs?: number[],
+            QType?: QuestionType,
+            //填空或简答的内容
+            Desc?: string,
+            //Paper.Type != 0 时可以直接制定分数
+            Score?: string,
+            //答题备注
+            Memo?: string,
+            //答题所涉及到的图片内容，目前仅易安鸟用
+            Imgs?: ({
+                Name: string,
+                Memo: string,
+                URL: string,
+            } | string)[]
+        }[],
+            // 是否作弊
+            Cheat: boolean = false,
+            // 答题位置
+            Addr: string = ""): Promise<{
+                /**正确答案 {QID:[QIID]} QID为键，QIID为数组，正确选项的数组*/
+                Right: { [index: string]: number[] },
+                //当前答题得分
+                Score: number,
+                //当前答题次数
+                Times: number,
+                //消耗时间
+                Seconds: number
+            }> {
             let answers: any = {};
             for (let x of Answers) {
-                answers[x.QID] = x.SelectedQIIDs;
+                // answers[x.QID] = x.SelectedQIIDs;
+                if (x.Imgs && x.Imgs.length > 0) {
+                    for (let i of x.Imgs) {
+                        if ('string' == typeof i && i.includes('base64')) {
+                            throw new Error('禁止提交Base64编码的图片')
+                        }
+                    }
+                }
+                answers[x.QID] = {
+                    QType: undefined == x.QType ? QuestionType.Single : x.QType,
+                    QIIDs: x.SelectedQIIDs || [],
+                    Desc: x.Desc || '',
+                    Imgs: x.Imgs || [],
+                    Memo: x.Memo || ''
+                }
+                // 允许为空的提交，所以不用判断
+                // if([QuestionType.Single,QuestionType.Duplex].includes(answers[x.QID].QType))
             }
             return this._post('answer', {
-                UID, PID, STime, ETime, Key, GID, Answers: answers
+                Addr,
+                UID,
+                PID,
+                STime,
+                ETime,
+                Key,
+                GID,
+                Answers: answers,
+                Cheat
             })
         }
         /**

@@ -1,11 +1,10 @@
 /**
-  * 标签 Tags
+  * 标签 Tag
   * 任务标签 TagID 自增序号(bigint)
   * 名称 Title 字符50(char(50))
   * 拼音 PY 字符100(char(100))
   * 颜色 Color 字符20(char(20))
   * 图标 Icon 字符50(char(50))
-  * 团队编号 UnitID 序号(bigint)
 */
 export default class ClassTaskTag {
 
@@ -34,9 +33,4 @@ export default class ClassTaskTag {
    * 
    */
   public Icon: string = "";
-  /**
-   * 团队编号
-   * 
-   */
-  public UnitID: number = 0;
 }

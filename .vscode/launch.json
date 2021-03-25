@@ -6,9 +6,11 @@
     "configurations": [{
         "type": "node",
         "request": "launch",
-        "name": "ApiSDK",
-        "program": "${workspaceFolder}/dist/demo.js",
-        "cwd": "${workspaceFolder}",
+        "name": "TestApiSDK",
+        "skipFiles": [
+            "<node_internals>/**"
+        ],
+        "program": "${workspaceFolder}/dist/test.js",
         "outFiles": [
             "${workspaceFolder}/**/*.js"
         ]

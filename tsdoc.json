@@ -1,0 +1,11 @@
+{
+    "tsdoc": {
+        "source": "src",
+        "destination": "doc",
+        "systemName": "碳素云SaaS Api服务",
+        "footer": "绵阳后四碳素云信息技术有限责任公司",
+        "copyright": "绵阳后四碳素云信息技术有限责任公司",
+        "outputSourceFiles": "false",
+        "commentsOnly": "false"
+    }
+}

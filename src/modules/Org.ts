@@ -1,5 +1,5 @@
 import { ApiController } from '../index';
-import { ErrorType } from '../lib';
+import { ErrorType, SearchWhere } from '../lib';
 namespace Organ {
     export class OrgOrgan {
 
@@ -13,6 +13,11 @@ namespace Organ {
          * 
          */
         public Title: string = "";
+        /**
+         * 全称名称
+         * 
+         */
+        public LTitle: string = "";
         /**
          * 助记码
          * 
@@ -43,6 +48,16 @@ namespace Organ {
          * 
          */
         public Name: string = "";
+        /**
+         * 分组键
+         * 
+         */
+        public Key: string = "";
+        /**
+         * 关联字段
+         * 
+         */
+        public GID: number = 0;
         /**
          * 联系电话
          * 
@@ -98,18 +113,72 @@ namespace Organ {
          * 
          */
         public PUnitID: number = 0;
+
+        /**
+         * 是否自动创建用户组
+         */
+        public WithGroup?: boolean = false;
+
+        /**
+         * 是否自动根据电话创建账号，默认密码为当前传入的Tel字段
+         */
+        public WithAdmin?: boolean = false;
     }
+    /**
+     * 组织结构管理类
+     */
     class organ extends ApiController {
+        /**
+         * 列出组织结构
+         * @param data 
+         */
         list(data: { P?: number, N?: number, Sort?: string, Keyword?: string, W?: { [index: string]: any } }): Promise<any> {
-            return this._post('list', data);
+            return this.search(<any>data);
         }
-        adds(data: OrgOrgan[]) {
+
+        /**
+         * 读取我的根节点
+         */
+        mine(): Promise<{ UnitID: number, Title: string, Memo: string, Icon: string }[]> {
+            return this._post('mine', {})
+        }
+        /**
+         * 查询接口
+         * @param w 
+         */
+        search(w: SearchWhere) {
+            return this._post('list', w).then((v) => {
+                if (!v.L) {
+                    v.L = [];
+                }
+                return v;
+            });
+        }
+        /**
+        * 获取组织树
+        * @param {number[]} UnitIDs 要取得的树的CID列表
+        * @param {number} Deep 循环深度，最大为10，默认为3
+        * @description 返回的内容为数组，请使用array_tree方法生成想要的树
+        */
+        tree(UnitIDs: number[], Deep: number = 3): Promise<OrgOrgan[]> {
+            return this._post('tree', { UnitIDs, Deep });
+        }
+        /**
+         * 批量添加组织机构数据
+         * @param data 
+         */
+        adds(data: OrgOrgan[]): Promise<OrgOrgan[]> {
             if (data.length > 0) {
                 return this._post('adds', data);
             }
             throw new Error(ErrorType.Org.ORGAN_SHOULD_BE_ARRAY)
         }
-        save(UnitIDs: number[], data: any) {
+        /**
+         * 保存组织机构数据
+         * @param UnitIDs 
+         * @param data 
+         */
+        save(UnitIDs: number[], data: any): Promise<OrgOrgan[]> {
             if (UnitIDs.length > 0) {
                 return this._post('save', { UnitIDs, Data: data })
             }
@@ -174,6 +243,10 @@ namespace Organ {
          * 状态
          */
         public Status?: number = 0;
+        /**
+         * 是否自动创建用户组
+         */
+        public WithGroup?: boolean = false;
     }
     /**
      * 区域操作Api
@@ -184,7 +257,15 @@ namespace Organ {
          * @param data 
          */
         list(data: { P?: number, N?: number, Sort?: string, Keyword?: string, W?: { [index: string]: any } }) {
-            return this._post('list', data);
+            return this.search(<any>data)
+        }
+        search(w: SearchWhere) {
+            return this._post('list', w).then((v) => {
+                if (!v.L) {
+                    v.L = [];
+                }
+                return v;
+            });
         }
         /**
          * 批量添加区域信息

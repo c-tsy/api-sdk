@@ -41,6 +41,14 @@ export namespace ErrorType {
 }
 
 export function tree() { }
+
+/**
+ * SDK的Hook
+ */
+export enum ApiSDKHooks {
+    Request = "apisdk/Request"
+}
+
 /**
  * 查询结果
  */
@@ -57,18 +65,49 @@ export class SearchResult<T> {
  */
 export class SearchWhere {
     W: { [index: string]: any } = {}
-    Keyword: string = "";
-    P: number = 1;
-    N: number = 10;
-    Sort: string = "";
+    Keyword?: string = "";
+    P?: number = 1;
+    N?: number = 10;
+    Sort?: string = "";
 }
 
 /**
  * 连接处理方式
  */
 export enum LinkType {
-    //追加
+    /**
+     * 追加
+     */
     append,
-    //替换
-    replace
+    /**
+     * 替换
+     */
+    replace,
+    /**
+     * 移除
+     */
+    remove
+}
+
+
+
+/**
+ * base64 to File
+ * @param dataurl
+ * @param filename
+ */
+export function dataurl_to_file(dataurl: string, filename: string): File | undefined {
+    //将base64转换为文件
+    if ("string" == typeof dataurl && dataurl.length > 0) {
+        var arr: any[] = dataurl.split(","),
+            mime = arr[0].match(/:(.*?);/)[1],
+            bstr = atob(arr[1]),
+            n = bstr.length,
+            u8arr = new Uint8Array(n);
+        while (n--) {
+            u8arr[n] = bstr.charCodeAt(n);
+        }
+        return new File([u8arr], filename, { type: mime });
+    }
+    throw new Error("非法DataURL")
 }

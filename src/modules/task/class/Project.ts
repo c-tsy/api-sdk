@@ -12,13 +12,12 @@
   * 排序 Sort 序号(bigint)
   * 重要等级 Level 整数(int)
   * 优先级 Priority 整数(int)
-  * 负责人 DirectorUID 序号(bigint)
-  * 团队编号 UnitID 序号(bigint)
+  * 负责人 MUID 序号(bigint)
   * 状态 Status 状态值(tinyint(1))
-  * 权限 Rule 状态值(tinyint(1))
   * 类型 Type 字符20(char(20))
   * GID GID 序号(bigint)
   * 关联Key Key 字符20(char(20))
+  * 可见性 Vis 状态值(tinyint(1))
 */
 export default class ClassTaskProject {
 
@@ -46,7 +45,7 @@ export default class ClassTaskProject {
    * 创建时间
    * 
    */
-  public CTime: Date = new Date("1970-01-01 00:00:00");
+  public CTime: Date = new Date(0);
   /**
    * 删除人
    * 
@@ -56,7 +55,7 @@ export default class ClassTaskProject {
    * 删除时间
    * 
    */
-  public DTime: Date = new Date("1970-01-01 00:00:00");
+  public DTime: Date = new Date(0);
   /**
    * 父级项目
    * 
@@ -86,22 +85,12 @@ export default class ClassTaskProject {
    * 负责人
    * 
    */
-  public DirectorUID: number = 0;
-  /**
-   * 团队编号
-   * 
-   */
-  public UnitID: number = 0;
+  public MUID: number = 0;
   /**
    * 状态
    * -1 已删除 0 未启用 1启用中
    */
   public Status: number = 0;
-  /**
-   * 权限
-   * 0 公开 1团队可见 2项目可见 3个人可见
-   */
-  public Rule: number = 0;
   /**
    * 类型
    * 
@@ -117,4 +106,9 @@ export default class ClassTaskProject {
    * 
    */
   public Key: string = "";
+  /**
+   * 可见性
+   * 0 公开 1团队可见 2项目可见 3个人可见
+   */
+  public Vis: number = 0;
 }

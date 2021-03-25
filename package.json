@@ -1,38 +1,47 @@
 {
   "name": "@ctsy/api-sdk",
-  "version": "2.0.91",
+  "version": "2.0.306",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
-    "dist/modules/*.js",
-    "dist/modules/*.d.ts",
+    "dist/modules/**/*.js",
+    "dist/modules/**/*.d.ts",
     "dist/index.js",
+    "dist/api-sdk.min.js",
     "dist/index.d.ts",
     "dist/lib.js",
     "dist/lib.d.ts",
+    "dist/errors.js",
+    "dist/errors.d.ts",
     "README.md",
     "yarn.lock"
   ],
   "scripts": {
-    "prepublish": "rm -rf dist && tsc"
+    "prepublish": "tsc",
+    "build": "webpack --config webpack.config.js"
   },
   "repository": "https://github.com/c-tsy/api-sdk",
   "author": "castleiMac <castle@tansuyun.cn>",
   "license": "MIT",
   "dependencies": {
-    "@ctsy/covert": "*",
+    "@ctsy/common": "*",
     "@ctsy/hook": "*",
-    "@ctsy/ws-rpc-client": "^1.0.13",
-    "castle-function": "*",
-    "get-value": "*",
+    "axios": "*",
+    "lodash": "*",
     "md5": "*",
-    "protobufjs": "*",
-    "set-value": "*",
+    "protobufjs": "^6.9.0",
     "store": "*"
   },
   "devDependencies": {
     "@types/axios": "*",
+    "@types/lodash": "^4.14.161",
     "@types/node": "*",
-    "@types/store": "*"
+    "@types/store": "*",
+    "babel-loader": "^8.1.0",
+    "ts-loader": "^8.0.2",
+    "typescript": "^3.9.7",
+    "webpack": "^4.44.1",
+    "webpack-bundle-analyzer": "^3.8.0",
+    "webpack-cli": "^3.3.12"
   }
 }

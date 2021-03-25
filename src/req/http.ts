@@ -3,7 +3,7 @@ import Axios from "axios";
 
 import * as store from 'store'
 import * as qs from 'querystring'
-import * as p from 'protobufjs';
+import * as p from 'protobufjs/light';
 import { ApiConfig } from "..";
 const md5: any = require('md5')
 export var Token = store.get('token') || ''

@@ -11,7 +11,9 @@
   * 删除时间 DTime 时间日期(datetime)
   * 备注 Memo 字符50(char(50))
   * 关系 Type 序号(bigint)
-  * 团队编号 UnitID 序号(bigint)
+  * 来源 From 字符50(char(50))
+  * GID GID 序号(bigint)
+  * 关联Key Key 字符20(char(20))
 */
 export default class ClassTaskMember {
 
@@ -49,7 +51,7 @@ export default class ClassTaskMember {
    * 创建时间
    * 
    */
-  public CTime: Date = new Date("1970-01-01 00:00:00");
+  public CTime: Date = new Date(0);
   /**
    * 删除人
    * 
@@ -59,7 +61,7 @@ export default class ClassTaskMember {
    * 删除时间
    * 
    */
-  public DTime: Date = new Date("1970-01-01 00:00:00");
+  public DTime: Date = new Date(0);
   /**
    * 备注
    * 
@@ -71,8 +73,18 @@ export default class ClassTaskMember {
    */
   public Type: number = 0;
   /**
-   * 团队编号
+   * 来源
    * 
    */
-  public UnitID: number = 0;
+  public From: string = "";
+  /**
+   * GID
+   * 
+   */
+  public GID: number = 0;
+  /**
+   * 关联Key
+   * 
+   */
+  public Key: string = "";
 }
