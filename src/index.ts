@@ -195,6 +195,8 @@ class ApiConfigClass {
      * 初始化
      */
     inited: boolean = false;
+
+    WS?: any;
 }
 export const ApiConfig = new ApiConfigClass
 /**
