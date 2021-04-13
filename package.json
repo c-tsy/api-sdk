@@ -1,6 +1,6 @@
 {
   "name": "@ctsy/api-sdk",
-  "version": "2.0.307",
+  "version": "2.0.308",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
@@ -17,7 +17,7 @@
     "yarn.lock"
   ],
   "scripts": {
-    "prepublish": "tsc",
+    "prepublishOnly": "tsc",
     "build": "webpack --config webpack.config.js"
   },
   "repository": "https://github.com/c-tsy/api-sdk",
