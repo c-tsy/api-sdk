@@ -5,6 +5,7 @@ import * as p from 'protobufjs/light';
 import { SearchWhere, SearchResult, ApiSDKHooks as hooks } from './lib';
 import hook, { Hook, HookWhen } from '@ctsy/hook';
 import { debug } from 'console';
+import { uuid } from '@ctsy/common';
 // import * as rpc from '@ctsy/ws-rpc-client';
 
 declare let window: any;
@@ -72,7 +73,7 @@ const md5: any = require('md5')
  * 用户识别符
  */
 export let Token = ''
-Token = store.get('token') || '';
+Token = store.get('token') || uuid();
 /**
  * 设置通信Token
  * @param token 
@@ -266,7 +267,7 @@ async function request(method: 'post' | 'get', path: string, data: any) {
                 protoed[m] = p.Root.fromJSON(pjson.data)
             }).catch((e) => {
                 //自动退回到JSON模式
-                ApiConfig.Debug = true;
+                // ApiConfig.Debug = true;
                 // debugger
                 protoed[m] = p.Root.fromJSON({})
             })
@@ -293,12 +294,14 @@ async function request(method: 'post' | 'get', path: string, data: any) {
         // if (d !== undefined) {
         //     e.data = d;
         // }
-        blocked[e.config.tm][e.config.md5].r = e.data.d
-        if (blocked[e.config.tm][e.config.md5].p.length > 0) {
-            for (let x of blocked[e.config.tm][e.config.md5].p) {
-                x(e.data.d)
+        if (blocked[e.config.tm] && blocked[e.config.tm][e.config.md5]) {
+            blocked[e.config.tm][e.config.md5].r = e.data.d
+            if (blocked[e.config.tm][e.config.md5].p.length > 0) {
+                for (let x of blocked[e.config.tm][e.config.md5].p) {
+                    x(e.data.d)
+                }
+                blocked[e.config.tm][e.config.md5].p = []
             }
-            blocked[e.config.tm][e.config.md5].p = []
         }
         return e.data.d;
     }).catch(async (e: any) => {
