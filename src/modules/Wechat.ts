@@ -1,7 +1,6 @@
-import { ApiController, ApiConfig, Token } from '../index';
+import { ApiController, ApiConfig, Token, set_token } from '../index';
 import { SearchWhere } from '../lib';
 import axios from 'axios'
-import { config } from 'process';
 declare const window: any;
 declare const wx: any;
 declare const setTimeout: any;
@@ -104,6 +103,9 @@ namespace Wechat {
      * 获取用户认证信息
      */
     export async function user() {
+        if (!Token) {
+            set_token()
+        }
         if (!IsWechatBrower) {
             throw new Error('NOT_WECHAT_BROWER');
         }
@@ -200,7 +202,7 @@ namespace Wechat {
             let i = 0;
             function success() {
                 if (++i > 1) {
-                    s();
+                    s(0);
                 }
             }
             wx.updateAppMessageShareData({

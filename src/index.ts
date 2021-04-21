@@ -73,12 +73,15 @@ const md5: any = require('md5')
  * 用户识别符
  */
 export let Token = ''
-Token = store.get('token') || uuid();
+Token = store.get('token')
 /**
  * 设置通信Token
  * @param token 
  */
-export function set_token(token: string) {
+export function set_token(token: string = '') {
+    if (!token) {
+        token = uuid()
+    }
     Token = token;
     store.set('token', token)
 }
