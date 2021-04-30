@@ -1290,7 +1290,7 @@ namespace ArtApi {
          * @param Status 审核状态 0待审核，-1 未通过 1通过
          * @returns 
          */
-        judge(CIDs: number, Status: 0 | 1 | -1): Promise<number> {
+        judge(CIDs: number[], Status: 0 | 1 | -1): Promise<number> {
             return this._post('judge', { CIDs, Status })
         }
         /**
