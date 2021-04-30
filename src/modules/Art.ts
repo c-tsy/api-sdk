@@ -54,7 +54,7 @@ namespace ArtApi {
         public PCID: number = 0;
         /**
          * 类型
-         * 1评论2点赞3签名
+         * 1评论2点赞3签名4需要审核的评论
          */
         public Type: number = 0;
         /**
@@ -62,6 +62,10 @@ namespace ArtApi {
          * 单数已点赞 双数为点赞
          */
         public IsLike: number = 0;
+        /**
+         * 1 审核通过 0 待审核 -1 审核拒绝
+         */
+        public Status = 0
     }
     /**
      * 文章阅读统计对象
@@ -1300,6 +1304,12 @@ namespace ArtApi {
          */
         read(ArtID: number, GID?: number, Tree: boolean = true, P: number = 1, N: number = 10) {
             return this._post('read', { ArtID, GID, P, N, Tree });
+        }
+        /**
+         * 支持按W读取评论内容
+         */
+        search(w: SearchWhere): Promise<SearchResult<any>> {
+            return this._post('search', w)
         }
     }
     export const CommentApi = new comment('Comment', prefix)
