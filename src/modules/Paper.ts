@@ -954,7 +954,68 @@ namespace Paper {
         answered(UIDs: number[], GID: number, PIDs: number[] = []) {
             return this._post('answered', { UIDs, PIDs, GID })
         }
+
+        /**
+         * 读取答题统计数据，支持分组统计
+         * @param GIDs 参与统计的所有GID数组
+         * @param STime 统计时间开始
+         * @param ETime 统计时间结束
+         * @param Conf.UIDs 参与统计的人员清单
+         * @param Conf.PIDs 参与统计的试卷编号列表
+         * @param Conf.PAIDs 参与统计的答题记录编号列表
+         * @param Conf.GroupBy 分组查询条件，默认为CUID,GID,PID，可选范围: CUID,GID,PID,PAID
+         * @returns {AnswerCountResult} 返回结果 数组
+         */
+        count(GIDs: number[], STime: string, ETime: string, Conf: {
+            UIDs?: number[],
+            PIDs?: number[],
+            PAIDs?: number[],
+            GroupBy?: string[]
+        } = {}): Promise<AnswerCountResult[]> {
+            return this._post('count', Object.assign({
+                GIDs, STime, ETime
+            }, Conf))
+        }
     }
+
+    /**
+    *  答题统计的数据接口对象
+    */
+    export class AnswerCountResult {
+        /**
+        * 答题人
+        */
+        CUID: number = 0;
+        /**
+        * GID
+        */
+        GID: number = 0;
+        /**
+        * 用户总得分
+        */
+        Total: number = 0;
+        /**
+        * 用户累计得分
+        */
+        Score: number = 0;
+        /**
+        * STime
+        */
+        STime: string = `2021-05-07 10:13:15`;
+        /**
+        * ETime
+        */
+        ETime: string = `2021-05-07 11:41:22`;
+        /**
+        * 用户完成所有答题所消耗的时间
+        */
+        Secends: number = 0;
+        /**
+        * 用户在时间段范围内符合条件的累计答题次数
+        */
+        Count: number = 8;
+    }
+
     /**
      * 答题情况接口
      */

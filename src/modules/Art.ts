@@ -1250,6 +1250,7 @@ namespace ArtApi {
         analyze(GID?: number, ArtID?: number): Promise<ClassArtRead> {
             return this._post('analyze', { GID, ArtID })
         }
+
         /**
          * 添加阅读记录
          * @param GID 分组编号，如 按企业切分则是企业编号
@@ -1270,6 +1271,52 @@ namespace ArtApi {
         rlog(GID: number, ArtID: number, UID: number, Key: string): Promise<ClassArtReadDetail> {
             return this._post('rlog', { GID, ArtID, UID, Key })
         }
+        /**
+         * 求阅读相关的统计数据，如起止时间，时长，参与人数等
+         * @param STime 开始时间
+         * @param ETime 结束时间
+         * @param GIDs GID范围
+         * @param Conf.ArtIDs 文章列表，不传表示所有有记录的文章
+         * @param Conf.UIDs 人员列表，不传表示所有有记录的人
+         * @returns 
+         */
+        count(STime: string, ETime: string, GIDs: number[], Conf: { ArtIDs?: number[], UIDs?: number[] } = {}): Promise<ReadCountResult[]> {
+            return this._post('count', Object.assign({ STime, ETime, GIDs }, Conf))
+        }
+
+    }
+    /**
+     * 阅读记录返回结构
+     */
+    class ReadCountResult {
+        /**
+         * 用户号
+         */
+        UID = 0
+        /**
+         * 文章编号
+         */
+        ArtID = 0
+        /**
+         * 
+         */
+        GID = 0
+        /**
+         * 阅读次数
+         */
+        Count = 0
+        /**
+         * 累计阅读秒数
+         */
+        Secends = 0
+        /**
+         * 开始阅读时间
+         */
+        STime = ""
+        /**
+         * 终止阅读时间
+         */
+        ETime = ""
     }
     class comment extends ApiController {
         /**
