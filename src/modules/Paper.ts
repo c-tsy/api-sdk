@@ -962,6 +962,8 @@ namespace Paper {
          * @param ETime 统计时间结束
          * @param Conf.UIDs 参与统计的人员清单
          * @param Conf.PIDs 参与统计的试卷编号列表
+         * @param Conf.OType 限定参与统计的OType，只能是一个，且OType与OIDs必须同时出现且有值才会生效
+         * @param Conf.OIDs 限定参与统计的OIDs范围，OType与OIDs必须同时出现且有值才会生效
          * @param Conf.PAIDs 参与统计的答题记录编号列表
          * @param Conf.GroupBy 分组查询条件，默认为CUID,GID,PID，可选范围: CUID,GID,PID,PAID
          * @returns {AnswerCountResult} 返回结果 数组
@@ -970,6 +972,8 @@ namespace Paper {
             UIDs?: number[],
             PIDs?: number[],
             PAIDs?: number[],
+            OType?: string,
+            OIDs?: number[],
             GroupBy?: string[]
         } = {}): Promise<AnswerCountResult[]> {
             return this._post('count', Object.assign({
