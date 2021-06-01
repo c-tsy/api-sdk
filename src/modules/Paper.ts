@@ -920,8 +920,8 @@ namespace Paper {
          * @param P 分页页码
          * @param N 分页每页数量
          */
-        detail(UIDs?: number[], GIDs?: number[], PIDs?: number[], PAIDs?: number[], Keys?: string[], Times?: number, P?: number, N?: number): Promise<{ L: ClassPaperAnswer }> {
-            return this._post('detail', { UIDs, GIDs, PIDs, PAIDs, Keys, Times, P, N });
+        detail(UIDs?: number[], GIDs?: number[], PIDs?: number[], PAIDs?: number[], Keys?: string[], Times?: number, P?: number, N?: number, STime: string = '', ETime: string = ''): Promise<{ L: ClassPaperAnswer }> {
+            return this._post('detail', { UIDs, GIDs, PIDs, PAIDs, Keys, Times, P, N, STime, ETime });
         }
         /**
          * 主观题阅卷提交
@@ -1141,6 +1141,8 @@ namespace Paper {
          * @param {string} Key 分组键
          * @param Answers 答案选项内容
          * @param {boolean} Cheat 作弊与否 false 表示不作弊
+         * @param {string} Addr 答题地址，用于标识用户位置等信息
+         * @param {{OType,OID}} Conf 用于标识OType和OID字段，关联处理
          */
         answer(PID: number, UID: number, STime: Date, ETime: Date, GID: number = 0, Key: string = "", Answers: {
             QID: number,
@@ -1162,7 +1164,7 @@ namespace Paper {
             // 是否作弊
             Cheat: boolean = false,
             // 答题位置
-            Addr: string = ""): Promise<{
+            Addr: string = "", Conf?: { OType?: string, OID?: number }): Promise<{
                 /**正确答案 {QID:[QIID]} QID为键，QIID为数组，正确选项的数组*/
                 Right: { [index: string]: number[] },
                 //当前答题得分
@@ -1192,7 +1194,7 @@ namespace Paper {
                 // 允许为空的提交，所以不用判断
                 // if([QuestionType.Single,QuestionType.Duplex].includes(answers[x.QID].QType))
             }
-            return this._post('answer', {
+            return this._post('answer', Object.assign({
                 Addr,
                 UID,
                 PID,
@@ -1202,7 +1204,7 @@ namespace Paper {
                 GID,
                 Answers: answers,
                 Cheat
-            })
+            }, Conf || {}))
         }
         /**
          * 读取试卷信息
