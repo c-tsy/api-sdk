@@ -644,25 +644,25 @@ export namespace User {
                 if (UIDs.length == 0) {
                     return rs;
                 }
-                let Ps = []
+                // let Ps = []
 
-                if (conf.With && conf.With.includes('Contact')) {
-                    Ps.push(ContactApi.read(UIDs))
-                } else {
-                    Ps.push([])
-                }
+                // if (conf.With && conf.With.includes('Contact')) {
+                //     Ps.push(ContactApi.read(UIDs))
+                // } else {
+                //     Ps.push([])
+                // }
 
-                let Prs = await Promise.all(Ps);
-                let ContactsMap = array_key_set(Prs[0], 'UID', true);
-                for (let x of rs.L) {
-                    x.Contacts = []
-                    if (ContactsMap[x.UID]) {
-                        x.Contacts = ContactsMap[x.UID];
-                        for (let c of ContactsMap[x.UID]) {
-                            x[c.T] = c.V;
-                        }
-                    }
-                }
+                // let Prs = await Promise.all(Ps);
+                // let ContactsMap = array_key_set(Prs[0], 'UID', true);
+                // for (let x of rs.L) {
+                //     x.Contacts = []
+                //     if (ContactsMap[x.UID]) {
+                //         x.Contacts = ContactsMap[x.UID];
+                //         for (let c of ContactsMap[x.UID]) {
+                //             x[c.T] = c.V;
+                //         }
+                //     }
+                // }
             }
             return rs;
         }
