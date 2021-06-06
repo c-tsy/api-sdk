@@ -6,8 +6,19 @@ export namespace Msg {
          * 发送短信验证码
          * @param Tel 手机号码 1开头的11位手机号，目前仅支持中国号码
          */
-        vcode(Tel: string) {
-            return this._post('vcode', { Tel });
+        vcode(Tel: string): Promise<{ Rand: string, SID: string }> {
+            return this._post('vcode', { Tel: Number(Tel) });
+        }
+        /**
+         * 校验验证码是否正确
+         * @param Tel 用户手机号
+         * @param VCode 用户验证码
+         * @param SID 发送标识
+         * @param Rand 随机验证码
+         * @returns 
+         */
+        verify(Tel: string, VCode: string, SID: string, Rand: string) {
+            return this._post('verify', { Tel: Number(Tel), VCode, SID, Rand })
         }
         /**
          * 发送短信
@@ -17,7 +28,7 @@ export namespace Msg {
          * @param Sign 签名
          */
         send(Tel: number, TID: number, Params: { [index: string]: string | number }, Sign: string) {
-            return this._post('send', { Tel, TID, Params, Sign })
+            return this._post('send', { Tel: Number(Tel), TID, Params, Sign })
         }
     }
     export const Sms = new sms('Sms', prefix);
