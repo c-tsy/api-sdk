@@ -296,6 +296,12 @@ namespace IOT {
             return this._post('kv', { DIDs })
         }
         /**
+         * 写入设备数据
+         */
+        writeData(data: { IMEI?: string, DID?: number, HTime?: string, Data: { [index: string]: any }, Kv: { [index: string]: string | number } }[]) {
+            return this._post('writeData', data)
+        }
+        /**
          * 发起查询
          * @param w 
          * @param withData 
