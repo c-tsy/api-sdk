@@ -6,8 +6,8 @@ export namespace Msg {
          * 发送短信验证码
          * @param Tel 手机号码 1开头的11位手机号，目前仅支持中国号码
          */
-        vcode(Tel: string): Promise<{ Rand: string, SID: string }> {
-            return this._post('vcode', { Tel: Number(Tel) });
+        vcode(Tel: string, Sign: string, Debug: boolean = false): Promise<{ Rand: string, SID: string }> {
+            return this._post('vcode', { Tel: Number(Tel), Sign, Debug });
         }
         /**
          * 校验验证码是否正确
@@ -17,7 +17,7 @@ export namespace Msg {
          * @param Rand 随机验证码
          * @returns 
          */
-        verify(Tel: string, VCode: string, SID: string, Rand: string) {
+        verify(Tel: string, VCode: string, SID: string, Rand: string): Promise<boolean> {
             return this._post('verify', { Tel: Number(Tel), VCode, SID, Rand })
         }
         /**
