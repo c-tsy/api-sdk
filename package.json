@@ -1,6 +1,6 @@
 {
   "name": "@ctsy/api-sdk",
-  "version": "2.0.323",
+  "version": "2.0.324",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
@@ -26,6 +26,7 @@
   "dependencies": {
     "@ctsy/common": "*",
     "@ctsy/hook": "*",
+    "@ctsy/xlsx": "^1.0.3",
     "axios": "*",
     "lodash": "*",
     "md5": "*",
