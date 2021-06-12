@@ -2,6 +2,8 @@ import { ApiController, ControllerApi } from '..';
 import { SearchWhere, LinkType } from '../lib';
 import { SearchResult } from '../lib';
 import { ParamsError } from '../errors';
+import Upload from './Upload';
+import { readAsJSON } from '@ctsy/xlsx'
 /**
  * 答题部分模块
  */
@@ -1054,6 +1056,71 @@ namespace Paper {
             AllQuestion: boolean
         }) {
             return this._post('get', { PID, _Ext });
+        }
+
+
+        async loadFile() {
+            let Rs: any = { Questions: [], Paper: {} }
+            let file: FileList | any = await Upload.select_file("*.xlsx,*.xls,*.csv")
+            if (file.length > 0) {
+                let d = await readAsJSON(file[0])
+                let pa = new Paper.ClassPaper
+                pa.Title = file[0].name
+                let Questions = []
+                for (let k in d) {
+                    //@ts-ignore
+                    for (let x of d[k]) {
+                        if (x['$Name'] == '类别' || x['$Title'] == '题目') { continue; }
+                        let Question = new Paper.ClassQuestion
+                        Question.Title = x.$Title;
+                        Question.QType = x.$QType;
+                        //@ts-ignore
+                        Question.AType = x.$AType;
+                        Question.Score = x.$Score || 1;
+                        Question.Memo = x.$Memo;
+                        //@ts-ignore
+                        Question.Addit = x.$Addit;
+                        for (let i of 'ABCDEFGHIJK') {
+                            let Item = new Paper.ClassQuestionItem
+                            if (x[i + 'Desc'] && x[i + 'Desc'].length > 1) {
+                                Item.Desc = x[i + 'Desc']
+                                //@ts-ignore
+                                Item.Memo = x[i + 'Memo'] || ''
+                                //@ts-ignore
+                                Item.Score = x[i + 'Score'] || 0
+                                //@ts-ignore                            
+                                Item.IsRight = Item.Score > 0 ? 1 : 0
+                                Question.Items.push(Item)
+                            }
+                        }
+                        if (Question.Items.length > 0) {
+                            Questions.push(Question)
+                        }
+                    }
+                }
+                Rs = {
+                    Paper: pa,
+                    Questions
+                }
+            } else {
+                throw new Error('未选择文件')
+            }
+            // return;
+            let QGroup = new Paper.ClassQuestionGroup();
+            QGroup.Title = "默认";
+            let g: any = await Paper.QuestionGroupApi.adds([QGroup]);
+            for (let x of Rs.Questions) {
+                x.QGID = g[0].QGID;
+            }
+            let Questions = await Paper.QuestionApi.adds(Rs.Questions);
+            let Config = new Paper.ClassPaperConfig();
+            Config.QGID = g[0].QGID;
+            Config.Questions = Questions;
+            Config.Score = 60;
+            Config.Use = Questions.length;
+            Config.Title = "默认";
+            Rs.Paper.Configs.push(Config);
+            return Rs;
         }
         /**
          * 添加题目，支持题项的自动处理并要求题项内容不能为空

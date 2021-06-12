@@ -429,16 +429,31 @@ export namespace User {
         }
         /**
          * 三方登陆
-         * @param Type 
-         * @param Account 
+         * @param Type 三方登陆认证类型 支持 Wechat/Alipay/Weibo ...
+         * @param Account 三方登陆的认证字符串 如微信的openid，
+         * @param Regist 是否开启账户不存在的自动注册过程 默认不开启
+         * @param Data 三方登陆的整个认证对象，服务器会做匹配
+         * @param PWD 自动注册的密码，默认为空，服务器自动生成
+         * @param UGID 自动绑定的用户组，默认为1
+         * @param Contacts 用户的其它联系信息对
+         * @example
+         * // 微信登陆并自动注册登陆过程
+         * UserApi.AuthApi.thirdLogin("Wechat",微信认证对象.openid,true,微信认证对象)
+         * @example
+         * //只是用第三方登陆
+         * UserApi.AuthApi.thirdLogin("Wechat",微信认证对象.openid)
+         * @returns 
          */
-        async thirdLogin(Type: string, Account: string) {
-            return await this._post('alogin', { Type, Account });
+        async thirdLogin(Type: string, Account: string, Regist: boolean = false, Data: { [index: string]: string | number } = {}, PWD: string = '', UGID = 0, Contacts = {}) {
+            return await this._post('alogin', { Type, Account, Regist, Data, PWD, UGID, Contacts });
         }
         /**
+         * 三方登陆绑定
+         * @param Type Wechat/Alipay
+         * @param Account Wechat.openid
+         * @example
          * 
-         * @param Type 三方登陆绑定
-         * @param Account 
+         * @return bool
          */
         async thirdBind(Type: string, Account: string) {
             return await this._post('abind', { Type, Account });

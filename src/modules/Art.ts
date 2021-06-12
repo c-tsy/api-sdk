@@ -1220,6 +1220,29 @@ namespace ArtApi {
             }
             return this._post('saves', data);
         }
+
+        /**
+         * 文章关联关系维护
+         * @param Type 追加、替换、删除
+         * @param Data 相关操作数据，支持2中模式，按ArtID操作或者按CID进行操作
+         * @example
+         * // 将一批文章关联到某个分类上
+         * ClassifyApi.link(LinkType.append,{ArtIDs:[文章编号列表],CID:文章分类编号})
+         * @example
+         * // 将一个文章关联到多个分类上
+         * ClassifyApi.link(LinkType.append,{ArtID:文章编号列表,CIDs:[文章分类编号]})
+         * @example
+         * // 从一个分类上移除多篇文章
+         * ClassifyApi.link(LinkType.remove,{ArtIDs:[文章编号列表],CID:文章分类编号})
+         * @example
+         * // 将某个分类上的文章全部替换成其它文章
+         * ClassifyApi.link(LinkType.replace,{ArtIDs:[文章编号列表],CID:文章分类编号})
+         * 
+         * @returns 
+         */
+        link(Type: LinkType, Data: { ArtIDs: number[], CID: number } | { CIDs: number[], ArtID: number }) {
+            return this._post('link', Object.assign(Data, Type))
+        }
     }
 
     /**
