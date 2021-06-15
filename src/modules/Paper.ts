@@ -974,7 +974,45 @@ namespace Paper {
         answered(UIDs: number[], GID: number, PIDs: number[] = []) {
             return this._post('answered', { UIDs, PIDs, GID })
         }
-
+        /**
+         * 读取隐患台账统计数据
+         * @param Status 要查询的状态范围 有隐患0 ，无1，已整改 2
+         * @param STime 记录查询范围开始时间 必填
+         * @param ETime 记录查询范围截止时间 必填
+         * @param w.GIDs 企业编号列表 可选
+         * @param w.PIDs 试卷编号列表 可选
+         * @param Keys 如果需要获取对应的试卷数据和答题数据请根据情况传入键 PIDs,PAIDs,QIDs组成的数组
+         * @param GroupBy 分组键
+         * @returns 
+         */
+        status(
+            Status: number[],
+            STime: Date | string,
+            ETime: Date | string,
+            Keys: ("PIDs" | "PAIDs" | "QIDs")[] = [],
+            w: { GIDs?: number[]; PIDs?: number[] } = {},
+            GroupBy: string[] = []): Promise<{
+                T: number;
+                L: {
+                    GID: number;
+                    Amount: number;
+                    Status: number;
+                    PIDs: number[];
+                    PAIDs: number[];
+                    QIDs: number[];
+                }[];
+            }> {
+            let status = this._post("status", {
+                GIDs: w.GIDs,
+                PIDs: w.PIDs,
+                STime,
+                ETime,
+                Status,
+                Keys,
+                GroupBy
+            });
+            return status;
+        }
         /**
          * 读取答题统计数据，支持分组统计
          * @param GIDs 参与统计的所有GID数组
