@@ -4,6 +4,7 @@ import { SearchResult } from '../lib';
 import { ParamsError } from '../errors';
 import Upload from './Upload';
 import { readAsJSON } from '@ctsy/xlsx'
+import Wechat from './Wechat';
 /**
  * 答题部分模块
  */
@@ -170,6 +171,11 @@ namespace Paper {
          * 扩展信息，支持用字符串做额外的数据存储
          */
         public Extra: string = "";
+        /**
+         * GPS X-经度，Y-纬度
+         */
+        X = 0;
+        Y = 0;
     }
     /**
   * 答题情况 PaperAnswer
@@ -489,6 +495,18 @@ namespace Paper {
          * 
          */
         public DUID: number = 0;
+        /**
+         * 关联图片
+         */
+        Img = ""
+        /**
+         * 备注内容
+         */
+        Memo = ""
+        /**
+         * 特殊项
+         */
+        Special = 0
     }
     /**
       * 试卷 Paper
@@ -1215,7 +1233,7 @@ namespace Paper {
          * @param {string} Addr 答题地址，用于标识用户位置等信息
          * @param {{OType,OID}} Conf 用于标识OType和OID字段，关联处理
          */
-        answer(PID: number, UID: number, STime: Date, ETime: Date, GID: number = 0, Key: string = "", Answers: {
+        async answer(PID: number, UID: number, STime: Date, ETime: Date, GID: number = 0, Key: string = "", Answers: {
             QID: number,
             SelectedQIIDs?: number[],
             QType?: QuestionType,
@@ -1230,12 +1248,16 @@ namespace Paper {
                 Name: string,
                 Memo: string,
                 URL: string,
-            } | string)[]
+            } | string)[],
         }[],
             // 是否作弊
             Cheat: boolean = false,
             // 答题位置
-            Addr: string = "", Conf?: { OType?: string, OID?: number }): Promise<{
+            Addr: string = "", Conf?: {
+                OType?: string, OID?: number,
+                X?: number,
+                Y?: number
+            }): Promise<{
                 /**正确答案 {QID:[QIID]} QID为键，QIID为数组，正确选项的数组*/
                 Right: { [index: string]: number[] },
                 //当前答题得分
@@ -1245,6 +1267,14 @@ namespace Paper {
                 //消耗时间
                 Seconds: number
             }> {
+            if (Wechat.IsWechatBrower) {
+                let local = await Wechat.location()
+                if (!Conf) {
+                    Conf = {}
+                }
+                Conf.X = local.longitude
+                Conf.Y = local.latitude
+            }
             let answers: any = {};
             for (let x of Answers) {
                 // answers[x.QID] = x.SelectedQIIDs;
