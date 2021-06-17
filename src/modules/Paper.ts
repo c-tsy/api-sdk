@@ -455,6 +455,7 @@ namespace Paper {
          * 
          */
         public AID: number = 0;
+        Score = 0
         /**
          * 分组编号
          * 
@@ -793,6 +794,7 @@ namespace Paper {
          * 选项内容
          */
         public Items: ClassQuestionItem[] = [];
+        Img = ""
     }
     /**
      * 统计分析结论
@@ -1191,7 +1193,17 @@ namespace Paper {
                         throw new ParamsError('标题错误')
                     }
                     if (x.Total <= 0) {
-                        throw new ParamsError('总分不得小于1')
+                        for (let c of x.Configs) {
+                            if (c.Score <= 0) {
+                                for (let q of c.Questions) {
+                                    if (q.Score <= 0)
+                                        for (let i of q.Items) {
+                                            q.Score = Math.max(q.Score, i.Score)
+                                        }
+                                    c.Score += q.Score
+                                }
+                            }
+                        }
                     }
                     if (x.Configs instanceof Array && x.Configs.length > 0) {
 

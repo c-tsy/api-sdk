@@ -1,4 +1,5 @@
 import { ControllerApi } from "..";
+import { LinkType } from "../lib";
 
 namespace Dic {
     var prefix = "_dic";
@@ -375,6 +376,17 @@ namespace Dic {
      */
     export class link extends ControllerApi<Link>{
         PK = 'LID';
+        /**
+         * 关联关系管理
+         * @param Type 支持添加和移除，暂不支持替换
+         * @param TID TID具体值
+         * @param Data 用于操作的数据
+         * @param Other 其它绑定参数
+         * @returns 
+         */
+        link(Type: LinkType, TID: number, Data: { DID: number, OValues: number[] } | { OValue: number, OIDs: number[] }, Other: { OType?: string, LType?: number, Sort?: number, Conf?: string } = {}) {
+            return this._post('link', Object.assign({ Type, TID }, Data, Other))
+        }
     }
     export const LinkApi = new link('Link', prefix);
     /**
