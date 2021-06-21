@@ -1241,7 +1241,7 @@ namespace ArtApi {
          * @returns 
          */
         link(Type: LinkType, Data: { ArtIDs: number[], CID: number } | { CIDs: number[], ArtID: number }) {
-            return this._post('link', Object.assign(Data, Type))
+            return this._post('link', Object.assign(Data, { Type }))
         }
     }
 
@@ -1303,7 +1303,7 @@ namespace ArtApi {
          * @param Conf.UIDs 人员列表，不传表示所有有记录的人
          * @returns 
          */
-        count(STime: string, ETime: string, GIDs: number[], Conf: { ArtIDs?: number[], UIDs?: number[] } = {}): Promise<ReadCountResult[]> {
+        count(STime: string, ETime: string, GIDs: number[], Conf: { ArtIDs?: number[], UIDs?: number[], Cycle?: 'week' | 'day' | 'month' | 'year' } = {}): Promise<ReadCountResult[]> {
             return this._post('count', Object.assign({ STime, ETime, GIDs }, Conf))
         }
 
