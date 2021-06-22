@@ -7,7 +7,7 @@ import ClassFormField from "./form/class/Field";
 import ClassFormTemplate from "./form/class/Template";
 import ClassFormJson from "./form/class/Json";
 
-namespace DicApi {
+namespace FormApi {
     var prefix = "_form";
     class form extends ControllerApi<ClassFormForm>{
         protected _format(data: ClassFormForm) {
@@ -76,4 +76,4 @@ namespace DicApi {
     export const TemplateApi = new column('Template', prefix);
 }
 
-export default DicApi
+export default FormApi
