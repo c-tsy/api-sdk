@@ -7,9 +7,10 @@ import hook, { Hook, HookWhen } from '@ctsy/hook';
 import { debug } from 'console';
 import { uuid } from '@ctsy/common';
 // import * as rpc from '@ctsy/ws-rpc-client';
-
+var _logs: string[] = []
 declare let window: any;
 declare let uni: any;
+window._logs = _logs;
 let BlockTime = 3000
 let blocked: {
     [index: string]: {
@@ -288,7 +289,7 @@ async function request(method: 'post' | 'get', path: string, data: any) {
             // await hook.emit(ApiSDKHooks.Request, HookWhen.Error, req, { conf, req: data, rep: e, error: err });
             throw new Error(err);
         }
-        log(path, method, e.config.start, Date.now() - e.config.start, e.data.c || e.status, e.config.data.length, e.headers['content-length'], e.data.e ? e.data.e.m : '', e.config.md5)
+        log(e, path, method, e.config.start, Date.now() - e.config.start, e.data.c || e.status, e.config.data.length, e.headers['content-length'], e.data.e ? e.data.e.m : '', e.config.md5)
         let d = await hook.emit(ApiSDKHooks.Request, HookWhen.After, e.data, { conf, config: conf, req: data, rep: e.data, error: "" });
         // if (d !== undefined) {
         //     e.data = d;
@@ -318,7 +319,7 @@ async function request(method: 'post' | 'get', path: string, data: any) {
             });
         }
         if (e.response && e.response.data) {
-            log(path, method, e.config.start, Date.now() - e.config.start, e.response.status, e.config.data.length, e.response.headers['content-length'], e.response.data.e.m, e.config.md5content)
+            log(e, path, method, e.config.start, Date.now() - e.config.start, e.response.status, e.config.data.length, e.response.headers['content-length'], e.response.data.e.m, e.config.md5content)
             err = e.response.data.e ? e.response.data.e.m : e.response.data;
         }
         await hook.emit(ApiSDKHooks.Request, HookWhen.Error, e.data, { conf, config: conf, req: data, rep: e.data, error: err });
@@ -337,10 +338,27 @@ async function request(method: 'post' | 'get', path: string, data: any) {
  * @param replen 
  * @param err 
  */
-function log(path: string, method: string, time: number, t: number, status: number, reqlen: number, replen: number, err: string = '', md5: string) {
+function log(ctx: AxiosResponse, path: string, method: string, time: number, t: number, status: number, reqlen: number, replen: number, err: string = '', md5: string) {
     // axios.get('https://tsyapi.cn-hangzhou.log.aliyuncs.com/logstores/web/track_ua.gif?APIVersion=0.6.0&__topic__=api&' + ['md5=' + md5, 'appid=' + ApiConfig.AppID, 'uid=' + ApiConfig.UID, 'token=' + Token, 'time=' + time, 'path=' + encodeURI(path), 'reqlen=' + reqlen, 'replen=' + replen, 'method=' + method, 'key=' + ApiConfig.Key, 't=' + t, 'status=' + status, 'e=' + err, 'hash=' + (isWindow ? encodeURI(window.location.hash) : '')].join('&'))
+    if (ApiConfig.LogToken.length > 10)
+        _logs.push(`req,ref="${location.host}",file="${location.pathname}",hash="${location.hash.replace(/=/g, '\\=')}",path="${path}",method=${method},type=json,key=${exports.ApiConfig.Key},app=${exports.ApiConfig.AppID} err="${err}",status=${status}u,time=${t}u,start=${time}u,req=${reqlen}u,rep=${replen || 0}u ${Date.now()}`)
 }
 
+setInterval(() => {
+    if (_logs.length > 0) {
+        axios.post(ApiConfig.LogURL + '&precision=ms', _logs.join('\n') + '\n'
+            + `token,ref="${location.host}",token="${exports.Token}",key=${exports.ApiConfig.Key},app=${exports.ApiConfig.AppID} start=${exports.Start}u,keep=${Date.now() - exports.Start}u`, {
+            headers: {
+                Authorization: 'Token ' + ApiConfig.LogToken,
+                "Content-Type": 'text/plain'
+            }
+        }).catch(() => { })
+        _logs = []
+    }
+}, 3000);
+/**
+ * 
+ */
 export class ApiHooks {
     static Created = 'ApiCreated';
     static IMEvent = 'IMEvent'
@@ -365,6 +383,16 @@ class ApiConfigClass {
      * 当前登录用户
      */
     UID: string | number = "";
+    /**
+     * @example z15d8D8wef1w
+     * @description 请到influx中生成写入权限的Token
+     */
+    LogToken = ''
+    /**
+     * 日志统计的上传地址
+     * @example //l.tansuyun.cn/api/v2/write?org=tsy&bucket=req
+     */
+    LogURL = '//l.tansuyun.cn/api/v2/write?org=tsy&bucket=req'
     /**
      * 开启调试模式
      */

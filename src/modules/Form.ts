@@ -30,6 +30,14 @@ namespace FormApi {
             return await super.save(0, d);
         }
         /**
+         * 用于读取单个的JSONForm对象
+         * @param FID 
+         * @returns 
+         */
+        async jsonGet(FID: number) {
+            return this._post('jsonGet', { FID });
+        }
+        /**
          * JSON数据的新增和保存，FID为0或空表示新增，否则表示保存
          * @param d 
          */
