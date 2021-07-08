@@ -4,8 +4,8 @@ import * as qs from 'querystring'
 import * as p from 'protobufjs/light';
 import { SearchWhere, SearchResult, ApiSDKHooks as hooks } from './lib';
 import hook, { Hook, HookWhen } from '@ctsy/hook';
-import { debug } from 'console';
-import { uuid } from '@ctsy/common';
+import { delay_cb, uuid } from '@ctsy/common';
+import * as _ from 'lodash'
 // import * as rpc from '@ctsy/ws-rpc-client';
 var _logs: string[] = []
 declare let window: any;
@@ -125,9 +125,7 @@ req.interceptors.response.use(async (data: any) => {
     } else if (ctype.includes('json') && (data.data instanceof ArrayBuffer || data.data instanceof Buffer)) {
         data.data = JSON.parse(Buffer.from(data.data).toString());
     }
-    // if (data.md5content) {
-    //     cached[data.md5content] = data.data;
-    // }
+    blocked[data.config.tm][data.config.md5].r = data.data.d
     return data;
 })
 req.interceptors.request.use(async (conf: any) => {
@@ -298,24 +296,27 @@ async function request(method: 'post' | 'get', path: string, data: any) {
         // if (d !== undefined) {
         //     e.data = d;
         // }
-        if (blocked[e.config.tm] && blocked[e.config.tm][e.config.md5]) {
-            blocked[e.config.tm][e.config.md5].r = e.data.d
-            if (blocked[e.config.tm][e.config.md5].p.length > 0) {
-                for (let x of blocked[e.config.tm][e.config.md5].p) {
-                    x(e.data.d)
-                }
-                blocked[e.config.tm][e.config.md5].p = []
+        let ca: any = _.get(blocked, e.config.tm + '.' + e.config.md5, { p: [] })
+        ca.r = e.data.d
+        if (ca.p.length > 0) {
+            for (let x of ca.p) {
+                x(e.data.d)
             }
+            ca.p = []
         }
-        return e.data.d;
+        return ca.r;
     }).catch(async (e: any) => {
         let err = e.message;
         if (e.message == 'Duplex') {
-            if (blocked[e.tm][e.md5].r) {
-                return blocked[e.tm][e.md5].r
+            let ca: any = _.get(blocked, e.tm + '.' + e.md5, { p: [] })
+            if (ca && ca.r) {
+                for (let x of ca.p) {
+                    x(ca.r)
+                }
+                return ca.r
             }
             return new Promise((s, j) => {
-                blocked[e.tm][e.md5].p.push(s)
+                ca.p.push(s)
             });
         }
         if (e.response && e.response.data) {
@@ -340,22 +341,21 @@ async function request(method: 'post' | 'get', path: string, data: any) {
  */
 function log(ctx: AxiosResponse, path: string, method: string, time: number, t: number, status: number, reqlen: number, replen: number, err: string = '', md5: string) {
     // axios.get('https://tsyapi.cn-hangzhou.log.aliyuncs.com/logstores/web/track_ua.gif?APIVersion=0.6.0&__topic__=api&' + ['md5=' + md5, 'appid=' + ApiConfig.AppID, 'uid=' + ApiConfig.UID, 'token=' + Token, 'time=' + time, 'path=' + encodeURI(path), 'reqlen=' + reqlen, 'replen=' + replen, 'method=' + method, 'key=' + ApiConfig.Key, 't=' + t, 'status=' + status, 'e=' + err, 'hash=' + (isWindow ? encodeURI(window.location.hash) : '')].join('&'))
-    if (ApiConfig.LogToken.length > 10)
+    if (ApiConfig.LogToken.length > 10) {
         _logs.push(`req,ref="${location.host}",file="${location.pathname}",hash="${location.hash.replace(/=/g, '\\=')}",path="${path}",method=${method},type=json,key=${exports.ApiConfig.Key},app=${exports.ApiConfig.AppID} err="${err}",status=${status}u,time=${t}u,start=${time}u,req=${reqlen}u,rep=${replen || 0}u ${Date.now()}`)
+        delay_cb('api-sdk-log', 2000, () => {
+            axios.post(ApiConfig.LogURL + '&precision=ms', _logs.join('\n') + '\n'
+                + `token,ref="${location.host}",token="${exports.Token}",key=${exports.ApiConfig.Key},app=${exports.ApiConfig.AppID} start=${exports.Start}u,keep=${Date.now() - exports.Start}u`, {
+                headers: {
+                    Authorization: 'Token ' + ApiConfig.LogToken,
+                    "Content-Type": 'text/plain'
+                }
+            }).catch(() => { })
+            _logs = []
+        })
+    }
 }
 
-setInterval(() => {
-    if (_logs.length > 0) {
-        axios.post(ApiConfig.LogURL + '&precision=ms', _logs.join('\n') + '\n'
-            + `token,ref="${location.host}",token="${exports.Token}",key=${exports.ApiConfig.Key},app=${exports.ApiConfig.AppID} start=${exports.Start}u,keep=${Date.now() - exports.Start}u`, {
-            headers: {
-                Authorization: 'Token ' + ApiConfig.LogToken,
-                "Content-Type": 'text/plain'
-            }
-        }).catch(() => { })
-        _logs = []
-    }
-}, 3000);
 /**
  * 
  */
