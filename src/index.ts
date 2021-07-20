@@ -10,8 +10,7 @@ import * as _ from 'lodash'
 var _logs: string[] = []
 declare let window: any;
 declare let uni: any;
-window._logs = _logs;
-let BlockTime = 3000
+let BlockTime = 500
 let blocked: {
     [index: string]: {
         [index: string]: {
@@ -44,6 +43,10 @@ try {
     //uniapp中不存在globalThis变量
     var global: any = globalThis;
     isWindow = global.__proto__.constructor.name == 'Window';
+    global.window = {
+        navigator: { userAgent: '' }
+    };
+    window._logs = _logs;
 } catch (error) {
 
 }
