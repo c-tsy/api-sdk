@@ -128,7 +128,8 @@ req.interceptors.response.use(async (data: any) => {
     } else if (ctype.includes('json') && (data.data instanceof ArrayBuffer || data.data instanceof Buffer)) {
         data.data = JSON.parse(Buffer.from(data.data).toString());
     }
-    blocked[data.config.tm][data.config.md5].r = data.data.d
+    // blocked[data.config.tm][data.config.md5].r = data.data.d
+    _.set(blocked, [data.config.tm, data.config.md5, 'r'].join('.'), data.data.d)
     return data;
 })
 req.interceptors.request.use(async (conf: any) => {
@@ -165,7 +166,7 @@ req.interceptors.request.use(async (conf: any) => {
 
             let md5content = md5(conf.url + str);
             conf.tm = tm;
-            if (blocked[tm] && blocked[tm][md5content]) {
+            if (blocked[tm][md5content]) {
                 let e: any = new Error('Duplex')
                 e.md5 = md5content
                 e.tm = tm;
@@ -323,7 +324,7 @@ async function request(method: 'post' | 'get', path: string, data: any) {
             });
         }
         if (e.response && e.response.data) {
-            log(e, path, method, e.config.start, Date.now() - e.config.start, e.response.status, e.config.data.length, e.response.headers['content-length'], e.response.data.e.m, e.config.md5content)
+            log(e, path, method, e.config.start, Date.now() - e.config.start, e.response.status, e.config.data.length, e.response.headers['content-length'], e.response.data.e.m, e.config.md5)
             err = e.response.data.e ? e.response.data.e.m : e.response.data;
         }
         await hook.emit(ApiSDKHooks.Request, HookWhen.Error, e.data, { conf, config: conf, req: data, rep: e.data, error: err });
