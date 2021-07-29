@@ -76,8 +76,8 @@ const md5: any = require('md5')
 /**
  * 用户识别符
  */
-export let Token = ''
-Token = store.get('token')
+export let Token = store.get('token')
+export const Start = Date.now()
 /**
  * 设置通信Token
  * @param token 
@@ -396,7 +396,7 @@ class ApiConfigClass {
      * 日志统计的上传地址
      * @example //l.tansuyun.cn/api/v2/write?org=tsy&bucket=req
      */
-    LogURL = '//l.tansuyun.cn/api/v2/write?org=tsy&bucket=req'
+    LogURL = 'https://l.tansuyun.cn/api/v2/write?org=tsy&bucket=req'
     /**
      * 开启调试模式
      */
