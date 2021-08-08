@@ -161,15 +161,15 @@ namespace Pay {
          * 读取单个支付订单记录
          * @param OID 
          */
-        get(OID: number): Promise<ClassPayOrders> {
-            return this._post('get', { OID })
+        get(OID: number, FOID: number = 0): Promise<ClassPayOrders> {
+            return this._post('get', { OID, FOID })
         }
         /**
          * 自动创建调用微信支付
          * @param d 
          * @param waitForConfirm 
          */
-        async callWxPay(d: ClassPayOrders | any, waitForConfirm: boolean = true): Promise<boolean> {
+        async callWxPay(d: ClassPayOrders | any, waitForConfirm: boolean = true): Promise<boolean | ClassPayOrders> {
             if (!window.WeixinJSBridge) {
                 throw new Error('非微信环境');
             }
@@ -199,13 +199,13 @@ namespace Pay {
                             if (res.err_msg == "get_brand_wcpay_request:ok") {
                                 //支付成功，等待服务器确认
                                 if (waitForConfirm) {
-                                    for (let i = 0; i < 10; i++) {
+                                    for (let i = 0; i < 30; i++) {
                                         let pcheck = await this.get(d.OID);
                                         if (pcheck.Status == 1) {
-                                            s(true);
+                                            s(pcheck);
                                             return;
                                         }
-                                        await timeout(2000);
+                                        await timeout(1000);
                                     }
                                     j('查询支付结果超时');
                                 } else {
