@@ -136,9 +136,10 @@ req.interceptors.request.use(async (conf: any) => {
     if (!ApiConfig.AppID || !ApiConfig.Secret) {
         // throw new Error('AppID or Secret')
     }
-    if (Token) {
-        conf.headers['token'] = Token;
+    if (!Token) {
+        set_token()
     }
+    conf.headers['token'] = Token;
     // 取得当前13位毫秒时间戳
     let rand = conf.start = Date.now()
     //debug('1.取得当前毫秒级时间戳，若是秒级时间戳请在末尾添加3个0:' + rand)
