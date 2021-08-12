@@ -271,6 +271,10 @@ namespace ArtApi {
          * 
          */
         public Size: number = 0;
+        /**
+         * 评论编号
+         */
+        CID: number = 0
     }
 
     /**

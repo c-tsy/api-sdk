@@ -1294,13 +1294,13 @@ namespace Paper {
                         }
                     }
                 }
-                answers[x.QID] = {
+                answers[x.QID] = Object.assign(x, {
                     QType: undefined == x.QType ? QuestionType.Single : x.QType,
                     QIIDs: x.SelectedQIIDs || [],
                     Desc: x.Desc || '',
                     Imgs: x.Imgs || [],
                     Memo: x.Memo || ''
-                }
+                })
                 // 允许为空的提交，所以不用判断
                 // if([QuestionType.Single,QuestionType.Duplex].includes(answers[x.QID].QType))
             }
