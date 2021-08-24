@@ -279,14 +279,29 @@ namespace IOT {
          * @param K 要读取的统计数据的键名称，
          * @param Options 其它的参数
          */
-        statistics(MIDs: number | number[], K: string | string[], Options: {
+        async statistics(MIDs: number | number[], K: string | string[], Options: {
             STime?: Date | string,
             ETime?: Date | string,
             Cycle?: StatisticsCycle,
             GID?: number,
             Key?: string
         } = {}): Promise<CountLog[]> {
-            return this._post('statistics', Object.assign(Options, { MIDs, K }))
+            let srs = await this._post('pstatis', Object.assign(Options, { MIDs, K }))
+            let rs = [];
+            for (let k in srs) {
+                rs.push(
+                    ...srs[k].Vals.map((o: { Day: number; V: number }) => {
+                        let t = o.Day.toString();
+                        return {
+                            V: o.V,
+                            K: k,
+                            Day: t.substr(0, 4) + "-" + t.substr(4, 2) + "-" + t.substr(6),
+                        };
+                    })
+                );
+                // debugger;
+            }
+            return rs;
         }
         /**
          * 读取KV数据
