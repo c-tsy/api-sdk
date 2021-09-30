@@ -2,7 +2,7 @@ import axios, { AxiosResponse } from 'axios';
 import * as store from 'store'
 import * as qs from 'querystring'
 import * as p from 'protobufjs/light';
-import { SearchWhere, SearchResult, ApiSDKHooks as hooks } from './lib';
+import { SearchWhere as sw, SearchResult as sr, ApiSDKHooks as hooks } from './lib';
 import hook, { Hook, HookWhen } from '@ctsy/hook';
 import { delay_cb, uuid } from '@ctsy/common';
 import * as _ from 'lodash'
@@ -136,10 +136,14 @@ req.interceptors.request.use(async (conf: any) => {
     if (!ApiConfig.AppID || !ApiConfig.Secret) {
         // throw new Error('AppID or Secret')
     }
-    if (!Token) {
-        set_token()
+    if (conf.token) {
+        conf.headers['token'] = conf.token;
+    } else {
+        if (!Token) {
+            set_token()
+        }
+        conf.headers['token'] = Token;
     }
-    conf.headers['token'] = Token;
     // 取得当前13位毫秒时间戳
     let rand = conf.start = Date.now()
     //debug('1.取得当前毫秒级时间戳，若是秒级时间戳请在末尾添加3个0:' + rand)
@@ -212,7 +216,7 @@ req.interceptors.request.use(async (conf: any) => {
 //     let [m, c, f] = path.replace('_', '').split('/')
 //     if (ApiConfig.protos[m] && ApiConfig.protos[m][c])
 // }
-async function request(method: 'post' | 'get', path: string, data: any) {
+async function request(method: 'post' | 'get', path: string, data: any, t: any) {
     let q: any = req[method], conf: any = {};
     if (false === ApiConfig.inited) {
         if (ApiConfig.Debug == false)
@@ -283,7 +287,9 @@ async function request(method: 'post' | 'get', path: string, data: any) {
     if (method == 'get') {
         // path += ('?' + query.stringify(data));
     }
-
+    if (t && t.token) {
+        conf.token = t.token
+    }
     return await q(path, method == 'get' ? conf : data, conf).then(async (e: AxiosResponse | any) => {
         conf = e.config;
         if (e.data.c != 200) {
@@ -436,9 +442,12 @@ export class ApiController {
     name: string = "";
     prefix: string = "";
     host: string = "";
-    constructor(name: string, prefix: string) {
+    token: string = ""
+    constructor(name: string, prefix: string, token = '') {
         this.name = name;
         this.prefix = prefix;
+        if (token)
+            this.token = token;
     }
     protected get_url(method: string) {
         let p = [this.host];
@@ -456,7 +465,7 @@ export class ApiController {
      * @param opt 
      */
     _post(method: string, data: any = {}) {
-        return request('post', this.get_url(method), data);
+        return request('post', this.get_url(method), data, this);
     }
     /**
      * 
@@ -464,7 +473,7 @@ export class ApiController {
      * @param data 
      */
     _get(method: string, data: any = {}) {
-        return request('get', this.get_url(method), data);
+        return request('get', this.get_url(method), data, this);
     }
 }
 /**
@@ -547,7 +556,7 @@ export class ControllerApi<T> extends ApiController {
      * 查询接口
      * @param d 
      */
-    search(d: SearchWhere): PromiseLike<SearchResult<T>> {
+    search(d: sw): PromiseLike<sr<T>> {
         return this._post('search', d).then((v) => {
             if (!v.L) {
                 v.L = [];
@@ -612,7 +621,8 @@ export class ControllerApi<T> extends ApiController {
     }
 }
 
-
+export const SearchResult = sw;
+export const SearchWhere = sw;
 
 if (isWindow) {
     window.CTsyApiSDK = {
