@@ -2,7 +2,7 @@ import { SearchWhere } from "../lib";
 import { ApiController } from "..";
 
 namespace Log {
-    const prefix = "_log";
+    export const prefix = "_log";
 
     export class ClassEventLog {
         /**
@@ -77,7 +77,10 @@ namespace Log {
         Date: [Date | string, Date | string] = [new Date, new Date]
     }
 
-    class log extends ApiController {
+    export class log extends ApiController {
+        constructor(token = "") {
+            super('Log', prefix, token)
+        }
 
         write(Logs: ClassEventLog[]) {
             return this._post('write', { Logs })
@@ -87,7 +90,7 @@ namespace Log {
             return this._post('search', w);
         }
     }
-    export const LogApi = new log('Log', prefix)
+    export const LogApi = new log()
 }
 
 export default Log

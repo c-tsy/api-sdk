@@ -47,7 +47,7 @@ try {
         navigator: { userAgent: '' }
     };
     window._logs = _logs;
-} catch (error) {
+} catch (error: any) {
 
 }
 // var debugs: string[] = []
@@ -109,7 +109,7 @@ req.interceptors.response.use(async (data: any) => {
             try {
                 let pjson = await axios.get(ApiConfig.Host + '/proto/' + m + '.json')
                 protoed[m] = p.Root.fromJSON(pjson.data)
-            } catch (error) {
+            } catch (error: any) {
                 //自动退回到JSON模式
                 ApiConfig.Debug = true;
                 // debugger
@@ -225,7 +225,7 @@ async function request(method: 'post' | 'get', path: string, data: any, t: any) 
                     ApiConfig.protos = d.data;
                     // debugger
                 }).catch((e: any) => { })
-            } catch (error) {
+            } catch (error: any) {
 
             }
         // try {
@@ -258,7 +258,7 @@ async function request(method: 'post' | 'get', path: string, data: any, t: any) 
         //     })
         // }
         //     }
-        // } catch (error) {
+        // } catch (error:any) {
 
         // }
         ApiConfig.inited = true;
@@ -442,7 +442,8 @@ export class ApiController {
     name: string = "";
     prefix: string = "";
     host: string = "";
-    token: string = ""
+    token: string = "";
+    ctx: any;
     constructor(name: string, prefix: string, token = '') {
         this.name = name;
         this.prefix = prefix;

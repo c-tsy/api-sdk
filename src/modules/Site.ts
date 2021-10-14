@@ -1,6 +1,6 @@
 import { ApiController, ControllerApi } from "..";
 namespace SiteApi {
-    let prefix = '_site'
+    export const prefix = '_site'
     /**
       * 展示区详情 DisplayItem
       * DIID DIID 自增(bigint(20))
@@ -258,29 +258,38 @@ namespace SiteApi {
      * 展示位管理接口
      * 不支持add，del，delw，replace，replacew，savew
      */
-    class display extends ControllerApi<Display> {
+    export class display extends ControllerApi<Display> {
         PK = "DID"
+        constructor(token = "") {
+            super('Display', prefix, token)
+        }
 
     }
-    export const DisplayApi = new display('Display', prefix)
+    export const DisplayApi = new display()
     /**
      * 展示位详情管理接口
      * 不支持add，del，delw，replace，replacew，savew
      */
-    class displayItem extends ControllerApi<DisplayItem> {
+    export class displayItem extends ControllerApi<DisplayItem> {
         PK = "DIID"
+        constructor(token = "") {
+            super('DisplayItem', prefix, token)
+        }
 
     }
-    export const DisplayItemApi = new displayItem('DisplayItem', prefix)
+    export const DisplayItemApi = new displayItem()
     /**
      * 站点管理接口
      * 不支持add，del，delw，replace，replacew，savew
      */
-    class sites extends ControllerApi<Sites> {
+    export class sites extends ControllerApi<Sites> {
         PK = "SID"
+        constructor(token = "") {
+            super('Sites', prefix, token)
+        }
 
     }
-    export const SitesApi = new sites('Sites', prefix)
+    export const SitesApi = new sites()
 }
 
 export default SiteApi;

@@ -4,7 +4,7 @@ import { timeout } from "@ctsy/common";
 import { SearchWhere, SearchResult } from "../lib";
 declare let window: any;
 namespace Pay {
-    let prefix = '_pay';
+    export const prefix = '_pay';
     export enum PayStatus {
         Pending = 0,
         Cancel = -1,
@@ -133,7 +133,10 @@ namespace Pay {
          */
         public Push: string = "";
     }
-    class pay extends ApiController {
+    export class pay extends ApiController {
+        constructor(token = "") {
+            super('Pay', prefix, token)
+        }
         /**
          * 创建支付订单
          * @param d 
@@ -143,7 +146,7 @@ namespace Pay {
                 if (p && 'string' == typeof p.Param && p.Param.length > 0) {
                     try {
                         p.Param = JSON.parse(p.Param);
-                    } catch (error) {
+                    } catch (error: any) {
 
                     }
                 }
@@ -219,7 +222,7 @@ namespace Pay {
                             }
                         });
                     });
-                } catch (error) {
+                } catch (error: any) {
                     if (error == '取消支付') {
                         throw new Error('支付失败，客户取消');
                     } else {
@@ -230,7 +233,7 @@ namespace Pay {
             throw new Error('支付失败，调用失败');
         }
     }
-    export const PayApi = new pay('Pay', prefix);
+    export const PayApi = new pay();
 }
 
 export default Pay;

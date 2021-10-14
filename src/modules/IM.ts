@@ -2,7 +2,7 @@ import { ApiController } from '../';
 import { ErrorType } from '../lib';
 
 export namespace IM {
-    const prefix = "_im";
+    export const prefix = "_im";
     export class GroupMemberParams {
         GID: string = '';
         UIDs: string[] = []
@@ -43,7 +43,7 @@ export namespace IM {
          */
         public Type: number = 0
     }
-    class member extends ApiController {
+    export class member extends ApiController {
         prefix = "_im"
         constructor() {
             super('Member', prefix)

@@ -8,7 +8,7 @@ import { array_columns, array_key_set } from "@ctsy/common";
 import IOTModelConf from "./iot/class/ModelConf";
 
 namespace IOT {
-    let prefix = '_iot';
+    export const prefix = '_iot';
     export interface DriverInfo {
         Name: string;
         Versions: Version[];
@@ -168,11 +168,14 @@ namespace IOT {
     /**
      * 产品型号管理接口
      */
-    class model extends ControllerApi<Model> {
+    export class model extends ControllerApi<Model> {
         PK = "MID";
+        constructor(token = "") {
+            super('Model', prefix, token)
+        }
 
     }
-    export const ModelApi = new model('Model', prefix);
+    export const ModelApi = new model();
     /**
      * 设备统计信息
      */
@@ -257,8 +260,11 @@ namespace IOT {
     /**
      * 设备管理接口
      */
-    class device extends ControllerApi<Device> {
+    export class device extends ControllerApi<Device> {
         PK = "DID";
+        constructor(token = "") {
+            super('Device', prefix, token)
+        }
         /**
          * 读取设备实时数据
          * @param d 
@@ -370,8 +376,11 @@ namespace IOT {
             return this._post('map', d);
         }
     }
-    export const DeviceApi = new device('Device', prefix);
-    class protocol extends ControllerApi<Protocol> {
+    export const DeviceApi = new device();
+    export class protocol extends ControllerApi<Protocol> {
+        constructor(token = "") {
+            super('Protocol', prefix, token)
+        }
 
         /**
          * 读取当前支持的驱动信息
@@ -382,27 +391,36 @@ namespace IOT {
 
     }
 
-    export const ProtocolApi = new protocol('Protocol', prefix);
-    class cmd extends ControllerApi<any>{
+    export const ProtocolApi = new protocol();
+    export class cmd extends ControllerApi<any>{
+        constructor(token = "") {
+            super('Cmd', prefix, token)
+        }
 
         adds(d: Cmd[]) {
             return this._post('adds', d)
         }
     }
-    export const CmdApi = new cmd('Cmd', prefix)
+    export const CmdApi = new cmd()
 
 
-    class platform extends ControllerApi<any>{
+    export class platform extends ControllerApi<any>{
+        constructor(token = "") {
+            super('Platform', prefix, token)
+        }
 
     }
-    class modelConf extends ControllerApi<IOTModelConf>{
+    export class modelConf extends ControllerApi<IOTModelConf>{
+        constructor(token = "") {
+            super('ModelConf', prefix, token)
+        }
 
     }
     /**
      * 模型配置
      */
-    export const ModelConf = new modelConf('ModelConf', prefix)
-    export const PlatformApi = new platform('Platform', prefix);
+    export const ModelConf = new modelConf()
+    export const PlatformApi = new platform();
 }
 
 export default IOT;

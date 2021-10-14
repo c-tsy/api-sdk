@@ -117,7 +117,7 @@ namespace Wechat {
             } else {
                 window.location.href = url;
             }
-        } catch (error) {
+        } catch (error: any) {
             window.location.href = url;
         }
     }
@@ -432,7 +432,7 @@ namespace Wechat {
         UTime = ''
     }
 
-    class WechatController extends ApiController {
+    export class WechatController extends ApiController {
         protected get_url(method: string) {
             if (!WechatID) {
                 throw new Error('WechatID Error')
@@ -440,7 +440,7 @@ namespace Wechat {
             return ['', this.prefix, this.name, method, WechatID, Token].join('/');
         }
     }
-    class users extends WechatController {
+    export class users extends WechatController {
         sync() {
             return this._post('sync')
         }
@@ -454,7 +454,7 @@ namespace Wechat {
             return this._post('remark', d)
         }
     }
-    class group extends WechatController {
+    export class group extends WechatController {
         add(Name: string) {
             return this._post('add', { Name })
         }
@@ -477,12 +477,12 @@ namespace Wechat {
             return this._post('unlink', data)
         }
     }
-    class auth extends WechatController {
+    export class auth extends WechatController {
         user() {
             return this._post('user')
         }
     }
-    class admin extends WechatController {
+    export class admin extends WechatController {
         users() {
             return this._post('users')
         }
@@ -491,9 +491,9 @@ namespace Wechat {
         }
 
     }
-    class js extends WechatController { }
-    class menu extends WechatController { }
-    class MsgType {
+    export class js extends WechatController { }
+    export class menu extends WechatController { }
+    export class MsgType {
         value: string = ''
         color: string = ''
     }
@@ -544,7 +544,7 @@ namespace Wechat {
     /**
      * 微信消息处理
      */
-    class msg extends WechatController {
+    export class msg extends WechatController {
         /**
          * 发送模板推送消息
          * @param TemplateID 

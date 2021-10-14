@@ -2,7 +2,7 @@ import { ControllerApi } from "..";
 import { LinkType } from "../lib";
 
 namespace Dic {
-    var prefix = "_dic";
+    export const prefix = "_dic";
     /**
       * User关联记录 UserLink
       * LID LID 自增(bigint(20))
@@ -350,6 +350,9 @@ namespace Dic {
      */
     export class dics extends ControllerApi<Dics>{
         PK = 'DID';
+        constructor(token = "") {
+            super('Dics', prefix, token)
+        }
 
         // adds() { }
         /**
@@ -363,18 +366,24 @@ namespace Dic {
             return this._post('tree', Object.assign(W, { Deep }))
         }
     }
-    export const DicsApi = new dics('Dics', prefix);
+    export const DicsApi = new dics();
     /**
      * 字典类型管理接口
      */
     export class types extends ControllerApi<Types>{
         PK = 'TID';
+        constructor(token = "") {
+            super('Types', prefix, token)
+        }
     }
-    export const TypesApi = new types('Types', prefix);
+    export const TypesApi = new types();
     /**
      * 关联关系管理接口
      */
     export class link extends ControllerApi<Link>{
+        constructor(token = "") {
+            super('Link', prefix, token)
+        }
         PK = 'LID';
         /**
          * 关联关系管理
@@ -388,13 +397,16 @@ namespace Dic {
             return this._post('link', Object.assign({ Type, TID }, Data, Other))
         }
     }
-    export const LinkApi = new link('Link', prefix);
+    export const LinkApi = new link();
     /**
      * 用户信息关联对象操作接口
      */
     export class userLink extends ControllerApi<Link>{
         PK = 'LID';
+        constructor(token = "") {
+            super('UserLink', prefix, token)
+        }
     }
-    export const UserLinkApi = new userLink('UserLink', prefix);
+    export const UserLinkApi = new userLink();
 }
 export default Dic;

@@ -7,7 +7,7 @@ namespace Wallet {
     /**
      * 货币操作接口
      */
-    class Currency extends ControllerApi<WalletClassCurrency>{
+    export class Currency extends ControllerApi<WalletClassCurrency>{
         PK = 'CID';
     }
     export const CurrencyApi = new Currency('Currency', prefix)

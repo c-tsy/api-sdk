@@ -9,7 +9,7 @@ import Wechat from './Wechat';
  * 答题部分模块
  */
 namespace Paper {
-    const prefix = "_paper"/**
+    export const prefix = "_paper"/**
     * 试卷答题结论 Answered
     * 结论编号 PAID 自增(bigint(20))
     * 试卷编号 PID 序号(bigint(20))
@@ -925,7 +925,7 @@ namespace Paper {
     /**
      * 答题情况的接口类
      */
-    class answer extends ApiController {
+    export class answer extends ApiController {
         /**
          * 创建一个答题结论，表示开始答题或用于分享处理
          * @param d 
@@ -1088,7 +1088,7 @@ namespace Paper {
     /**
      * 试卷处理类
      */
-    class paper extends ApiController {
+    export class paper extends ApiController {
         constructor() {
             super('Paper', prefix);
         }
@@ -1279,7 +1279,7 @@ namespace Paper {
                         let local = await Wechat.location()
                         Conf.X = local.longitude
                         Conf.Y = local.latitude
-                    } catch (error) {
+                    } catch (error: any) {
                         throw new Error("定位失败")
                     }
                 }
@@ -1335,7 +1335,7 @@ namespace Paper {
     /**
      * 题目
      */
-    class question extends ApiController {
+    export class question extends ApiController {
         /**
          * 添加题目，支持题项的自动处理并要求题项内容不能为空
          * @param Questions 
@@ -1546,7 +1546,7 @@ namespace Paper {
     /**
      * 题组管理
      */
-    class QuestionGroup extends ApiController {
+    export class QuestionGroup extends ApiController {
         constructor() {
             super('QGroup', prefix)
         }

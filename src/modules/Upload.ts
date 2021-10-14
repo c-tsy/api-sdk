@@ -51,7 +51,7 @@ namespace Upload {
         onUploadProgress?: (process: { loaded: number, total: number }) => void
     }
 
-    class upload extends ApiController {
+    export class upload extends ApiController {
         /**
          * 签名
          * @param what 

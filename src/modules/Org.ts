@@ -127,7 +127,7 @@ namespace Organ {
     /**
      * 组织结构管理类
      */
-    class organ extends ApiController {
+    export class organ extends ApiController {
         /**
          * 列出组织结构
          * @param data 
@@ -251,7 +251,7 @@ namespace Organ {
     /**
      * 区域操作Api
      */
-    class area extends ApiController {
+    export class area extends ApiController {
         /**
          * 读取区域列表
          * @param data 

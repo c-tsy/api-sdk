@@ -11,7 +11,7 @@ import ClassTaskMailpostList from "./task/class/MailpostList";
 import ClassTaskMailpostProcess from "./task/class/MailpostProcess";
 
 namespace TaskApi {
-    let prefix = '_task';
+    export const prefix = '_task';
 
 
     /**
@@ -88,9 +88,12 @@ namespace TaskApi {
     /**
      * 任务管理对象
      */
-    class task extends ControllerApi<ClassTask> {
+    export class task extends ControllerApi<ClassTask> {
         PK = "TID"
 
+        constructor(token = "") {
+            super('Task', prefix, token)
+        }
         /**
          * 关联文件管理
          * @param {LinkType} Type 
@@ -144,11 +147,14 @@ namespace TaskApi {
             });
         }
     }
-    export const TaskApi = new task('Task', prefix);
+    export const TaskApi = new task();
 
-    class project extends ControllerApi<ClassProject> {
+    export class project extends ControllerApi<ClassProject> {
         PK = "PID"
 
+        constructor(token = "") {
+            super('Project', prefix, token)
+        }
         /**
          * 读取项目详情，
          * @param {number[]} PIDs 项目编号数组
@@ -192,16 +198,22 @@ namespace TaskApi {
             });
         }
     }
-    export const ProjectApi = new project('Project', prefix);
+    export const ProjectApi = new project();
     /**
      * 任务组
      */
-    class taskGroup extends ControllerApi<ClassTaskGroup> {
+    export class taskGroup extends ControllerApi<ClassTaskGroup> {
         PK = "TGID"
+        constructor(token = "") {
+            super('TaskGroup', prefix, token)
+        }
     }
-    export const TaskGroupApi = new taskGroup('TaskGroup', prefix);
+    export const TaskGroupApi = new taskGroup();
 
-    class tag extends ApiController {
+    export class tag extends ApiController {
+        constructor(token = "") {
+            super('Tag', prefix, token)
+        }
         PK = "TagID"
         /**
          * Tag的关联关系处理
@@ -233,22 +245,31 @@ namespace TaskApi {
             return this._post('search', w);
         }
     }
-    export const TagApi = new tag('Tag', prefix);
-    class comment extends ControllerApi<ClassComment> {
+    export const TagApi = new tag();
+    export class comment extends ControllerApi<ClassComment> {
         PK = "CID"
+        constructor(token = "") {
+            super('Comment', prefix, token)
+        }
     }
-    export const CommentApi = new comment('Comment', prefix)
+    export const CommentApi = new comment()
     /**
      * 里程碑
      */
-    class mailpost extends ControllerApi<ClassTaskMilepost>{
+    export class mailpost extends ControllerApi<ClassTaskMilepost>{
         PK = 'MID'
+        constructor(token = "") {
+            super('Mailpost', prefix, token)
+        }
     }
     /**
      * 里程碑节点
      */
-    class mailpostList extends ControllerApi<ClassTaskMailpostList>{
+    export class mailpostList extends ControllerApi<ClassTaskMailpostList>{
         PK = "MLID";
+        constructor(token = "") {
+            super('MailpostList', prefix, token)
+        }
         /**
          * 批量保存或新增mailList
          * @param list 
@@ -260,21 +281,21 @@ namespace TaskApi {
     /**
      * 里程碑进度对象
      */
-    class mailpostProcess extends ControllerApi<ClassTaskMailpostProcess>{
+    export class mailpostProcess extends ControllerApi<ClassTaskMailpostProcess>{
         PK = "MPID";
     }
     /**
      * 里程碑对象
      */
-    export const MailpostApi = new mailpost('Mailpost', prefix);
+    export const MailpostApi = new mailpost();
     /**
      * 里程碑节点对象
      */
-    export const MailpostListApi = new mailpostList('MailpostList', prefix);
+    export const MailpostListApi = new mailpostList();
     /**
      * 里程碑进度对象
      */
-    export const MailpostProcessApi = new mailpostList('MailpostProcess', prefix);
+    export const MailpostProcessApi = new mailpostList();
 
 }
 

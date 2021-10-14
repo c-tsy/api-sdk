@@ -7,7 +7,7 @@ import { LinkType, SearchWhere, SearchResult } from "../lib";
 import MasterClassFamilyLog from "./master/class/FamilyLog";
 
 namespace Master {
-    let prefix = '_master';
+    export const prefix = '_master';
     export class MoveParam {
         /**
          * 户号
@@ -52,7 +52,7 @@ namespace Master {
      * 户的基础操作
      * 开户时自动创建账户，
      */
-    class Family extends ControllerApi<MasterClassFamily> {
+    export class Family extends ControllerApi<MasterClassFamily> {
         PK = 'FID';
         /**
          * 过户
@@ -105,14 +105,14 @@ namespace Master {
     }
     export const FamilyApi = new Family('Family', prefix)
 
-    class FamilyLog extends ControllerApi<MasterClassFamilyLog>{
+    export class FamilyLog extends ControllerApi<MasterClassFamilyLog>{
         PK: string = 'FLID'
     }
     export const FamilyLogApi = new FamilyLog('FamilyLog', prefix);
     /**
      * 计费组的管理操作接口
      */
-    class BillingGroup extends ControllerApi<MasterClassBillingGroup>{
+    export class BillingGroup extends ControllerApi<MasterClassBillingGroup>{
         PK = 'BGID'
         /**
          * 计费组的关联处理
@@ -128,7 +128,7 @@ namespace Master {
     /**
      * 规则对象
      */
-    class BillingGroupRule extends ControllerApi<MasterClassBillingGroupRule>{
+    export class BillingGroupRule extends ControllerApi<MasterClassBillingGroupRule>{
         PK = 'BGRID'
     }
 

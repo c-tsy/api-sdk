@@ -2,8 +2,8 @@ import { namespace } from "store";
 import { ControllerApi } from "..";
 
 namespace Monit {
-    const prefix = "_monit"
-    class PC extends ControllerApi<any> {
+    export const prefix = "_monit"
+    export class PC extends ControllerApi<any> {
         /**
          * 下发命令
          * @param PhyID 下发到哪个节点

@@ -1,7 +1,7 @@
 import { ApiController, ApiCommon, ControllerApi } from '../index';
 import { ErrorType, SearchWhere, LinkType, SearchResult } from '../lib';
 namespace ArtApi {
-    const prefix = "_art"
+    export const prefix = "_art"
     /**
      * 文章评论对象
      */
@@ -771,7 +771,10 @@ namespace ArtApi {
     /**
      * 文章管理类
      */
-    class art extends ApiController {
+    export class art extends ApiController {
+        constructor(token = "") {
+            super('Art', prefix, token)
+        }
         /**
          * 删除文章处理
          * @param ArtID 
@@ -1054,11 +1057,14 @@ namespace ArtApi {
      */
     export class author extends ControllerApi<Author> {
         PK = "AUID";
+        constructor(token = "") {
+            super('Author', prefix, token)
+        }
     }
     /**
      * 讲师、作者信息
      */
-    export const AutherApi = new author('Author', prefix)
+    export const AutherApi = new author()
     /**
      * 添加文章分类对象
      */
@@ -1167,8 +1173,11 @@ namespace ArtApi {
     /**
      * 文章分类管理类
      */
-    class classify extends ControllerApi<ClassClassify> {
+    export class classify extends ControllerApi<ClassClassify> {
         PK = 'CID';
+        constructor(token = "") {
+            super('Classify', prefix, token)
+        }
         /**
          * 获取我的所有分类
          * 按Sort和CID排序后返回
@@ -1252,7 +1261,10 @@ namespace ArtApi {
     /**
      * 文章类型管理类
      */
-    class type extends ApiController {
+    export class type extends ApiController {
+        constructor(token = "") {
+            super('Type', prefix, token)
+        }
         /**
          * 获取所有支持的文章类型
          */
@@ -1269,7 +1281,10 @@ namespace ArtApi {
     /**
      * 阅读记录
      */
-    class read extends ApiController {
+    export class read extends ApiController {
+        constructor(token = "") {
+            super('Read', prefix, token)
+        }
         /**
          * 读取分析数据记录，若涉及到统计分析请前端处理
          * @param GID 
@@ -1315,7 +1330,7 @@ namespace ArtApi {
     /**
      * 阅读记录返回结构
      */
-    class ReadCountResult {
+    export class ReadCountResult {
         /**
          * 用户号
          */
@@ -1345,7 +1360,10 @@ namespace ArtApi {
          */
         ETime = ""
     }
-    class comment extends ApiController {
+    export class comment extends ApiController {
+        constructor(token = "") {
+            super('Comment', prefix, token)
+        }
         /**
          * 添加评论
          * 支持引用评论，请传入PCID参数作为引用的评论编号
@@ -1386,26 +1404,26 @@ namespace ArtApi {
             return this._post('search', w)
         }
     }
-    export const CommentApi = new comment('Comment', prefix)
+    export const CommentApi = new comment()
     /**
      * 文章管理
      */
-    export const Art = new art('Art', prefix);
+    export const Art = new art();
     export const ArtApi = Art;
 
     /**
      * 文章类型
      */
-    export const Type = new type('Type', prefix);
+    export const Type = new type();
     export const TypeApi = Type
 
     /**
      * 文章分类管理
      */
-    export const Classify = new classify('Classify', prefix);
+    export const Classify = new classify();
     export const ClassifyApi = Classify
 
-    export const ReadApi = new read('Read', prefix)
+    export const ReadApi = new read()
 
 }
 export default ArtApi;

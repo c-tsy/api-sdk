@@ -8,7 +8,7 @@ const md5: any = require('md5')
 
 
 export namespace User {
-    const prefix = "_user"
+    export const prefix = "_user"
     /**
      * 登陆成功的返回对象
      */
@@ -128,9 +128,9 @@ export namespace User {
         Hook: { [index: string]: any } = {
         }
     }
-    class admin extends ApiController {
-        constructor() {
-            super('Admin', prefix);
+    export class admin extends ApiController {
+        constructor(token = "") {
+            super('Admin', prefix, token)
         }
         tokenLogin(Token: string, UID: string, Referer: string, IP: string) {
             //  添加登陆的referer用做校验信息
@@ -155,9 +155,9 @@ export namespace User {
         public Memo: string = "";
         public EUGID: number = 0;
     }
-    class group extends ApiController {
-        constructor() {
-            super('Group', prefix);
+    export class group extends ApiController {
+        constructor(token = '') {
+            super('Group', prefix, token);
         }
         /**
          * 获取分组数据
@@ -283,8 +283,8 @@ export namespace User {
      * 菜单管理
      */
     export class Menu extends ApiController {
-        constructor() {
-            super('Menu', prefix);
+        constructor(token = "") {
+            super('Menu', prefix, token);
         }
         /**
          * 获取指定人或某人的菜单
@@ -349,9 +349,9 @@ export namespace User {
     /**
      * 认证
      */
-    class auth extends ApiController {
-        constructor() {
-            super('Auth', prefix);
+    export class auth extends ApiController {
+        constructor(token = "") {
+            super('Auth', prefix, token);
         }
         /**
          * 发起登陆请求，获取登录的二维码地址
@@ -613,10 +613,10 @@ export namespace User {
     /**
      * 用户管理
      */
-    class users extends ApiController {
+    export class users extends ApiController {
         // prefix = '_user';
-        constructor() {
-            super('Users', prefix);
+        constructor(token = '') {
+            super('Users', prefix, token);
         }
         /**
          * 用户搜索
@@ -684,9 +684,9 @@ export namespace User {
     }
     export const Users = new users();
     export const UsersApi = Users;
-    class user extends ApiController {
-        constructor() {
-            super('User', prefix)
+    export class user extends ApiController {
+        constructor(token = '') {
+            super('User', prefix, token)
         }
         /**
          * 修改用户昵称和性别
@@ -761,7 +761,10 @@ export namespace User {
     /**
      * 
      */
-    class rule extends ControllerApi<RuleClass> {
+    export class rule extends ControllerApi<RuleClass> {
+        constructor(token = "") {
+            super('Rule', prefix, token)
+        }
         /**
          * 获取我的权限列表
          */
@@ -820,13 +823,19 @@ export namespace User {
     /**
      * 权限组
      */
-    class ruleGroup extends ControllerApi<RuleGroupClass>{
+    export class ruleGroup extends ControllerApi<RuleGroupClass>{
+        constructor(token = "") {
+            super('RuleGroup', prefix, token)
+        }
 
     }
-    export const RuleGroupApi = new ruleGroup('RuleGroup', prefix);
-    export const Rule = new rule('Rule', prefix);
+    export const RuleGroupApi = new ruleGroup();
+    export const Rule = new rule();
     export const RuleApi = Rule;
-    class contact extends ApiController {
+    export class contact extends ApiController {
+        constructor(token = "") {
+            super('Contact', prefix, token)
+        }
         /**
          * 保存联系信息
          * @param UID 
@@ -850,7 +859,7 @@ export namespace User {
     /**
      * 联系信息的处理
      */
-    export const Contact = new contact('Contact', prefix);
+    export const Contact = new contact();
     export const ContactApi = Contact;
     export const AdminApi = new admin()
 }

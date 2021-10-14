@@ -8,8 +8,8 @@ import ClassFormTemplate from "./form/class/Template";
 import ClassFormJson from "./form/class/Json";
 
 namespace FormApi {
-    var prefix = "_form";
-    class form extends ControllerApi<ClassFormForm>{
+    export const prefix = "_form";
+    export class form extends ControllerApi<ClassFormForm>{
         protected _format(data: ClassFormForm) {
             if (data.Values) {
                 if (!data.Data) { data.Data = {} }
@@ -61,13 +61,13 @@ namespace FormApi {
     }
     export const FormApi = new form('Form', prefix)
 
-    class column extends ControllerApi<ClassFormColumn>{
+    export class column extends ControllerApi<ClassFormColumn>{
 
     }
-    class field extends ControllerApi<ClassFormField>{
+    export class field extends ControllerApi<ClassFormField>{
 
     }
-    class template extends ControllerApi<ClassFormTemplate>{
+    export class template extends ControllerApi<ClassFormTemplate>{
 
     }
     /**

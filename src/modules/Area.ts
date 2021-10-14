@@ -1,7 +1,7 @@
 import { ApiController, ApiCommon, ControllerApi } from '../index';
 import { ErrorType } from '../lib';
 namespace AreaApi {
-    const prefix = '_area'
+    export const prefix = '_area'
     export class Area {
         Name: string = "";
         Code: number = 0;
@@ -145,7 +145,10 @@ namespace AreaApi {
          */
         public MPID: number = 0;
     }
-    class area extends ApiController {
+    export class area extends ApiController {
+        constructor(token = "") {
+            super('Area', prefix, token)
+        }
         read(PCode: number): Promise<{ Level: number, Rows: Area[] }> {
             return this._post('read', { PCode });
         }
@@ -156,22 +159,31 @@ namespace AreaApi {
     /**
      * 区域接口
      */
-    export const AreaApi = new area('Area', prefix)
-    class building extends ControllerApi<Building> {
+    export const AreaApi = new area()
+    export class building extends ControllerApi<Building> {
+        constructor(token = "") {
+            super('Building', prefix, token)
+        }
 
     }
-    export const BuildingApi = new building('Building', prefix)
-    class community extends ControllerApi<Community> {
+    export const BuildingApi = new building()
+    export class community extends ControllerApi<Community> {
+        constructor(token = "") {
+            super('Community', prefix, token)
+        }
 
     }
-    export const CommunityApi = new community('Community', prefix)
-    class family extends ControllerApi<Family> {
+    export const CommunityApi = new community()
+    export class family extends ControllerApi<Family> {
+        constructor(token = "") {
+            super('Family', prefix, token)
+        }
         check(CID: number, Type: number, Name: string, Phone: string, BuildingNo: string, UnitNo: string, Floor: string, No: string) {
             return this._post('check', {
                 CID, Type, Name, Phone, BuildingNo, UnitNo, Floor, No,
             })
         }
     }
-    export const FamilyApi = new family('Family', prefix)
+    export const FamilyApi = new family()
 }
 export default AreaApi;
