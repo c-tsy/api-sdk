@@ -1,6 +1,7 @@
 import { ApiController } from '../index';
 import { ErrorType, SearchWhere } from '../lib';
 namespace Organ {
+    const prefix = '_org'
     export class OrgOrgan {
 
         /**
@@ -128,6 +129,9 @@ namespace Organ {
      * 组织结构管理类
      */
     export class organ extends ApiController {
+        constructor(token = "") {
+            super('Organ', prefix, token)
+        }
         /**
          * 列出组织结构
          * @param data 
@@ -185,7 +189,7 @@ namespace Organ {
             throw new Error(ErrorType.Org.UNITIDS_SHOULD_BE_ARRAY)
         }
     }
-    export const OrganApi = new organ('Organ', '_org');
+    export const OrganApi = new organ();
     /**
   * 片区 Area
   * 编号 AID 自增序号(bigint)
@@ -252,6 +256,9 @@ namespace Organ {
      * 区域操作Api
      */
     export class area extends ApiController {
+        constructor(token = "") {
+            super('Area', prefix, token)
+        }
         /**
          * 读取区域列表
          * @param data 
@@ -341,6 +348,6 @@ namespace Organ {
     /**
      * 区域操作Api
      */
-    export const AreaApi = new area('Area', '_org');
+    export const AreaApi = new area();
 }
 export default Organ;

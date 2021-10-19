@@ -10,6 +10,9 @@ import ClassFormJson from "./form/class/Json";
 namespace FormApi {
     export const prefix = "_form";
     export class form extends ControllerApi<ClassFormForm>{
+        constructor(token = "") {
+            super('Form', prefix, token)
+        }
         protected _format(data: ClassFormForm) {
             if (data.Values) {
                 if (!data.Data) { data.Data = {} }
@@ -59,29 +62,38 @@ namespace FormApi {
             return await this._post('jsonSearch', w)
         }
     }
-    export const FormApi = new form('Form', prefix)
+    export const FormApi = new form()
 
     export class column extends ControllerApi<ClassFormColumn>{
+        constructor(token = "") {
+            super('Column', prefix, token)
+        }
 
     }
     export class field extends ControllerApi<ClassFormField>{
+        constructor(token = "") {
+            super('Field', prefix, token)
+        }
 
     }
     export class template extends ControllerApi<ClassFormTemplate>{
+        constructor(token = "") {
+            super('Template', prefix, token)
+        }
 
     }
     /**
      * 关联字段管理
      */
-    export const ColumnApi = new column('Column', prefix);
+    export const ColumnApi = new column();
     /**
      * 字段管理
      */
-    export const FieldApi = new column('Field', prefix);
+    export const FieldApi = new field();
     /**
      * 模板管理
      */
-    export const TemplateApi = new column('Template', prefix);
+    export const TemplateApi = new template();
 }
 
 export default FormApi

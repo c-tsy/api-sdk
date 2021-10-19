@@ -283,6 +283,9 @@ namespace TaskApi {
      */
     export class mailpostProcess extends ControllerApi<ClassTaskMailpostProcess>{
         PK = "MPID";
+        constructor(token = '') {
+            super('MailpostProcess', prefix, token)
+        }
     }
     /**
      * 里程碑对象

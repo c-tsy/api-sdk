@@ -7,12 +7,18 @@ import Axios from 'axios';
 namespace DataApi {
     export const prefix = '_data'
     export class kd extends DApiController {
+        constructor(token = "") {
+            super('Kd', prefix, token)
+        }
         query(No: string) {
             return this._get('query', { No });
         }
     }
-    export const Kd = new kd('Kd', prefix);
+    export const Kd = new kd();
     export class company extends DApiController {
+        constructor(token = "") {
+            super('Company', prefix, token)
+        }
         /**
          * 查询企业列表
          * @param Keyword 
@@ -71,6 +77,9 @@ namespace DataApi {
     };
     const base = pb.Root.fromJSON(areaPbJSON);
     export class area extends ApiController {
+        constructor(token = "") {
+            super('Area', prefix, token)
+        }
         /**
          * 读取区域数据
          * @param code 
@@ -186,6 +195,9 @@ namespace DataApi {
         }
     }
     export class excel extends DApiController {
+        constructor(token = "") {
+            super('Excel', prefix, token)
+        }
         /**
          * 通过数据结构来生成数据
          * @param File 
@@ -212,6 +224,9 @@ namespace DataApi {
         }
     }
     export class docx extends DApiController {
+        constructor(token = "") {
+            super('Docx', prefix, token)
+        }
         /**
          * 生成Word并返回下载链接
          * @param {string} FileName 下载的Word的名称
@@ -230,6 +245,9 @@ namespace DataApi {
         }
     }
     export class svg extends DApiController {
+        constructor(token = "") {
+            super('SVG', prefix, token)
+        }
         toJPG(
             Width: number,
             Height: number,
@@ -241,10 +259,10 @@ namespace DataApi {
         }
         // down()
     }
-    export const SVGApi = new svg('SVG', prefix);
-    export const DocxApi = new docx('Docx', prefix);
-    export const Excel = new excel('Excel', prefix);
-    export const AreaApi = new area('Area', prefix);
-    export const Company = new company('Company', prefix)
+    export const SVGApi = new svg();
+    export const DocxApi = new docx();
+    export const Excel = new excel();
+    export const AreaApi = new area();
+    export const Company = new company()
 }
 export default DataApi;

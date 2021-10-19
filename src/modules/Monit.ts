@@ -4,6 +4,9 @@ import { ControllerApi } from "..";
 namespace Monit {
     export const prefix = "_monit"
     export class PC extends ControllerApi<any> {
+        constructor(token = "") {
+            super('PC', prefix, token)
+        }
         /**
          * 下发命令
          * @param PhyID 下发到哪个节点
@@ -25,7 +28,7 @@ namespace Monit {
         }
     }
 
-    export const PCAPi = new PC("Pc", '_monit')
+    export const PCAPi = new PC()
 
 }
 

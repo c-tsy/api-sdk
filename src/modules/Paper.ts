@@ -926,6 +926,9 @@ namespace Paper {
      * 答题情况的接口类
      */
     export class answer extends ApiController {
+        constructor(token: string = '') {
+            super('Answer', prefix, token)
+        }
         /**
          * 创建一个答题结论，表示开始答题或用于分享处理
          * @param d 
@@ -1084,13 +1087,13 @@ namespace Paper {
     /**
      * 答题情况接口
      */
-    export const AnswerApi = new answer('Answer', prefix);
+    export const AnswerApi = new answer();
     /**
      * 试卷处理类
      */
     export class paper extends ApiController {
-        constructor() {
-            super('Paper', prefix);
+        constructor(token: string = '') {
+            super('Paper', prefix, token);
         }
         /**
          * 统计分析
@@ -1336,6 +1339,9 @@ namespace Paper {
      * 题目
      */
     export class question extends ApiController {
+        constructor(token = "") {
+            super('Question', prefix, token)
+        }
         /**
          * 添加题目，支持题项的自动处理并要求题项内容不能为空
          * @param Questions 
@@ -1380,7 +1386,7 @@ namespace Paper {
             return this._post('search', w);
         }
     }
-    export const QuestionApi = new question('Question', prefix)
+    export const QuestionApi = new question()
 
     /**
      * 题组 QuestionGroup
@@ -1547,8 +1553,8 @@ namespace Paper {
      * 题组管理
      */
     export class QuestionGroup extends ApiController {
-        constructor() {
-            super('QGroup', prefix)
+        constructor(token = "") {
+            super('QGroup', prefix, token)
         }
         /**
          * 查询条件

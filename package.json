@@ -41,6 +41,6 @@
     "@types/store": "*"
   },
   "resolutions": {
-    "commander": "2.17.1"
+    "commander": "2"
   }
 }

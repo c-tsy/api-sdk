@@ -5,6 +5,7 @@ import axios from 'axios';
 import Wechat from './Wechat';
 const md5: any = require('md5')
 namespace Upload {
+    const prefix = '_upload'
     export class ClassUploadFileConfig {
         /**
          * 上传原因，如 做什么操作 导致的上传，英文标识，20个字符以下
@@ -52,6 +53,9 @@ namespace Upload {
     }
 
     export class upload extends ApiController {
+        constructor(token = "") {
+            super('Upload', prefix, token)
+        }
         /**
          * 签名
          * @param what 
@@ -89,7 +93,7 @@ namespace Upload {
             return this._post('list', data)
         }
     }
-    export const Upload = new upload('Upload', '_upload')
+    export const Upload = new upload()
     /**
      * 选择文件方法，用于触发文件选择弹窗
      * @param accept 

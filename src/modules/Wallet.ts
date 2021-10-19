@@ -9,8 +9,11 @@ namespace Wallet {
      */
     export class Currency extends ControllerApi<WalletClassCurrency>{
         PK = 'CID';
+        constructor(token = "") {
+            super('Currency', prefix, token)
+        }
     }
-    export const CurrencyApi = new Currency('Currency', prefix)
+    export const CurrencyApi = new Currency()
 
     // class Exchange extends ControllerApi<Wall
 }

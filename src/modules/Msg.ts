@@ -2,6 +2,9 @@ import { ApiController, ApiConfig } from '../';
 export namespace Msg {
     export const prefix = "_msg";
     export class sms extends ApiController {
+        constructor(token = "") {
+            super('Sms', prefix, token)
+        }
         /**
          * 发送短信验证码
          * @param Tel 手机号码 1开头的11位手机号，目前仅支持中国号码
@@ -31,5 +34,5 @@ export namespace Msg {
             return this._post('send', { Tel: Number(Tel), TID, Params, Sign })
         }
     }
-    export const Sms = new sms('Sms', prefix);
+    export const Sms = new sms();
 }

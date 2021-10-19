@@ -53,6 +53,9 @@ namespace Master {
      * 开户时自动创建账户，
      */
     export class Family extends ControllerApi<MasterClassFamily> {
+        constructor(token = "") {
+            super('Family', prefix, token)
+        }
         PK = 'FID';
         /**
          * 过户
@@ -103,17 +106,23 @@ namespace Master {
         }
 
     }
-    export const FamilyApi = new Family('Family', prefix)
+    export const FamilyApi = new Family()
 
     export class FamilyLog extends ControllerApi<MasterClassFamilyLog>{
         PK: string = 'FLID'
+        constructor(token = "") {
+            super('FamilyLog', prefix, token)
+        }
     }
-    export const FamilyLogApi = new FamilyLog('FamilyLog', prefix);
+    export const FamilyLogApi = new FamilyLog();
     /**
      * 计费组的管理操作接口
      */
     export class BillingGroup extends ControllerApi<MasterClassBillingGroup>{
         PK = 'BGID'
+        constructor(token = "") {
+            super('BillingGroup', prefix, token)
+        }
         /**
          * 计费组的关联处理
          * @param RGID 
@@ -124,15 +133,18 @@ namespace Master {
             return this._post('rule', { RGID, Rules, Type });
         }
     }
-    export const BillingGroupApi = new BillingGroup('BillingGroup', prefix)
+    export const BillingGroupApi = new BillingGroup()
     /**
      * 规则对象
      */
     export class BillingGroupRule extends ControllerApi<MasterClassBillingGroupRule>{
         PK = 'BGRID'
+        constructor(token = "") {
+            super('BillingGroupRule', prefix, token)
+        }
     }
 
-    export const BillingGroupRuleApi = new BillingGroupRule('BillingGroupRule', prefix)
+    export const BillingGroupRuleApi = new BillingGroupRule()
 
 
 }

@@ -76,9 +76,9 @@ async function post(Where: string, What: string, data?: any): Promise<any> {
  * 微信操作
  */
 namespace Wechat {
-
-    // const AuthApi = new ApiController('Auth', '_wechat');
-    // const JsApi = new ApiController('Js', '_wechat');
+    /**
+     * 
+     */
     export const IsWechatBrower = isWeixinBrowser();
     /**
      * 判断是否是微信浏览器
@@ -441,6 +441,9 @@ namespace Wechat {
         }
     }
     export class users extends WechatController {
+        constructor(token = "") {
+            super('User', prefix, token)
+        }
         sync() {
             return this._post('sync')
         }
@@ -455,6 +458,9 @@ namespace Wechat {
         }
     }
     export class group extends WechatController {
+        constructor(token = "") {
+            super('Group', prefix, token)
+        }
         add(Name: string) {
             return this._post('add', { Name })
         }
@@ -478,11 +484,17 @@ namespace Wechat {
         }
     }
     export class auth extends WechatController {
+        constructor(token = "") {
+            super('Auth', prefix, token)
+        }
         user() {
             return this._post('user')
         }
     }
     export class admin extends WechatController {
+        constructor(token = "") {
+            super('Admin', prefix, token)
+        }
         users() {
             return this._post('users')
         }
@@ -491,8 +503,18 @@ namespace Wechat {
         }
 
     }
-    export class js extends WechatController { }
-    export class menu extends WechatController { }
+    export class js extends WechatController {
+
+        constructor(token = "") {
+            super('Js', prefix, token)
+        }
+    }
+    export class menu extends WechatController {
+
+        constructor(token = "") {
+            super('Menu', prefix, token)
+        }
+    }
     export class MsgType {
         value: string = ''
         color: string = ''
@@ -545,6 +567,9 @@ namespace Wechat {
      * 微信消息处理
      */
     export class msg extends WechatController {
+        constructor(token = "") {
+            super('Msg', prefix, token)
+        }
         /**
          * 发送模板推送消息
          * @param TemplateID 
@@ -593,13 +618,13 @@ namespace Wechat {
         return true;
     }
 
-    export const UsersApi = new users('Users', prefix)
-    export const GroupApi = new group('Group', prefix)
-    export const AuthApi = new auth('Auth', prefix);
-    export const AdminApi = new admin('Admin', prefix);
-    export const JsApi = new js('Js', prefix);
-    export const MenuApi = new menu('Menu', prefix);
-    export const MsgApi = new msg('Msg', prefix);
+    export const UsersApi = new users()
+    export const GroupApi = new group()
+    export const AuthApi = new auth();
+    export const AdminApi = new admin();
+    export const JsApi = new js();
+    export const MenuApi = new menu();
+    export const MsgApi = new msg();
 }
 export default Wechat;
 
