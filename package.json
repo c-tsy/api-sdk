@@ -1,9 +1,8 @@
 {
   "name": "@ctsy/api-sdk",
-  "version": "2.0.345",
+  "version": "2.0.346",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "flat": true,
   "files": [
     "dist/modules/**/*.js",
     "dist/modules/**/*.d.ts",
