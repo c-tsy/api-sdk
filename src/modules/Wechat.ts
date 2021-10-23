@@ -1,6 +1,7 @@
 import { ApiController, ApiConfig, Token, set_token } from '../index';
 import { SearchWhere } from '../lib';
 import axios from 'axios'
+import { cloneDeep } from 'lodash';
 declare const window: any;
 declare const wx: any;
 declare const setTimeout: any;
@@ -577,6 +578,7 @@ namespace Wechat {
          */
         send(TemplateID: string, Data: MsgOption[]) {
             if (Data instanceof Array && Data.length > 0) {
+                Data = cloneDeep(Data)
                 for (let x of Data) {
                     if (x.OpenID && x.OpenID.length > 10 || x.UID) {
 
@@ -600,11 +602,9 @@ namespace Wechat {
                     }
                     if ('string' == typeof x.Data.first && x.Data.first.length > 0) {
                         x.Data.first = { value: x.Data.first, color: '' }
-                    } else { throw new Error('First 参数错误') }
-                    // if ('string' == typeof x.Data.remark && x.Data.remark.length > 0) {
-                    //     x.Data.remark = { value: x.Data.remark, color: '' }
-                    // } else { throw new Error('First 参数错误') }
+                    } else if('object' ==typeof x.Data){
 
+                    } else { throw new Error('First 参数错误') }
                 }
                 return this._post('send/' + WechatID, { TemplateID, Data });
             }
