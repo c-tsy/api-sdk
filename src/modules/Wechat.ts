@@ -601,9 +601,9 @@ namespace Wechat {
                     if ('string' == typeof x.Data.first && x.Data.first.length > 0) {
                         x.Data.first = { value: x.Data.first, color: '' }
                     } else { throw new Error('First 参数错误') }
-                    if ('string' == typeof x.Data.remark && x.Data.remark.length > 0) {
-                        x.Data.remark = { value: x.Data.remark, color: '' }
-                    } else { throw new Error('First 参数错误') }
+                    // if ('string' == typeof x.Data.remark && x.Data.remark.length > 0) {
+                    //     x.Data.remark = { value: x.Data.remark, color: '' }
+                    // } else { throw new Error('First 参数错误') }
 
                 }
                 return this._post('send/' + WechatID, { TemplateID, Data });
