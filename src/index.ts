@@ -77,6 +77,7 @@ const md5: any = require('md5')
  * 用户识别符
  */
 export let Token = store.get('token')
+export let UA = ""
 export const Start = Date.now()
 /**
  * 设置通信Token
@@ -89,8 +90,12 @@ export function set_token(token: string = '') {
     Token = token;
     store.set('token', token)
 }
+export function set_ua(ua: string) {
+    UA = ua;
+}
 const req = axios.create({
     // responseType: "arraybuffer",
+    // headers:{}
     withCredentials: true,
 });
 const protoed: { [index: string]: p.Root } = {};
@@ -135,6 +140,9 @@ req.interceptors.response.use(async (data: any) => {
 req.interceptors.request.use(async (conf: any) => {
     if (!ApiConfig.AppID || !ApiConfig.Secret) {
         // throw new Error('AppID or Secret')
+    }
+    if (UA) {
+        conf.headers['user-agent'] = UA;
     }
     if (conf.token) {
         conf.headers['token'] = conf.token;
