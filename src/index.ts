@@ -106,7 +106,7 @@ req.interceptors.response.use(async (data: any) => {
         store.set('token', Token)
     }
     let ctype = data.headers['content-type'] || ''
-    if (ctype.includes('protobuf')) {
+    if (ctype.includes('protobuf') || ctype.includes('pb')) {
         //准备进行protobuf的解码，并将解码内容放到data中
         let pd: any = base.decode(p.util.newBuffer(data.data))
         let [m, c, f] = data.config.path.split('/');
@@ -280,7 +280,7 @@ async function request(method: 'post' | 'get', path: string, data: any, t: any) 
         && ApiConfig.protos[m][c][f]
     ) {
         conf.responseType = "arraybuffer";
-        conf.headers = { accept: 'application/x-protobuf' }
+        conf.headers = { accept: 'pb' }
         if (!protoed[m]) {
             axios.get(ApiConfig.Host + '/proto/' + m + '.json').then((pjson) => {
                 protoed[m] = p.Root.fromJSON(pjson.data)

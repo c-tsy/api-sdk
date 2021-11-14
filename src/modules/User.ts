@@ -350,6 +350,7 @@ export namespace User {
      * 认证
      */
     export class auth extends ApiController {
+        check = false;
         constructor(token = "") {
             super('Auth', prefix, token);
         }
@@ -364,7 +365,11 @@ export namespace User {
          */
         async qrLoginCheck(Wait: boolean = false) {
             if (Wait) {
+                this.check = true;
                 while (true) {
+                    if (!this.check) {
+                        return {};
+                    }
                     return await this._post('qrLoginCheck')
                     // await timeout(500)
                 }
@@ -403,6 +408,7 @@ export namespace User {
          * @param PWD 
          */
         async login(Account: Login | string, PWD?: string, MD5PWD: string = '', WithRules: boolean = false): Promise<LoginResult> {
+            this.check = false;
             if ('string' != typeof Account) {
                 if ('string' == typeof Account.Account) {
                     PWD = Account.PWD;
@@ -445,6 +451,7 @@ export namespace User {
          * @returns 
          */
         async thirdLogin(Type: string, Account: string, Regist: boolean = false, Data: { [index: string]: string | number } = {}, PWD: string = '', UGID = 0, Contacts = {}) {
+            this.check = false;
             return await this._post('alogin', { Type, Account, Regist, Data, PWD, UGID, Contacts });
         }
         /**
@@ -481,6 +488,7 @@ export namespace User {
          * 退出登录
          */
         async logout() {
+            this.check = false;
             let rs = await this._post('logout', {});
             hook.emit('logout', HookWhen.After, '', rs);
             ApiConfig.UID = ''
@@ -490,6 +498,7 @@ export namespace User {
          * 检查并获取当前登录状态，返回内容同登录操作
          */
         async relogin(WithRules: boolean = false): Promise<LoginResult> {
+            this.check = false;
             let rs = await this._post('relogin')
             if (rs.UID) {
                 hook.emit('login', HookWhen.After, '', rs);
