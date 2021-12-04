@@ -516,16 +516,18 @@ export function jsonp(url: string, cbname: string = '', timeout: number = 1000):
 
 }
 /**
- * 创建Api客户端
- * @param appid 
- * @param secret 
- * @param usertoken 
+ * 配置SDK
+ * @param AppID 应用编号
+ * @param Key 应用键
+ * @param Secret 密钥
+ * @param Debug 是否开启调试模式
+ * @param Host 服务器地址
  */
-export default function create(appid: string, key: string, secret: string, rand: string = '') {
-    ApiConfig.AppID = appid;
-    ApiConfig.Secret = secret;
-    ApiConfig.Key = key;
-    ApiConfig.Rand = rand;
+export default function create(AppID: string, Key: string, Secret: string, Debug = false, Host = '') {
+    if (store.get(AppID + 'Debug')) {
+        Debug = true;
+    }
+    Object.assign(ApiConfig, { AppID, Key, Secret, Debug })
 }
 
 
