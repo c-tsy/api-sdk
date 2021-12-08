@@ -366,12 +366,13 @@ export namespace User {
         async qrLoginCheck(Wait: boolean = false) {
             if (Wait) {
                 this.check = true;
-                while (true) {
+                for (let i = 0; i < 10; i++) {
                     if (!this.check) {
                         return {};
                     }
+                    let r = await this.relogin()
+                    if (r && r.UID) { return r; }
                     return await this._post('qrLoginCheck')
-                    // await timeout(500)
                 }
             }
             return await this._post('qrLoginCheck')

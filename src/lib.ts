@@ -1,3 +1,5 @@
+import { timeout } from "@ctsy/common";
+declare let window: any
 export namespace ErrorType {
     export enum Art {
         DATA_LENGTH_TOO_LONG = 'DATA_LENGTH_TOO_LONG',
@@ -111,4 +113,24 @@ export function dataurl_to_file(dataurl: string, filename: string): File | undef
         return new File([u8arr], filename, { type: mime });
     }
     throw new Error("非法DataURL")
+}
+/**
+ * 加载脚本
+ * @param url 
+ * @param check 
+ * @returns 
+ */
+export async function load_script(url: string, check: string) {
+    if (window[check]) {
+        return window[check]
+    }
+    let scr = document.createElement('script')
+    scr.src = url
+    document.body.appendChild(scr)
+    while (true) {
+        await timeout(100)
+        if (window[check]) {
+            return window[check]
+        }
+    }
 }

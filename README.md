@@ -15,6 +15,18 @@ create('tsy','3F3fw24F5e5','dxzef23d2dxs1','rand内容(有rand情况下secret为
 // 此处的Secret和Key均为不正确的，请联系工作人员申请
 ```
 
+# 使用MQTT需要在在script中导入：
+  <script src="//npm.tansuyun.cn/mqtt/dist/mqtt.min.js"></script>
+
+
+    // 连接字符串, 通过协议指定使用的连接方式
+    // ws 未加密 WebSocket 连接
+    // wss 加密 WebSocket 连接
+    // mqtt 未加密 TCP 连接
+    // mqtts 加密 TCP 连接
+    // wxs 微信小程序连接
+    // alis 支付宝小程序连接
+
 # 一些注意事项
 ## 文章模块
 1. 若需要针对文章进行多级的结构划分，请使用文章的Classify对象进行树形管理，其分类类型为1，文章中允许通过设定CID来关联到该分类上
