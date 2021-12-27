@@ -1,7 +1,7 @@
 import axios, { AxiosResponse } from 'axios';
 import * as store from 'store'
 import * as qs from 'querystring'
-import * as p from 'protobufjs/light';
+import * as p from 'protobufjs';
 import { SearchWhere as sw, SearchResult as sr, ApiSDKHooks as hooks } from './lib';
 import hook, { Hook, HookWhen } from '@ctsy/hook';
 import { delay_cb, uuid } from '@ctsy/common';
@@ -38,7 +38,7 @@ const rate = {
     time: {},
 }
 
-var isWindow: boolean = true
+export var isWindow: boolean = true
 try {
     //uniapp中不存在globalThis变量
     var global: any = globalThis;
@@ -632,22 +632,6 @@ export class ControllerApi<T> extends ApiController {
     }
 }
 
-export const SearchResult = sw;
+export const SearchResult = sr;
 export const SearchWhere = sw;
 
-if (isWindow) {
-    window.CTsyApiSDK = {
-        ApiSDKHooks,
-        set_token,
-        ApiHooks,
-        ApiConfig,
-        ApiController,
-        jsonp,
-        create,
-        default: create,
-        ApiCommon,
-        ControllerApi,
-        SearchWhere,
-        SearchResult,
-    }
-}

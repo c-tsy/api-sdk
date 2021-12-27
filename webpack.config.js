@@ -4,7 +4,7 @@ const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPl
 module.exports = {
     mode: "production",
     entry: { //入口文件
-        index: './src/index.ts',
+        index: './src/main.ts',
     },
     resolve: {
         extensions: ['.ts', '.tsx', '.js'],
@@ -13,7 +13,7 @@ module.exports = {
     output: { //出口文件
         publicPath: './', //模板、样式、脚本、图片等资源的路径中统一会加上额外的路径
         path: path.resolve(__dirname, 'dist'),
-        filename: './api-sdk.min.js'
+        filename: './apisdk.min.js'
     },
     node: {
         Buffer: false
@@ -30,6 +30,7 @@ module.exports = {
         vuex: 'Vuex',
         axios: 'axios',
         lodash: '_',
+        buffer: 'Buffer',
         moment: 'moment',
         xlsx: 'XLSX',
         vant: 'vant',
