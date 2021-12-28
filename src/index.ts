@@ -98,6 +98,10 @@ const req = axios.create({
     // headers:{}
     withCredentials: true,
 });
+/**
+ * 调试模式，服务器做好请求记录，用于复现问题
+ */
+const DebugEnd = Number(store.get('DebugEnd', 0) || 0)
 const protoed: { [index: string]: p.Root } = {};
 const base = p.Root.fromJSON({ nested: { base: { fields: { c: { type: "uint32", id: 1 }, e: { type: "string", id: 2 }, d: { type: "bytes", id: 3 } } }, SearchResult: { fields: { P: { type: "uint32", id: 1 }, N: { type: "uint32", id: 2 }, T: { type: "uint32", id: 3 }, R: { type: "bytes", id: 4 }, L: { type: "bytes", id: 5 } } }, SearchWhere: { fields: { P: { type: "uint32", id: 1 }, N: { type: "uint32", id: 2 }, Keyword: { type: "string", id: 3 }, Sort: { type: "string", id: 4 }, W: { type: "bytes", id: 5 } } } } }).lookupType('base')
 req.interceptors.response.use(async (data: any) => {
@@ -140,6 +144,9 @@ req.interceptors.response.use(async (data: any) => {
 req.interceptors.request.use(async (conf: any) => {
     if (!ApiConfig.AppID || !ApiConfig.Secret) {
         // throw new Error('AppID or Secret')
+    }
+    if (DebugEnd && DebugEnd > Date.now()) {
+        conf.url += (conf.url.includes('?') ? '' : '?') + '_log=' + DebugEnd
     }
     if (UA) {
         conf.headers['user-agent'] = UA;
