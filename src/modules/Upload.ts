@@ -1,6 +1,5 @@
 import { ApiController, ApiConfig } from '../index';
 import Hook, { HookWhen } from '@ctsy/hook';
-import * as qs from 'querystring'
 import axios from 'axios';
 import Wechat from './Wechat';
 const md5: any = require('md5')
@@ -213,7 +212,11 @@ namespace Upload {
             if (false !== conf.expire) {
                 tag.expire = "1"
             }
-            form.append('x‑oss‑tagging', qs.stringify(tag));
+            let stag = []
+            for (let k in tag) {
+                stag.push(k + '=' + tag[k])
+            }
+            form.append('x‑oss‑tagging', stag.join('&'));
             form.append('x-oss-meta-name', data.name);
             form.append('x-oss-object-acl', conf.acl == 'read' ? 'public-read' : 'private');
             form.append('file', data);

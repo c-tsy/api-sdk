@@ -62,8 +62,11 @@ request.interceptors.response.use((response) => {
  * @param data 
  */
 async function post(Where: string, What: string, data?: any): Promise<any> {
-    if (!Wechat.WechatID) {
-        throw new Error('错误的微信ID，请配置微信ID')
+    if (!Wechat.WechatID || Wechat.WechatID.length < 10) {
+        throw new Error('WechatID')
+    }
+    if (!Token || Token.length < 10) {
+        throw new Error('Token')
     }
     return await request.post([ApiConfig.Host, '_wechat', Where, What, Wechat.WechatID, Token].join('/').replace('//_wechat', '/_wechat'), data).then((d: any) => {
         if (d.d && !d.e) {
@@ -602,7 +605,7 @@ namespace Wechat {
                     }
                     if ('string' == typeof x.Data.first && x.Data.first.length > 0) {
                         x.Data.first = { value: x.Data.first, color: '' }
-                    } else if('object' ==typeof x.Data){
+                    } else if ('object' == typeof x.Data) {
 
                     } else { throw new Error('First 参数错误') }
                 }
