@@ -93,13 +93,27 @@ namespace Upload {
         }
     }
     export const Upload = new upload()
+
+    /**
+     * 选择文件并上传
+     * @param accept 
+     */
+    export async function select_upload(what: string, accept: string = "") {
+        let file: any = await select_file(accept)
+        let u = await upload_file(file[0], { acl: 'read', expire: false, what })
+        return u;
+    }
     /**
      * 选择文件方法，用于触发文件选择弹窗
      * @param accept 
      */
     export function select_file(accept = "*", autoWechat: boolean | number = true): Promise<FileList | string[]> {
         if (autoWechat && Wechat.IsWechatBrower) {
-            return Wechat.chooseImage(1)
+            try {
+                return Wechat.chooseImage(1)
+            } catch (error) {
+
+            }
         }
         return new Promise((s, j) => {
             let i = document.createElement('input');
