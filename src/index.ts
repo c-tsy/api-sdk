@@ -522,6 +522,10 @@ export function jsonp(url: string, cbname: string = '', timeout: number = 1000):
     })
 
 }
+class VueInject {
+    store = { commit(n: string, d: any) { } }
+}
+export var VueInstance = new VueInject
 /**
  * 配置SDK
  * @param AppID 应用编号
@@ -530,9 +534,15 @@ export function jsonp(url: string, cbname: string = '', timeout: number = 1000):
  * @param Debug 是否开启调试模式
  * @param Host 服务器地址
  */
-export default function create(AppID: string, Key: string, Secret: string, Debug = false, Host = '') {
+export default function create(AppID: string, Key: string, Secret: string, Debug = false, Host = '', vue?: VueInject) {
     if (store.get(AppID + 'Debug')) {
         Debug = true;
+    }
+    if (Host) {
+        ApiConfig.Host = Host;
+    }
+    if (vue !== undefined) {
+        VueInstance = vue;
     }
     Object.assign(ApiConfig, { AppID, Key, Secret, Debug })
 }

@@ -1,8 +1,9 @@
-import { ApiController, ApiConfig, ControllerApi } from '../';
+import { ApiController, ApiConfig, ControllerApi, VueInstance } from '../';
 import hook, { HookWhen } from '@ctsy/hook';
 import { ErrorType, SearchResult, LinkType, SearchWhere } from '../lib';
 import { array_columns, array_key_set, timeout } from '@ctsy/common';
 import * as _ from 'lodash'
+import Wechat from './Wechat';
 const get: Function = _.get;
 const md5: any = require('md5')
 
@@ -432,6 +433,7 @@ export namespace User {
                 let rules = await RuleApi.search({ W: { RID: { in: rs.RIDs } }, N: 999 })
                 rs.Rules = rules.L;
             }
+            VueInstance.store.commit('user', rs)
             return rs;
         }
         /**
@@ -498,12 +500,21 @@ export namespace User {
         /**
          * 检查并获取当前登录状态，返回内容同登录操作
          */
-        async relogin(WithRules: boolean = false): Promise<LoginResult> {
+        async relogin(WithRules: boolean = false, conf = { Auto: true, Regist: true }): Promise<LoginResult> {
             this.check = false;
             let rs = await this._post('relogin')
+            if (!rs.UID) {
+                if (conf.Auto) {
+                    if (Wechat.IsWechatBrower) {
+                        let u = await Wechat.AuthApi.user()
+                        rs = await this.thirdLogin('Wechat', u.openid, conf.Regist)
+                    }
+                }
+            }
             if (rs.UID) {
                 hook.emit('login', HookWhen.After, '', rs);
                 ApiConfig.UID = rs.UID
+                VueInstance.store.commit('user', rs)
                 // append rules
                 if (WithRules) {
                     if (rs.RIDs.length > 0) {
@@ -551,7 +562,7 @@ export namespace User {
             return this._post('areset', { UID, PWD: md5(PWD) })
         }
         /**
-         * 信息注册
+         * 信息注册
          * @param {string} Name 姓名
          * @param {string} Nick 昵称
          * @param {string} Account 账号
