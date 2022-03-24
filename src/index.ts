@@ -5,7 +5,7 @@ import { SearchWhere as sw, SearchResult as sr, ApiSDKHooks as hooks } from './l
 import hook, { Hook, HookWhen } from '@ctsy/hook';
 import { delay_cb, uuid } from '@ctsy/common';
 import * as _ from 'lodash'
-// import * as rpc from '@ctsy/ws-rpc-client';
+
 var _logs: string[] = []
 declare let window: any;
 declare let uni: any;
@@ -44,35 +44,6 @@ let p = new class {
     util: any
     pb = false
 }
-try {
-    //uniapp中不存在globalThis变量
-    var global: any = globalThis;
-    isWindow = global.__proto__.constructor.name == 'Window';
-    global.window = {
-        navigator: { userAgent: '' }
-    };
-    window._logs = _logs;
-    if (window.protobuf) {
-        p = window.protobuf
-        p.wrappers[".google.protobuf.Timestamp"] = {
-            fromObject: function (object: any) {
-                //Convert ISO-8601 to epoch millis
-                var dt = Date.parse(object);
-                return this.create({
-                    seconds: Math.floor(dt / 1000),
-                    nanos: dt % 1000
-                })
-            },
-            toObject: function (message: any) {
-                return new Date(message.seconds * 1000 + message.nanos);
-            }
-        };
-    }
-} catch (error: any) {
-
-}
-
-
 const md5: any = require('md5')
 /**
  * 用户识别符
@@ -104,7 +75,7 @@ const req = axios.create({
  */
 const DebugEnd = Number(store.get('DebugEnd', 0) || 0)
 const protoed: { [index: string]: any } = {};
-const base = p.Root.fromJSON({ nested: { base: { fields: { c: { type: "uint32", id: 1 }, e: { type: "string", id: 2 }, d: { type: "bytes", id: 3 } } }, SearchResult: { fields: { P: { type: "uint32", id: 1 }, N: { type: "uint32", id: 2 }, T: { type: "uint32", id: 3 }, R: { type: "bytes", id: 4 }, L: { type: "bytes", id: 5 } } }, SearchWhere: { fields: { P: { type: "uint32", id: 1 }, N: { type: "uint32", id: 2 }, Keyword: { type: "string", id: 3 }, Sort: { type: "string", id: 4 }, W: { type: "bytes", id: 5 } } } } }).lookupType('base')
+var base = {}
 req.interceptors.response.use(async (data: any) => {
     if (data.headers['token']) {
         Token = data.headers['token'];
@@ -144,6 +115,34 @@ req.interceptors.response.use(async (data: any) => {
     return data;
 })
 req.interceptors.request.use(async (conf: any) => {
+    if (p.pb === false && window.protobuf) {
+        try {
+            //uniapp中不存在globalThis变量
+            var global: any = globalThis;
+            isWindow = global.__proto__.constructor.name == 'Window';
+            global.window = {
+                navigator: { userAgent: '' }
+            };
+            window._logs = _logs;
+            p = window.protobuf
+            p.wrappers[".google.protobuf.Timestamp"] = {
+                fromObject: function (object: any) {
+                    //Convert ISO-8601 to epoch millis
+                    var dt = Date.parse(object);
+                    return this.create({
+                        seconds: Math.floor(dt / 1000),
+                        nanos: dt % 1000
+                    })
+                },
+                toObject: function (message: any) {
+                    return new Date(message.seconds * 1000 + message.nanos);
+                }
+            };
+            p.Root.fromJSON({ nested: { base: { fields: { c: { type: "uint32", id: 1 }, e: { type: "string", id: 2 }, d: { type: "bytes", id: 3 } } }, SearchResult: { fields: { P: { type: "uint32", id: 1 }, N: { type: "uint32", id: 2 }, T: { type: "uint32", id: 3 }, R: { type: "bytes", id: 4 }, L: { type: "bytes", id: 5 } } }, SearchWhere: { fields: { P: { type: "uint32", id: 1 }, N: { type: "uint32", id: 2 }, Keyword: { type: "string", id: 3 }, Sort: { type: "string", id: 4 }, W: { type: "bytes", id: 5 } } } } }).lookupType('base')
+        } catch (error: any) {
+
+        }
+    }
     if (!ApiConfig.AppID || !ApiConfig.Secret) {
         // throw new Error('AppID or Secret')
     }
