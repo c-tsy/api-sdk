@@ -120,9 +120,10 @@ req.interceptors.request.use(async (conf: any) => {
             //uniapp中不存在globalThis变量
             var global: any = globalThis;
             isWindow = global.__proto__.constructor.name == 'Window';
-            global.window = {
-                navigator: { userAgent: '' }
-            };
+            if (!isWindow)
+                global.window = {
+                    navigator: { userAgent: '' }
+                };
             window._logs = _logs;
             p = window.protobuf
             p.wrappers[".google.protobuf.Timestamp"] = {
@@ -138,7 +139,7 @@ req.interceptors.request.use(async (conf: any) => {
                     return new Date(message.seconds * 1000 + message.nanos);
                 }
             };
-            p.Root.fromJSON({ nested: { base: { fields: { c: { type: "uint32", id: 1 }, e: { type: "string", id: 2 }, d: { type: "bytes", id: 3 } } }, SearchResult: { fields: { P: { type: "uint32", id: 1 }, N: { type: "uint32", id: 2 }, T: { type: "uint32", id: 3 }, R: { type: "bytes", id: 4 }, L: { type: "bytes", id: 5 } } }, SearchWhere: { fields: { P: { type: "uint32", id: 1 }, N: { type: "uint32", id: 2 }, Keyword: { type: "string", id: 3 }, Sort: { type: "string", id: 4 }, W: { type: "bytes", id: 5 } } } } }).lookupType('base')
+            base = p.Root.fromJSON({ nested: { base: { fields: { c: { type: "uint32", id: 1 }, e: { type: "string", id: 2 }, d: { type: "bytes", id: 3 } } }, SearchResult: { fields: { P: { type: "uint32", id: 1 }, N: { type: "uint32", id: 2 }, T: { type: "uint32", id: 3 }, R: { type: "bytes", id: 4 }, L: { type: "bytes", id: 5 } } }, SearchWhere: { fields: { P: { type: "uint32", id: 1 }, N: { type: "uint32", id: 2 }, Keyword: { type: "string", id: 3 }, Sort: { type: "string", id: 4 }, W: { type: "bytes", id: 5 } } } } }).lookupType('base')
         } catch (error: any) {
 
         }
