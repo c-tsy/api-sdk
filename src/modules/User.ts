@@ -358,8 +358,8 @@ export namespace User {
         /**
          * 发起登陆请求，获取登录的二维码地址
          */
-        qrLogin(WechatID: string, Title: string, Select: string[] = []): Promise<{ Token: string, URL: string }> {
-            return this._post('qrLogin', { WechatID, Title, Select })
+        qrLogin(WechatID: string, Title: string, Select: string[] = [], Conf = { NoLogin: false, }): Promise<{ Token: string, URL: string }> {
+            return this._post('qrLogin', Object.assign({ WechatID, Title, Select }, Conf))
         }
         /**
          * 等待登陆结果返回

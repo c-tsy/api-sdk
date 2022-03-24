@@ -112,7 +112,7 @@ namespace Upload {
             try {
                 return Wechat.chooseImage(1)
             } catch (error) {
-
+                debugger
             }
         }
         return new Promise((s, j) => {

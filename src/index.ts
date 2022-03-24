@@ -1,7 +1,6 @@
 import axios, { AxiosResponse } from 'axios';
 import * as store from 'store'
 import * as qs from 'querystring'
-import * as p from 'protobufjs';
 import { SearchWhere as sw, SearchResult as sr, ApiSDKHooks as hooks } from './lib';
 import hook, { Hook, HookWhen } from '@ctsy/hook';
 import { delay_cb, uuid } from '@ctsy/common';
@@ -39,6 +38,12 @@ const rate = {
 }
 
 export var isWindow: boolean = true
+let p = new class {
+    wrappers: { [index: string]: any } = {}
+    Root = { fromJSON: (d: any) => { return { lookupType(s: string) { return { decode() { } } } } } }
+    util: any
+    pb = false
+}
 try {
     //uniapp中不存在globalThis变量
     var global: any = globalThis;
@@ -47,30 +52,26 @@ try {
         navigator: { userAgent: '' }
     };
     window._logs = _logs;
+    if (window.protobuf) {
+        p = window.protobuf
+        p.wrappers[".google.protobuf.Timestamp"] = {
+            fromObject: function (object: any) {
+                //Convert ISO-8601 to epoch millis
+                var dt = Date.parse(object);
+                return this.create({
+                    seconds: Math.floor(dt / 1000),
+                    nanos: dt % 1000
+                })
+            },
+            toObject: function (message: any) {
+                return new Date(message.seconds * 1000 + message.nanos);
+            }
+        };
+    }
 } catch (error: any) {
 
 }
-// var debugs: string[] = []
-// function //debug(txt: string, end: boolean = false) {
-//     debugs.push(txt);
-//     if (end) {
-//         console.log(debugs.join('\r\n'))
-//         debugs = [];
-//     }
-// }
-p.wrappers[".google.protobuf.Timestamp"] = {
-    fromObject: function (object: any) {
-        //Convert ISO-8601 to epoch millis
-        var dt = Date.parse(object);
-        return this.create({
-            seconds: Math.floor(dt / 1000),
-            nanos: dt % 1000
-        })
-    },
-    toObject: function (message: any, options) {
-        return new Date(message.seconds * 1000 + message.nanos);
-    }
-};
+
 
 const md5: any = require('md5')
 /**
@@ -102,7 +103,7 @@ const req = axios.create({
  * 调试模式，服务器做好请求记录，用于复现问题
  */
 const DebugEnd = Number(store.get('DebugEnd', 0) || 0)
-const protoed: { [index: string]: p.Root } = {};
+const protoed: { [index: string]: any } = {};
 const base = p.Root.fromJSON({ nested: { base: { fields: { c: { type: "uint32", id: 1 }, e: { type: "string", id: 2 }, d: { type: "bytes", id: 3 } } }, SearchResult: { fields: { P: { type: "uint32", id: 1 }, N: { type: "uint32", id: 2 }, T: { type: "uint32", id: 3 }, R: { type: "bytes", id: 4 }, L: { type: "bytes", id: 5 } } }, SearchWhere: { fields: { P: { type: "uint32", id: 1 }, N: { type: "uint32", id: 2 }, Keyword: { type: "string", id: 3 }, Sort: { type: "string", id: 4 }, W: { type: "bytes", id: 5 } } } } }).lookupType('base')
 req.interceptors.response.use(async (data: any) => {
     if (data.headers['token']) {
@@ -110,8 +111,9 @@ req.interceptors.response.use(async (data: any) => {
         store.set('token', Token)
     }
     let ctype = data.headers['content-type'] || ''
-    if (ctype.includes('protobuf') || ctype.includes('pb')) {
+    if (p.pb !== false && ctype.includes('protobuf') || ctype.includes('pb')) {
         //准备进行protobuf的解码，并将解码内容放到data中
+        //@ts-ignore
         let pd: any = base.decode(p.util.newBuffer(data.data))
         let [m, c, f] = data.config.path.split('/');
         if (!protoed[m]) {
