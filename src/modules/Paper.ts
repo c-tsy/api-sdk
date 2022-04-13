@@ -3,7 +3,6 @@ import { SearchWhere, LinkType } from '../lib';
 import { SearchResult } from '../lib';
 import { ParamsError } from '../errors';
 import Upload from './Upload';
-import { readAsJSON } from '@ctsy/xlsx'
 import Wechat from './Wechat';
 /**
  * 答题部分模块
@@ -1120,8 +1119,12 @@ namespace Paper {
             return this._post('get', { PID, _Ext });
         }
 
-
-        async loadFile() {
+        /**
+         * 从xlsx中加载Paper数据，
+         * @param readAsJSON @ctsy/xlsx 中的 readASJSON方法，
+         * @returns 
+         */
+        async loadFile(readAsJSON: (file: File) => Promise<{ [index: string]: { [index: string]: string | number } }>) {
             let Rs: any = { Questions: [], Paper: {} }
             let file: FileList | any = await Upload.select_file("*.xlsx,*.xls,*.csv")
             if (file.length > 0) {

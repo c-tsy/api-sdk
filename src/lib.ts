@@ -1,4 +1,4 @@
-import { timeout } from "@ctsy/common";
+import { timeout, dataurl_to_file as d, load_script as l } from "@ctsy/common";
 declare let window: any
 export namespace ErrorType {
     export enum Art {
@@ -41,8 +41,6 @@ export namespace ErrorType {
     }
 
 }
-
-export function tree() { }
 
 /**
  * SDK的Hook
@@ -92,45 +90,5 @@ export enum LinkType {
     remove
 }
 
-
-
-/**
- * base64 to File
- * @param dataurl
- * @param filename
- */
-export function dataurl_to_file(dataurl: string, filename: string): File | undefined {
-    //将base64转换为文件
-    if ("string" == typeof dataurl && dataurl.length > 0) {
-        var arr: any[] = dataurl.split(","),
-            mime = arr[0].match(/:(.*?);/)[1],
-            bstr = atob(arr[1]),
-            n = bstr.length,
-            u8arr = new Uint8Array(n);
-        while (n--) {
-            u8arr[n] = bstr.charCodeAt(n);
-        }
-        return new File([u8arr], filename, { type: mime });
-    }
-    throw new Error("非法DataURL")
-}
-/**
- * 加载脚本
- * @param url 
- * @param check 
- * @returns 
- */
-export async function load_script(url: string, check: string) {
-    if (window[check]) {
-        return window[check]
-    }
-    let scr = document.createElement('script')
-    scr.src = url
-    document.body.appendChild(scr)
-    while (true) {
-        await timeout(100)
-        if (window[check]) {
-            return window[check]
-        }
-    }
-}
+export const dataurl_to_file = d;
+export const load_script = l;
