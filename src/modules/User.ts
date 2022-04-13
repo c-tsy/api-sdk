@@ -433,7 +433,6 @@ export namespace User {
                 let rules = await RuleApi.search({ W: { RID: { in: rs.RIDs } }, N: 999 })
                 rs.Rules = rules.L;
             }
-            VueInstance.store.commit('user', rs)
             return rs;
         }
         /**
@@ -514,7 +513,6 @@ export namespace User {
             if (rs.UID) {
                 hook.emit('login', HookWhen.After, '', rs);
                 ApiConfig.UID = rs.UID
-                VueInstance.store.commit('user', rs)
                 // append rules
                 if (WithRules) {
                     if (rs.RIDs.length > 0) {

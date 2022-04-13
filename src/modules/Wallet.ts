@@ -1,4 +1,4 @@
-import { namespace } from "store";
+
 import { ControllerApi } from "..";
 import WalletClassCurrency from "./wallet/class/Currency";
 

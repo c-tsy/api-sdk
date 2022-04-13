@@ -1,4 +1,3 @@
-import { namespace } from "store";
 import { ApiController } from "..";
 import { timeout } from "@ctsy/common";
 import { SearchWhere, SearchResult } from "../lib";

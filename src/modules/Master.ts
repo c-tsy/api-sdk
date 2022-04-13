@@ -1,4 +1,3 @@
-import { namespace } from "store";
 import { ControllerApi, ApiController } from "..";
 import MasterClassFamily from "./master/class/Family";
 import MasterClassBillingGroup from "./master/class/BillingGroup";
