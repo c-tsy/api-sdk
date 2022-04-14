@@ -1,5 +1,5 @@
 import hook, { HookWhen } from "@ctsy/hook";
-import { load_script } from "../lib";
+import { glo, load_script } from "../lib";
 
 declare let window: any
 
@@ -42,10 +42,12 @@ export default class MQTT {
     }
 
     async start() {
-        if (window.mqtt === undefined) {
+        //@ts-ignore
+        if (glo.mqtt === undefined) {
             await load_script('//npm.tansuyun.cn/mqtt/dist/mqtt.min.js', 'mqtt')
         }
-        this.conn = window.mqtt.connect(this.host, this.options)
+        //@ts-ignore
+        this.conn = glo.mqtt.connect(this.host, this.options)
         this.conn.on('reconnect', (e: any) => {
             console.error('MQTT ReConn', e)
         })

@@ -92,21 +92,27 @@ export enum LinkType {
 
 export const dataurl_to_file = d;
 export const load_script = l;
-const ls = localStorage
+const lms: { [index: string]: any } = {}
+export const glo: any = globalThis
+const ls = glo.localStorage || { getItem: (v: string) => lms[v], setItem: (k: string, v: any) => lms[k] = v, removeItem: (k: string) => delete lms[k] }
 class Store {
     get(key: string, def: string | number | any = "") {
         let r = ls.getItem(key)
         if (!r) { return def }
-        let p = JSON.parse(r)
-        if (p._v && p._e) {
-            if (p._e > Date.now()) {
-                return p._v
-            } else {
-                this.rm(key)
-                return def;
+        try {
+            let p = JSON.parse(r || '{}')
+            if (p._v && p._e) {
+                if (p._e > Date.now()) {
+                    return p._v
+                } else {
+                    this.rm(key)
+                    return def;
+                }
             }
+            return p;
+        } catch (error) {
+            return def;
         }
-        return r;
     }
     set(key: string, val: any, exp = 0) {
         if (exp) {

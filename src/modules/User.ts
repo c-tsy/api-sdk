@@ -2,12 +2,10 @@ import { ApiController, ApiConfig, ControllerApi, VueInstance } from '../';
 import hook, { HookWhen } from '@ctsy/hook';
 import { ErrorType, SearchResult, LinkType, SearchWhere } from '../lib';
 import { array_columns, array_key_set, timeout } from '@ctsy/common';
-import * as _ from 'lodash'
+import { get } from 'lodash'
 import Wechat from './Wechat';
-const get: Function = _.get;
+
 const md5: any = require('md5')
-
-
 export namespace User {
     export const prefix = "_user"
     /**
@@ -505,8 +503,8 @@ export namespace User {
             if (!rs.UID) {
                 if (conf.Auto) {
                     if (Wechat.IsWechatBrower) {
-                        let u = await Wechat.AuthApi.user()
-                        rs = await this.thirdLogin('Wechat', u.openid, conf.Regist)
+                        let u = await Wechat.user()
+                        rs = await this.thirdLogin('Wechat', u.openid, conf.Regist, u)
                     }
                 }
             }
@@ -829,7 +827,8 @@ export namespace User {
                     } else if (map[tGroups[i].PRGID]) {
                         key = [...map[tGroups[i].PRGID], tGroups[i].PRGID + '.Subs'].join('.')
                     }
-                    get(rs, key).push(tGroups[i]);
+                    //@ts-ignore
+                    get(rs, key, []).push(tGroups[i]);
                     delete tGroups[i];
                 }
                 if (Object.keys(tGroups).length == 0) {

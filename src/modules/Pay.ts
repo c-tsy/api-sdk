@@ -1,6 +1,6 @@
 import { ApiController } from "..";
 import { timeout } from "@ctsy/common";
-import { SearchWhere, SearchResult } from "../lib";
+import { SearchWhere, SearchResult, glo } from "../lib";
 declare let window: any;
 namespace Pay {
     export const prefix = '_pay';
@@ -172,7 +172,7 @@ namespace Pay {
          * @param waitForConfirm 
          */
         async callWxPay(d: ClassPayOrders | any, waitForConfirm: boolean = true): Promise<boolean | ClassPayOrders> {
-            if (!window.WeixinJSBridge) {
+            if (!glo.WeixinJSBridge) {
                 throw new Error('非微信环境');
             }
             if (!d.OID) {
@@ -196,7 +196,7 @@ namespace Pay {
             for (let i = 0; i < 3; i++) {
                 try {
                     return await new Promise(async (s, j) => {
-                        window.WeixinJSBridge.invoke("getBrandWCPayRequest", d.Param, async (res: any) => {
+                        glo.WeixinJSBridge.invoke("getBrandWCPayRequest", d.Param, async (res: any) => {
                             console.error(res);
                             if (res.err_msg == "get_brand_wcpay_request:ok") {
                                 //支付成功，等待服务器确认

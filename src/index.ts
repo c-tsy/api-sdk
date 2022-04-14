@@ -1,9 +1,9 @@
 import axios, { AxiosResponse } from 'axios';
 import * as qs from 'querystring'
-import { SearchWhere as sw, SearchResult as sr, ApiSDKHooks as hooks, store } from './lib';
+import { SearchWhere as sw, SearchResult as sr, ApiSDKHooks as hooks, store, glo } from './lib';
 import hook, { Hook, HookWhen } from '@ctsy/hook';
 import { delay_cb, uuid } from '@ctsy/common';
-import * as _ from 'lodash'
+import { get, set } from 'lodash'
 
 var _logs: string[] = []
 declare let window: any;
@@ -110,21 +110,20 @@ req.interceptors.response.use(async (data: any) => {
         data.data = JSON.parse(Buffer.from(data.data).toString());
     }
     // blocked[data.config.tm][data.config.md5].r = data.data.d
-    _.set(blocked, [data.config.tm, data.config.md5, 'r'].join('.'), data.data.d)
+    set(blocked, [data.config.tm, data.config.md5, 'r'].join('.'), data.data.d)
     return data;
 })
 req.interceptors.request.use(async (conf: any) => {
-    if (p.pb === false && window.protobuf) {
+    if (p.pb === false && glo.protobuf) {
         try {
             //uniapp中不存在globalThis变量
-            var global: any = globalThis;
-            isWindow = global.__proto__.constructor.name == 'Window';
+            isWindow = glo.__proto__.constructor.name == 'Window';
             if (!isWindow)
-                global.window = {
+                glo.window = {
                     navigator: { userAgent: '' }
                 };
-            window._logs = _logs;
-            p = window.protobuf
+            glo._logs = _logs;
+            p = glo.protobuf
             p.wrappers[".google.protobuf.Timestamp"] = {
                 fromObject: function (object: any) {
                     //Convert ISO-8601 to epoch millis
@@ -323,7 +322,7 @@ async function request(method: 'post' | 'get', path: string, data: any, t: any) 
         // if (d !== undefined) {
         //     e.data = d;
         // }
-        let ca: any = _.get(blocked, e.config.tm + '.' + e.config.md5, { p: [] })
+        let ca: any = get(blocked, e.config.tm + '.' + e.config.md5, { p: [] })
         ca.r = e.data.d
         if (ca.p.length > 0) {
             for (let x of ca.p) {
@@ -335,7 +334,7 @@ async function request(method: 'post' | 'get', path: string, data: any, t: any) 
     }).catch(async (e: any) => {
         let err = e.message;
         if (e.message == 'Duplex') {
-            let ca: any = _.get(blocked, e.tm + '.' + e.md5, { p: [] })
+            let ca: any = get(blocked, e.tm + '.' + e.md5, { p: [] })
             if (ca && ca.r) {
                 for (let x of ca.p) {
                     x(ca.r)
@@ -367,7 +366,6 @@ async function request(method: 'post' | 'get', path: string, data: any, t: any) 
  * @param err 
  */
 function log(ctx: AxiosResponse, path: string, method: string, time: number, t: number, status: number, reqlen: number, replen: number, err: string = '', md5: string) {
-    // axios.get('https://tsyapi.cn-hangzhou.log.aliyuncs.com/logstores/web/track_ua.gif?APIVersion=0.6.0&__topic__=api&' + ['md5=' + md5, 'appid=' + ApiConfig.AppID, 'uid=' + ApiConfig.UID, 'token=' + Token, 'time=' + time, 'path=' + encodeURI(path), 'reqlen=' + reqlen, 'replen=' + replen, 'method=' + method, 'key=' + ApiConfig.Key, 't=' + t, 'status=' + status, 'e=' + err, 'hash=' + (isWindow ? encodeURI(window.location.hash) : '')].join('&'))
     if (ApiConfig.LogToken.length > 10) {
         _logs.push(`req,ref="${location.host}",file="${location.pathname}",hash="${location.hash.replace(/=/g, '\\=')}",path="${path}",method=${method},type=json,key=${exports.ApiConfig.Key},app=${exports.ApiConfig.AppID} err="${err}",status=${status}u,time=${t}u,start=${time}u,req=${reqlen}u,rep=${replen || 0}u ${Date.now()}`)
         delay_cb('api-sdk-log', 2000, () => {

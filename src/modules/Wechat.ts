@@ -1,5 +1,5 @@
 import { ApiController, ApiConfig, Token, set_token } from '../index';
-import { SearchWhere } from '../lib';
+import { glo, SearchWhere } from '../lib';
 import axios from 'axios'
 import { cloneDeep } from 'lodash';
 declare const window: any;
@@ -88,7 +88,7 @@ namespace Wechat {
      * 判断是否是微信浏览器
      */
     export function isWeixinBrowser() {
-        return window.navigator.userAgent.toLowerCase().match(/MicroMessenger/i) != null;
+        return glo.navigator.userAgent.toLowerCase().match(/MicroMessenger/i) != null;
     }
     /**
      * 设置微信ID
@@ -113,7 +113,7 @@ namespace Wechat {
         if (!IsWechatBrower) {
             throw new Error('NOT_WECHAT_BROWER');
         }
-        let url = [ApiConfig.Host, '_wechat', 'Auth', 'user', WechatID, Token].join('/').replace('//_wechat', '/_wechat') + `?r=${encodeURIComponent(window.location.href)}`
+        let url = [ApiConfig.Host, '_wechat', 'Auth', 'user', WechatID, Token].join('/').replace('//_wechat', '/_wechat') + `?r=${encodeURIComponent(glo.location.href)}`
         try {
             let UserInfo: any = await post('Auth', 'getLogined', {})
             if (UserInfo.openid) {

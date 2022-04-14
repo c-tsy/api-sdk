@@ -5,6 +5,5 @@ import User from './modules/User'
 index['/dist/modules/User'] = { default: User };
 
 module.exports = index;
-if (window)
-    //@ts-ignore
-    window.CTsyApiSDK = index
+//@ts-ignore
+globalThis.CTsyApiSDK = index
