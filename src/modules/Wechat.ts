@@ -1,7 +1,7 @@
 import { ApiController, ApiConfig, Token, set_token } from '../index';
 import { glo, SearchWhere } from '../lib';
 import axios from 'axios'
-import { cloneDeep } from 'lodash';
+import { cloneDeep, get } from 'lodash';
 declare const window: any;
 declare const wx: any;
 declare const setTimeout: any;
@@ -88,7 +88,7 @@ namespace Wechat {
      * 判断是否是微信浏览器
      */
     export function isWeixinBrowser() {
-        return glo.navigator.userAgent.toLowerCase().match(/MicroMessenger/i) != null;
+        return get(glo, 'navigator.userAgent', '').toLowerCase().match(/MicroMessenger/i) != null;
     }
     /**
      * 设置微信ID

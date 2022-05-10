@@ -81,7 +81,7 @@ req.interceptors.response.use(async (data: any) => {
         store.set('token', Token)
     }
     let ctype = data.headers['content-type'] || ''
-    if (p.pb !== false && ctype.includes('protobuf') || ctype.includes('pb')) {
+    if (p.pb && (ctype.includes('protobuf') || ctype.includes('pb'))) {
         //准备进行protobuf的解码，并将解码内容放到data中
         //@ts-ignore
         let pd: any = base.decode(p.util.newBuffer(data.data))
@@ -113,8 +113,13 @@ req.interceptors.response.use(async (data: any) => {
     set(blocked, [data.config.tm, data.config.md5, 'r'].join('.'), data.data.d)
     return data;
 })
+const utype = {
+    u32: 'uint32',
+    s: 'string',
+    b: 'bytes'
+}
 req.interceptors.request.use(async (conf: any) => {
-    if (p.pb === false && glo.protobuf) {
+    if (!p.pb && glo.protobuf) {
         try {
             //uniapp中不存在globalThis变量
             isWindow = glo.__proto__.constructor.name == 'Window';
@@ -124,6 +129,7 @@ req.interceptors.request.use(async (conf: any) => {
                 };
             glo._logs = _logs;
             p = glo.protobuf
+            p.pb = true;
             p.wrappers[".google.protobuf.Timestamp"] = {
                 fromObject: function (object: any) {
                     //Convert ISO-8601 to epoch millis
@@ -137,7 +143,7 @@ req.interceptors.request.use(async (conf: any) => {
                     return new Date(message.seconds * 1000 + message.nanos);
                 }
             };
-            base = p.Root.fromJSON({ nested: { base: { fields: { c: { type: "uint32", id: 1 }, e: { type: "string", id: 2 }, d: { type: "bytes", id: 3 } } }, SearchResult: { fields: { P: { type: "uint32", id: 1 }, N: { type: "uint32", id: 2 }, T: { type: "uint32", id: 3 }, R: { type: "bytes", id: 4 }, L: { type: "bytes", id: 5 } } }, SearchWhere: { fields: { P: { type: "uint32", id: 1 }, N: { type: "uint32", id: 2 }, Keyword: { type: "string", id: 3 }, Sort: { type: "string", id: 4 }, W: { type: "bytes", id: 5 } } } } }).lookupType('base')
+            base = p.Root.fromJSON({ nested: { base: { fields: { c: { type: utype.u32, id: 1 }, e: { type: utype.s, id: 2 }, d: { type: utype.b, id: 3 } } }, SearchResult: { fields: { P: { type: utype.u32, id: 1 }, N: { type: utype.u32, id: 2 }, T: { type: utype.u32, id: 3 }, R: { type: utype.b, id: 4 }, L: { type: utype.b, id: 5 } } }, SearchWhere: { fields: { P: { type: utype.u32, id: 1 }, N: { type: utype.u32, id: 2 }, Keyword: { type: utype.s, id: 3 }, Sort: { type: utype.s, id: 4 }, W: { type: utype.b, id: 5 } } } } }).lookupType('base')
         } catch (error: any) {
 
         }
@@ -284,7 +290,7 @@ async function request(method: 'post' | 'get', path: string, data: any, t: any) 
         && ApiConfig.Debug === false
         && ApiConfig.protos[m]
         && ApiConfig.protos[m][c]
-        && ApiConfig.protos[m][c][f]
+        && ApiConfig.protos[m][c][f] !== 0
     ) {
         conf.responseType = "arraybuffer";
         conf.headers = { accept: 'pb' }
@@ -440,7 +446,7 @@ class ApiConfigClass {
     /**
      * 
      */
-    protos: { [index: string]: { [index: string]: { [index: string]: string[] } } } = {};
+    protos: { [index: string]: { [index: string]: { [index: string]: string[] | number } } } = {};
     /**
      * 初始化
      */
