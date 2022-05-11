@@ -174,8 +174,8 @@ req.interceptors.request.use(async (conf: any) => {
     //debug(`\t"${rand}" + "${conf.url}" + "${ApiConfig.Secret}" = "${txt}"`)
     if ('string' != typeof conf.data) {
         if (conf.method == 'get') {
-            conf.data = qs.stringify(conf.data);
-            if (conf.data.length > 0) {
+            // conf.data = qs.stringify(conf.data);
+            if (conf.data.length > 0 && 'string' == typeof conf.data) {
                 txt += conf.data;
                 conf.url = conf.url + '?' + conf.data;
             }
