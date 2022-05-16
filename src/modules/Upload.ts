@@ -109,11 +109,7 @@ namespace Upload {
      */
     export function select_file(accept = "*", autoWechat: boolean | number = true): Promise<FileList | string[]> {
         if (autoWechat && Wechat.IsWechatBrower) {
-            try {
-                return Wechat.chooseImage(1)
-            } catch (error) {
-                debugger
-            }
+            return Wechat.chooseImage(1)
         }
         return new Promise((s, j) => {
             let i = document.createElement('input');
