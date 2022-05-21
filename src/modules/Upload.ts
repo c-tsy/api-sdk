@@ -174,11 +174,7 @@ namespace Upload {
      * 上传文件
      * @param data 文件对象
      * @param conf 配置内容
-     * @returns {{
-        URL: string,
-        Original: string,
-        Auth: string
-    }}
+     * 
      */
     export async function upload_file(data: File | string, conf: ClassUploadFileConfig): Promise<{
         URL: string,
