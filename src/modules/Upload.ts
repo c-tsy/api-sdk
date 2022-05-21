@@ -116,7 +116,7 @@ namespace Upload {
             i.type = 'file';
             i.accept = accept;
             i.hidden = true;
-            document.body.appendChild(i);
+            // document.body.appendChild(i);
             i.onchange = (ev) => {
                 if (i.files && i.files.length > 0) {
                     s(i.files);
@@ -124,7 +124,7 @@ namespace Upload {
                 else {
                     j('NoFile');
                 }
-                document.body.removeChild(i);
+                // document.body.removeChild(i);
             };
             i.click();
         });

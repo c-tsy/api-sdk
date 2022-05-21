@@ -269,6 +269,9 @@ namespace Wechat {
                 sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
                 success: (res: any) => {
                     s(res.localIds)
+                },
+                fail: (e: any) => {
+                    j(e)
                 }
             })
         })
