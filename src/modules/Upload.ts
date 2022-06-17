@@ -99,9 +99,11 @@ namespace Upload {
      * @param accept 
      */
     export async function select_upload(what: string, accept: string = "", multipart = false) {
-        let file: any = await select_file(accept, true, multipart)
-        let u = await upload_file(file[0], { acl: 'read', expire: false, what })
-        return u;
+        let rs = [], file: any = await select_file(accept, true, multipart)
+        for (let x of file) {
+            rs.push(await upload_file(file[0], { acl: 'read', expire: false, what }))
+        }
+        return multipart ? rs : rs[0]
     }
     /**
      * 选择文件方法，用于触发文件选择弹窗
