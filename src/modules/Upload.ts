@@ -98,8 +98,8 @@ namespace Upload {
      * 选择文件并上传
      * @param accept 
      */
-    export async function select_upload(what: string, accept: string = "") {
-        let file: any = await select_file(accept)
+    export async function select_upload(what: string, accept: string = "", multipart = false) {
+        let file: any = await select_file(accept, true, multipart)
         let u = await upload_file(file[0], { acl: 'read', expire: false, what })
         return u;
     }
@@ -107,7 +107,7 @@ namespace Upload {
      * 选择文件方法，用于触发文件选择弹窗
      * @param accept 
      */
-    export function select_file(accept = "*", autoWechat: boolean | number = true): Promise<FileList | string[]> {
+    export function select_file(accept = "*", autoWechat: boolean | number = true, multipart = false): Promise<FileList | string[]> {
         if (autoWechat && Wechat.IsWechatBrower) {
             return Wechat.chooseImage(1)
         }
@@ -116,6 +116,7 @@ namespace Upload {
             i.type = 'file';
             i.accept = accept;
             i.hidden = true;
+            i.multiple = multipart;
             // document.body.appendChild(i);
             i.onchange = (ev) => {
                 if (i.files && i.files.length > 0) {
