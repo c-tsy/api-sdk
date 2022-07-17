@@ -101,7 +101,7 @@ namespace Upload {
     export async function select_upload(what: string, accept: string = "", multipart = false) {
         let rs = [], file: any = await select_file(accept, true, multipart)
         for (let x of file) {
-            rs.push(await upload_file(file[0], { acl: 'read', expire: false, what }))
+            rs.push(await upload_file(x, { acl: 'read', expire: false, what }))
         }
         return multipart ? rs : rs[0]
     }

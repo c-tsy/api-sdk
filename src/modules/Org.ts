@@ -1,5 +1,5 @@
 import { ApiController } from '../index';
-import { ErrorType, SearchWhere } from '../lib';
+import { CacheConf, ErrorType, SearchWhere } from '../lib';
 namespace Organ {
     const prefix = '_org'
     export class OrgOrgan {
@@ -144,14 +144,14 @@ namespace Organ {
          * 读取我的根节点
          */
         mine(): Promise<{ UnitID: number, Title: string, Memo: string, Icon: string }[]> {
-            return this._post('mine', {})
+            return this._post('mine', {}, CacheConf)
         }
         /**
          * 查询接口
          * @param w 
          */
         search(w: SearchWhere) {
-            return this._post('list', w).then((v) => {
+            return this._post('list', w, CacheConf).then((v) => {
                 if (!v.L) {
                     v.L = [];
                 }
@@ -165,7 +165,7 @@ namespace Organ {
         * @description 返回的内容为数组，请使用array_tree方法生成想要的树
         */
         tree(UnitIDs: number[], Deep: number = 3): Promise<OrgOrgan[]> {
-            return this._post('tree', { UnitIDs, Deep });
+            return this._post('tree', { UnitIDs, Deep }, CacheConf);
         }
         /**
          * 批量添加组织机构数据
@@ -267,7 +267,7 @@ namespace Organ {
             return this.search(<any>data)
         }
         search(w: SearchWhere) {
-            return this._post('list', w).then((v) => {
+            return this._post('list', w, CacheConf).then((v) => {
                 if (!v.L) {
                     v.L = [];
                 }
@@ -326,7 +326,7 @@ namespace Organ {
                     }
                 }
             }
-            return this._post('link', Object.assign(data, { Type: type }))
+            return this._post('link', Object.assign(data, { Type: type }), CacheConf)
         }
     }
     export enum LinkType {

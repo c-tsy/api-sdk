@@ -1,5 +1,5 @@
 import { ApiController, ApiCommon, ControllerApi } from '../index';
-import { ErrorType, SearchWhere, LinkType, SearchResult } from '../lib';
+import { ErrorType, SearchWhere, LinkType, SearchResult, CacheConf } from '../lib';
 namespace ArtApi {
     export const prefix = "_art"
     /**
@@ -799,7 +799,7 @@ namespace ArtApi {
          * @param {number} Keyword 关键词查询
          */
         async list(sw: SearchWhere): Promise<SearchResult<ClassArt>> {
-            let rs = await this._post('list', sw);
+            let rs = await this._post('list', sw, CacheConf);
             if (rs.L instanceof Array) {
 
             } else {
@@ -828,7 +828,7 @@ namespace ArtApi {
         read_extend(ArtIDs: number, Type: 'Live' = 'Live'): Promise<{
             Live: ArtExtendLive[]
         }> {
-            return this._post('read_extend', { ArtIDs, Type })
+            return this._post('read_extend', { ArtIDs, Type }, CacheConf)
         }
         /**
          * 批量文章类型修改
@@ -861,7 +861,7 @@ namespace ArtApi {
             if (V) {
                 p.push(V);
             }
-            let rs = await this._post(p.join('/') + '.json', { ArtID, V })
+            let rs = await this._post(p.join('/') + '.json', { ArtID, V }, CacheConf)
             if (rs.Content && rs.Content.Type == 1 && false === raw) {
                 rs.Content.Content = rs.Content.Content.split(',').map((v: string) => `<img src="${v}"/>`).join('<br/>')
             }
@@ -909,7 +909,7 @@ namespace ArtApi {
                     throw new Error('CIDs');
                 }
             }
-            return this._post('classify', { ArtID, CIDs });
+            return this._post('classify', { ArtID, CIDs }, CacheConf);
         }
         /**
          * 规则配置
@@ -935,7 +935,7 @@ namespace ArtApi {
          * @param W
          */
         files(ArtIDs: number[], P: number = 1, N: number = 10, W: { [index: string]: string | number | { [index: string]: any } }) {
-            return this._post('files', { ArtIDs, P, N, W })
+            return this._post('files', { ArtIDs, P, N, W }, CacheConf)
         }
     }
     /**
@@ -1183,14 +1183,14 @@ namespace ArtApi {
          * 按Sort和CID排序后返回
          */
         all(w: { [index: string]: string | number | Object }): Promise<ClassClassify[]> {
-            return this._post('all', w);
+            return this._post('all', w, CacheConf);
         }
         /**
          * 搜索
          * @param w 
          */
         search(w: SearchWhere) {
-            return this._post('search', w);
+            return this._post('search', w, CacheConf);
         }
         /**
          * 获取分类树
@@ -1199,7 +1199,7 @@ namespace ArtApi {
          * @description 返回的内容为数组，请使用array_tree方法生成想要的树
          */
         tree(CIDs: number[] | any, Deep: number = 3): Promise<ClassClassify[]> {
-            return this._post('tree', { CIDs, Deep });
+            return this._post('tree', { CIDs, Deep }, CacheConf);
         }
         /**
          * 批量添加文章分类
@@ -1269,7 +1269,7 @@ namespace ArtApi {
          * 获取所有支持的文章类型
          */
         all() {
-            return this._post('all');
+            return this._post('all', {}, CacheConf);
         }
     }
     export class ClassArtReadDetail extends ClassArtRead {
@@ -1290,7 +1290,7 @@ namespace ArtApi {
          * @param GID 
          */
         analyze(GID?: number, ArtID?: number): Promise<ClassArtRead> {
-            return this._post('analyze', { GID, ArtID })
+            return this._post('analyze', { GID, ArtID }, CacheConf)
         }
 
         /**
@@ -1311,7 +1311,7 @@ namespace ArtApi {
          * @param Key 字符串切分键
          */
         rlog(GID: number, ArtID: number, UID: number, Key: string): Promise<ClassArtReadDetail> {
-            return this._post('rlog', { GID, ArtID, UID, Key })
+            return this._post('rlog', { GID, ArtID, UID, Key }, CacheConf)
         }
         /**
          * 求阅读相关的统计数据，如起止时间，时长，参与人数等
@@ -1323,7 +1323,7 @@ namespace ArtApi {
          * @returns 
          */
         count(STime: string, ETime: string, GIDs: number[], Conf: { ArtIDs?: number[], UIDs?: number[], Cycle?: 'week' | 'day' | 'month' | 'year' } = {}): Promise<ReadCountResult[]> {
-            return this._post('count', Object.assign({ STime, ETime, GIDs }, Conf))
+            return this._post('count', Object.assign({ STime, ETime, GIDs }, Conf), CacheConf)
         }
 
     }
@@ -1395,13 +1395,13 @@ namespace ArtApi {
          * @param GID 
          */
         read(ArtID: number, GID?: number, Tree: boolean = true, P: number = 1, N: number = 10) {
-            return this._post('read', { ArtID, GID, P, N, Tree });
+            return this._post('read', { ArtID, GID, P, N, Tree }, CacheConf);
         }
         /**
          * 支持按W读取评论内容
          */
         search(w: SearchWhere): Promise<SearchResult<any>> {
-            return this._post('search', w)
+            return this._post('search', w, CacheConf)
         }
     }
     export const CommentApi = new comment()

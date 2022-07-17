@@ -1,6 +1,6 @@
 import { ApiController, ApiConfig, ControllerApi, VueInstance } from '../';
 import hook, { HookWhen } from '@ctsy/hook';
-import { ErrorType, SearchResult, LinkType, SearchWhere } from '../lib';
+import { ErrorType, SearchResult, LinkType, SearchWhere, CacheConf } from '../lib';
 import { array_columns, array_key_set, timeout } from '@ctsy/common';
 import { get } from 'lodash'
 import Wechat from './Wechat';
@@ -166,13 +166,13 @@ export namespace User {
             if (!['list', 'tree', 'all'].includes(Type)) {
                 throw new Error(ErrorType.User.TYPE_PARAMS_IS_ERROR)
             }
-            return this._post('all', { Type })
+            return this._post('all', { Type }, CacheConf)
         }
         /**
          * 按数据返回用户组数据结构
          */
         list(W: { PUGID?: number } = {}, P: number = 1, N: number = 999): Promise<SearchResult<ClassUserGroup>> {
-            return this._post('list', { P, N, W }).then((v) => {
+            return this._post('list', { P, N, W }, CacheConf).then((v) => {
                 if (!v.L) {
                     v.L = [];
                 }
@@ -201,7 +201,7 @@ export namespace User {
          * @param N 
          */
         members(UGID: number | number[], P: number = 1, N: number = 10): Promise<SearchResult<Login>> {
-            return this._post('members', { UGID, P, N });
+            return this._post('members', { UGID, P, N }, CacheConf);
         }
         /**
          * 添加分组
@@ -371,10 +371,10 @@ export namespace User {
                     }
                     let r = await this.relogin()
                     if (r && r.UID) { return r; }
-                    return await this._post('qrLoginCheck')
+                    return await this._post('qrLoginCheck', {}, CacheConf)
                 }
             }
-            return await this._post('qrLoginCheck')
+            return await this._post('qrLoginCheck', {}, CacheConf)
         }
         /**
          * 验证账号验证码
@@ -452,7 +452,7 @@ export namespace User {
          */
         async thirdLogin(Type: string, Account: string, Regist: boolean = false, Data: { [index: string]: string | number } = {}, PWD: string = '', UGID = 0, Contacts = {}) {
             this.check = false;
-            return await this._post('alogin', { Type, Account, Regist, Data, PWD, UGID, Contacts });
+            return await this._post('alogin', { Type, Account, Regist, Data, PWD, UGID, Contacts }, CacheConf);
         }
         /**
          * 三方登陆绑定
@@ -476,13 +476,13 @@ export namespace User {
          * 获取我的权限
          */
         async getPermissions() {
-            return await this._post('getPermissions', '');
+            return await this._post('getPermissions', '', CacheConf);
         }
         /**
          * 获取当前登录用户信息
          */
         async info() {
-            return await this._post('info', {});
+            return await this._post('info', {}, CacheConf);
         }
         /**
          * 退出登录
@@ -499,7 +499,7 @@ export namespace User {
          */
         async relogin(WithRules: boolean = false, conf = { Auto: true, Regist: true }): Promise<LoginResult> {
             this.check = false;
-            let rs = await this._post('relogin')
+            let rs = await this._post('relogin', {}, CacheConf)
             if (!rs.UID) {
                 if (conf.Auto) {
                     if (Wechat.IsWechatBrower) {
@@ -643,7 +643,7 @@ export namespace User {
         async search(W: { [index: string]: any } | SearchWhere, conf?: { With?: ['Contact'], Keyword?: string, N?: number, P?: number, Sort?: string }): Promise<SearchResult<any>> {
             let rs: SearchResult<any> = new SearchResult;
             if (W.W && W.P > 0 && W.N > 0) {
-                rs = await this._post('search', W);
+                rs = await this._post('search', W, CacheConf);
             } else {
                 if (W === void 0) { W = {}; }
                 if (undefined === conf) { conf = { N: 10, P: 1, Keyword: '' }; }
@@ -733,7 +733,7 @@ export namespace User {
         }
 
         myteam(UID: number, P: number, N: number) {
-            return this._post('myteam', { UID, P, N })
+            return this._post('myteam', { UID, P, N }, CacheConf)
         }
     }
     export const User = new user();
@@ -799,7 +799,7 @@ export namespace User {
          */
         async group(): Promise<{ [index: string]: RuleGroupClass }> {
             let rs: { [index: string]: RuleGroupClass } = {}, map: { [index: string]: number[] } = {};
-            let { Rules, Groups } = await this._get('group');
+            let { Rules, Groups } = await this._get('group', {}, CacheConf);
             let tGroups: { [index: string]: RuleGroupClass } = {};
             for (let x of Groups) {
                 x.Subs = [];

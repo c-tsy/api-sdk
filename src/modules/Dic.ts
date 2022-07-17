@@ -1,5 +1,5 @@
 import { ControllerApi } from "..";
-import { LinkType } from "../lib";
+import { CacheConf, LinkType } from "../lib";
 
 namespace Dic {
     export const prefix = "_dic";
@@ -363,7 +363,7 @@ namespace Dic {
          * @param Deep 
          */
         tree(W: { PDIDs: number[], DIDs: number[], TID: number }, Deep: number = 3): Promise<Dics[]> {
-            return this._post('tree', Object.assign(W, { Deep }))
+            return this._post('tree', Object.assign(W, { Deep }), CacheConf)
         }
     }
     export const DicsApi = new dics();

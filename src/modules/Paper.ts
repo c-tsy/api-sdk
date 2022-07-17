@@ -1,5 +1,5 @@
 import { ApiController, ControllerApi } from '..';
-import { SearchWhere, LinkType } from '../lib';
+import { SearchWhere, LinkType, CacheConf } from '../lib';
 import { SearchResult } from '../lib';
 import { ParamsError } from '../errors';
 import Upload from './Upload';
@@ -945,7 +945,7 @@ namespace Paper {
          * @param N 分页每页数量
          */
         detail(UIDs?: number[], GIDs?: number[], PIDs?: number[], PAIDs?: number[], Keys?: string[], Times?: number, P?: number, N?: number, STime: string = '', ETime: string = ''): Promise<{ L: ClassPaperAnswer }> {
-            return this._post('detail', { UIDs, GIDs, PIDs, PAIDs, Keys, Times, P, N, STime, ETime });
+            return this._post('detail', { UIDs, GIDs, PIDs, PAIDs, Keys, Times, P, N, STime, ETime }, CacheConf);
         }
         /**
          * 主观题阅卷提交
@@ -976,7 +976,7 @@ namespace Paper {
          * @param PIDs 可选 试卷编号列表，
          */
         answered(UIDs: number[], GID: number, PIDs: number[] = []) {
-            return this._post('answered', { UIDs, PIDs, GID })
+            return this._post('answered', { UIDs, PIDs, GID }, CacheConf)
         }
         /**
          * 读取隐患台账统计数据
@@ -1014,7 +1014,7 @@ namespace Paper {
                 Status,
                 Keys,
                 GroupBy
-            });
+            }, CacheConf);
             return status;
         }
         /**
@@ -1041,7 +1041,7 @@ namespace Paper {
         } = {}): Promise<AnswerCountResult[]> {
             return this._post('count', Object.assign({
                 GIDs, STime, ETime
-            }, Conf))
+            }, Conf), CacheConf)
         }
     }
 
@@ -1106,7 +1106,7 @@ namespace Paper {
             UGIDs?: number[],
             GIDs?: number[]
         } = {}, Fields: ('L' | 'UIDs' | 'UGIDMap')[] = []): Promise<ClassPaperAnalyze> {
-            return this._post('analyze', { GID, PID, GIDs: Conf.GIDs, UIDs: Conf.UIDs, UGIDs: Conf.UGIDs, Fields: Fields });
+            return this._post('analyze', { GID, PID, GIDs: Conf.GIDs, UIDs: Conf.UIDs, UGIDs: Conf.UGIDs, Fields: Fields }, CacheConf);
         }
         /**
          * 读取试卷内容
@@ -1116,7 +1116,7 @@ namespace Paper {
         get(PID: number, _Ext?: {
             AllQuestion: boolean
         }) {
-            return this._post('get', { PID, _Ext });
+            return this._post('get', { PID, _Ext }, CacheConf);
         }
 
         /**
@@ -1227,7 +1227,7 @@ namespace Paper {
          * @param w 查询条件
          */
         search(w: SearchWhere, Ext: { [index: string]: any } = {}): Promise<SearchResult<ClassPaper>> {
-            return this._post('search', Object.assign(w, Ext));
+            return this._post('search', Object.assign(w, Ext), CacheConf);
         }
         /**
          * 答题结果提交
@@ -1386,7 +1386,7 @@ namespace Paper {
             throw new Error('QIID Or QID Error')
         }
         search(w: SearchWhere): Promise<SearchResult<ClassQuestion>> {
-            return this._post('search', w);
+            return this._post('search', w, CacheConf);
         }
     }
     export const QuestionApi = new question()
@@ -1564,7 +1564,7 @@ namespace Paper {
          * @param w 
          */
         search(w: SearchWhere): Promise<SearchResult<ClassQuestionGroup>> {
-            return this._post('search', w);
+            return this._post('search', w, CacheConf);
         }
         /**
          * 批量添加
