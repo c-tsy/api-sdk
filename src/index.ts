@@ -1,6 +1,6 @@
 import axios, { AxiosResponse } from 'axios';
 import * as qs from 'querystring'
-import { SearchWhere as sw, SearchResult as sr, ApiSDKHooks as hooks, store, glo } from './lib';
+import { SearchWhere as sw, SearchResult as sr, ApiSDKHooks as hooks, store, glo, ReqConf, CacheConf } from './lib';
 import hook, { Hook, HookWhen } from '@ctsy/hook';
 import { delay_cb, uuid } from '@ctsy/common';
 import { get, set } from 'lodash'
@@ -157,13 +157,16 @@ req.interceptors.request.use(async (conf: any) => {
     if (UA) {
         conf.headers['user-agent'] = UA;
     }
+    if (conf.md5) {
+        conf.headers.md5 = conf.md5
+    }
     if (conf.token) {
-        conf.headers['token'] = conf.token;
+        conf.headers.token = conf.token;
     } else {
         if (!Token) {
             set_token()
         }
-        conf.headers['token'] = Token;
+        conf.headers.token = Token;
     }
     // 取得当前13位毫秒时间戳
     let rand = conf.start = Date.now()
@@ -237,7 +240,7 @@ req.interceptors.request.use(async (conf: any) => {
 //     let [m, c, f] = path.replace('_', '').split('/')
 //     if (ApiConfig.protos[m] && ApiConfig.protos[m][c])
 // }
-async function request(method: 'post' | 'get', path: string, data: any, t: any) {
+async function request(method: 'post' | 'get', path: string, data: any, t: ReqConf & ApiController) {
     let q: any = req[method], conf: any = {};
     if (false === ApiConfig.inited) {
         if (ApiConfig.Debug == false)
@@ -273,8 +276,20 @@ async function request(method: 'post' | 'get', path: string, data: any, t: any) 
     if (t && t.token) {
         conf.token = t.token
     }
-    return await q(path, method == 'get' ? conf : data, conf).then(async (e: AxiosResponse | any) => {
+    let Cached: any, ckey = '';
+    if (t.Cache) {
+        ckey = 'lc_' + (t.Cache.Key || (path + md5(JSON.stringify(data))))
+        let r = store.geto(ckey)
+        if (r && r._m && r._v) {
+            conf.md5 = r._m
+            Cached = r._v;
+        }
+    }
+    return await q(path, method == 'get' ? conf : data, conf).then(async (e: AxiosResponse & { config: { start: number, tm: number, md5: string }, headers: { 'content-length': number } }) => {
         conf = e.config;
+        if (e.status == 206) {
+            return Cached;
+        }
         if (e.data.c != 200) {
             let err = e.data.e || {};
             err = 'object' == typeof err ? err.m : ('string' == typeof err ? err : e.data.c)
@@ -297,6 +312,9 @@ async function request(method: 'post' | 'get', path: string, data: any, t: any) 
                 x(e.data.d)
             }
             ca.p = []
+        }
+        if (ckey) {
+            store.set(ckey, ca.r, 0, md5(JSON.stringify(ca.r)))
         }
         return ca.r;
     }).catch(async (e: any) => {
@@ -417,6 +435,7 @@ class ApiConfigClass {
     WS?: any;
 }
 export const ApiConfig = new ApiConfigClass
+
 /**
  * 
  */
@@ -447,16 +466,17 @@ export class ApiController {
      * @param data 
      * @param opt 
      */
-    _post(method: string, data: any = {}) {
-        return request('post', this.get_url(method), data, this);
+    _post(method: string, data: any = {}, conf?: ReqConf): Promise<any> {
+        //@ts-ignore
+        return request('post', this.get_url(method), data, Object.assign(conf || {}, this));
     }
     /**
      * 
      * @param method 
      * @param data 
      */
-    _get(method: string, data: any = {}) {
-        return request('get', this.get_url(method), data, this);
+    _get(method: string, data: any = {}, conf = new ReqConf): Promise<any> {
+        return request('get', this.get_url(method), data, Object.assign(conf, this));
     }
 }
 /**
@@ -552,7 +572,7 @@ export class ControllerApi<T> extends ApiController {
      * @param d 
      */
     search(d: sw): PromiseLike<sr<T>> {
-        return this._post('search', d).then((v) => {
+        return this._post('search', d, CacheConf).then((v) => {
             if (!v.L) {
                 v.L = [];
             }
@@ -591,14 +611,14 @@ export class ControllerApi<T> extends ApiController {
      * @param Deep 
      */
     async tree(W: { [index: string]: number[] | number }, Deep: number = 3) {
-        return this._post('tree', Object.assign(W, { Deep }))
+        return this._post('tree', Object.assign(W, { Deep }), CacheConf)
     }
     /**
      * 读取单个
      * @param PKID 
      */
     get(PKID: number) {
-        return this._post('get', { [this.PK]: PKID })
+        return this._post('get', { [this.PK]: PKID }, CacheConf)
     }
     /**
      * 删除
@@ -612,7 +632,7 @@ export class ControllerApi<T> extends ApiController {
      * @param d 
      */
     group(d: { Group: string, Sum: string, Count: string, Max: string, Min: string, Avg: string, W: { [index: string]: any } }[]) {
-        return this._post('group', d);
+        return this._post('group', d, CacheConf);
     }
 }
 

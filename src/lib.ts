@@ -1,5 +1,14 @@
 import { timeout, dataurl_to_file as d, load_script as l } from "@ctsy/common";
 declare let window: any
+
+
+export class ReqConf {
+    Cache = {
+        Key: '',
+        MD5: ''
+    }
+}
+export const CacheConf = new ReqConf;
 export namespace ErrorType {
     export enum Art {
         DATA_LENGTH_TOO_LONG = 'DATA_LENGTH_TOO_LONG',
@@ -96,6 +105,25 @@ const lms: { [index: string]: any } = {}
 export const glo: any = globalThis
 const ls = glo.localStorage || { getItem: (v: string) => lms[v], setItem: (k: string, v: any) => lms[k] = v, removeItem: (k: string) => delete lms[k] }
 class Store {
+    /**
+     * 读取原始缓存值
+     * @param key 
+     * @returns 
+     */
+    geto(key: string): { _v: string, _m: string, _e: number } {
+        try {
+            return JSON.parse(ls.getItem(key))
+        } catch (error) {
+
+        }
+        return { _v: '', _e: Date.now(), _m: '' }
+    }
+    /**
+     * 读取缓存
+     * @param key 键
+     * @param def 默认值
+     * @returns 
+     */
     get(key: string, def: string | number | any = "") {
         let r = ls.getItem(key)
         if (!r) { return def }
@@ -114,15 +142,26 @@ class Store {
             return def;
         }
     }
-    set(key: string, val: any, exp = 0) {
-        if (exp) {
+    /**
+     * 设置缓存
+     * @param key 
+     * @param val 
+     * @param exp 
+     */
+    set(key: string, val: any, exp = 0, _m: string = '') {
+        if (exp || _m) {
             val = {
                 _v: val,
-                _e: Date.now() + exp * 1000
+                _m,
+                _e: exp > 10 ? Date.now() + exp * 1000 : 0
             }
         }
         ls.setItem(key, JSON.stringify(val))
     }
+    /**
+     * 删除缓存
+     * @param key 
+     */
     rm(key: string) {
         ls.removeItem(key)
     }
