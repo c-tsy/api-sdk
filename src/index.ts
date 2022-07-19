@@ -1,5 +1,4 @@
 import axios, { AxiosResponse } from 'axios';
-import * as qs from 'querystring'
 import { SearchWhere as sw, SearchResult as sr, ApiSDKHooks as hooks, store, glo, ReqConf, CacheConf } from './lib';
 import hook, { Hook, HookWhen } from '@ctsy/hook';
 import { delay_cb, uuid } from '@ctsy/common';

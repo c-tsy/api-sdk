@@ -34,8 +34,7 @@
   "devDependencies": {
     "@types/axios": "*",
     "@types/lodash": "*",
-    "@types/node": "*",
-    "@types/store": "*"
+    "@types/node": "*"
   },
   "resolutions": {
     "commander": "2"
