@@ -157,6 +157,25 @@ namespace Upload {
             })
     }
     /**
+     * 本地文件读取
+     * @param file 
+     * @returns 
+     */
+    export function local_read(file: File) {
+        return new Promise((s, j) => {
+            var reader = new FileReader();
+            reader.onload = () => {
+                if ('string' == typeof reader.result)
+                    s(reader.result);
+                else {
+                    j('读取失败')
+                }
+
+            };
+            reader.readAsText(file);
+        })
+    }
+    /**
      * 计算本地文件的md5值
      * @param file 
      */
